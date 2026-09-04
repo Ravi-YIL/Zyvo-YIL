@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24412" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24405"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <array key="Poppins-Medium.ttf">
+            <string>Poppins-Medium</string>
+        </array>
+        <array key="Poppins-Regular.ttf">
+            <string>Poppins-Regular</string>
+        </array>
+    </customFonts>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="NotiCell" rowHeight="241" id="KGk-i7-Jjw" customClass="NotiCell" customModule="Zyvo" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="241"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="241"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MKD-tK-UDJ">
+                        <rect key="frame" x="5" y="10" width="310" height="216"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YSx-aK-S4p">
+                                <rect key="frame" x="10" y="20" width="40" height="40"/>
+                                <subviews>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="booking 1" translatesAutoresizingMaskIntoConstraints="NO" id="rAJ-sC-u3j">
+                                        <rect key="frame" x="10" y="10" width="20" height="20"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="20" id="MOa-rg-VQX"/>
+                                            <constraint firstAttribute="height" constant="20" id="cYR-NI-qe1"/>
+                                        </constraints>
+                                    </imageView>
+                                </subviews>
+                                <color key="backgroundColor" red="0.29019607843137252" green="0.91764705882352937" blue="0.69411764705882351" alpha="0.10000000000000001" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="8tq-qp-H4e"/>
+                                    <constraint firstItem="rAJ-sC-u3j" firstAttribute="centerY" secondItem="YSx-aK-S4p" secondAttribute="centerY" id="BvL-rL-oRF"/>
+                                    <constraint firstItem="rAJ-sC-u3j" firstAttribute="centerX" secondItem="YSx-aK-S4p" secondAttribute="centerX" id="am1-0t-6Sp"/>
+                                    <constraint firstAttribute="width" constant="40" id="o5q-5r-lCe"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="10"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fjA-7d-tVZ">
+                                <rect key="frame" x="280" y="10" width="20" height="20"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="20" id="4tn-lN-76Q"/>
+                                    <constraint firstAttribute="height" constant="20" id="VBH-7V-nuQ"/>
+                                </constraints>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" backgroundImage="grayCrossicon"/>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="You got a booking" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="d4O-i1-JC1">
+                                <rect key="frame" x="60" y="30" width="210" height="46"/>
+                                <fontDescription key="fontDescription" name="Poppins-Medium" family="Poppins" pointSize="18"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="F2d-Vg-Om0">
+                                <rect key="frame" x="60" y="80" width="225" height="126"/>
+                                <string key="text">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,</string>
+                                <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="15"/>
+                                <color key="textColor" red="0.40392156862745099" green="0.40392156862745099" blue="0.40392156862745099" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="0.90000000000000002" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="fjA-7d-tVZ" firstAttribute="leading" secondItem="d4O-i1-JC1" secondAttribute="trailing" constant="10" id="F8T-HS-4Wz"/>
+                            <constraint firstItem="F2d-Vg-Om0" firstAttribute="top" secondItem="d4O-i1-JC1" secondAttribute="bottom" constant="4" id="Fke-gK-Rme"/>
+                            <constraint firstItem="d4O-i1-JC1" firstAttribute="top" secondItem="rAJ-sC-u3j" secondAttribute="top" id="HPx-40-rXv"/>
+                            <constraint firstItem="YSx-aK-S4p" firstAttribute="top" secondItem="MKD-tK-UDJ" secondAttribute="top" constant="20" id="OF3-1E-Tek"/>
+                            <constraint firstAttribute="bottom" secondItem="F2d-Vg-Om0" secondAttribute="bottom" constant="10" id="ViZ-p1-ur9"/>
+                            <constraint firstItem="YSx-aK-S4p" firstAttribute="leading" secondItem="MKD-tK-UDJ" secondAttribute="leading" constant="10" id="Y46-yQ-aEe"/>
+                            <constraint firstItem="fjA-7d-tVZ" firstAttribute="top" secondItem="MKD-tK-UDJ" secondAttribute="top" constant="10" id="dhw-24-hgV"/>
+                            <constraint firstAttribute="trailing" secondItem="fjA-7d-tVZ" secondAttribute="trailing" constant="10" id="tRL-iE-6fB"/>
+                            <constraint firstItem="d4O-i1-JC1" firstAttribute="leading" secondItem="YSx-aK-S4p" secondAttribute="trailing" constant="10" id="u5g-7o-Hg2"/>
+                            <constraint firstItem="F2d-Vg-Om0" firstAttribute="trailing" secondItem="fjA-7d-tVZ" secondAttribute="trailing" constant="-15" id="vqB-QB-LVB"/>
+                            <constraint firstItem="F2d-Vg-Om0" firstAttribute="leading" secondItem="d4O-i1-JC1" secondAttribute="leading" id="xw1-kn-xS4"/>
+                            <constraint firstAttribute="trailing" secondItem="fjA-7d-tVZ" secondAttribute="trailing" constant="10" id="zfx-6h-889"/>
+                        </constraints>
+                    </view>
+                </subviews>
+                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                <constraints>
+                    <constraint firstAttribute="bottom" secondItem="MKD-tK-UDJ" secondAttribute="bottom" constant="15" id="QmW-Ky-tqk"/>
+                    <constraint firstAttribute="trailing" secondItem="MKD-tK-UDJ" secondAttribute="trailing" constant="5" id="SjC-eb-H5N"/>
+                    <constraint firstItem="MKD-tK-UDJ" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="vSe-UD-wGR"/>
+                    <constraint firstItem="MKD-tK-UDJ" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="5" id="xTA-WA-Z6f"/>
+                </constraints>
+            </tableViewCellContentView>
+            <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <connections>
+                <outlet property="cancelBtn" destination="fjA-7d-tVZ" id="J30-RX-rQA"/>
+                <outlet property="imgIcon" destination="rAJ-sC-u3j" id="wr2-LJ-53T"/>
+                <outlet property="lbl_Desc" destination="F2d-Vg-Om0" id="jFK-gj-Ype"/>
+                <outlet property="lbl_title" destination="d4O-i1-JC1" id="g83-Au-tC9"/>
+                <outlet property="mainV" destination="MKD-tK-UDJ" id="ms1-dt-etJ"/>
+            </connections>
+            <point key="canvasLocation" x="27.480916030534349" y="88.380281690140848"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="booking 1" width="23.666666030883789" height="23.666666030883789"/>
+        <image name="grayCrossicon" width="17" height="17"/>
+    </resources>
+</document>

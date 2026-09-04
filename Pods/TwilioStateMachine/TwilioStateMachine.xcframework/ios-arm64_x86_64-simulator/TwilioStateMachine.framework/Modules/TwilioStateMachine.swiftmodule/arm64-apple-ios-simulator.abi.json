@@ -1,0 +1,2902 @@
+{
+  "ABIRoot": {
+    "kind": "Root",
+    "name": "TopLevel",
+    "printedName": "TopLevel",
+    "children": [
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "TwilioStateMachine",
+        "declAttributes": [
+          "RawDocComment"
+        ]
+      },
+      {
+        "kind": "TypeDecl",
+        "name": "StateMachine",
+        "printedName": "StateMachine",
+        "children": [
+          {
+            "kind": "TypeDecl",
+            "name": "Transition",
+            "printedName": "Transition",
+            "children": [
+              {
+                "kind": "TypeDecl",
+                "name": "Valid",
+                "printedName": "Valid",
+                "children": [
+                  {
+                    "kind": "Var",
+                    "name": "debugDescription",
+                    "printedName": "debugDescription",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "String",
+                        "printedName": "Swift.String",
+                        "usr": "s:SS"
+                      }
+                    ],
+                    "declKind": "Var",
+                    "usr": "s:18TwilioStateMachine0bC0C10TransitionO5ValidV16debugDescriptionSSvp",
+                    "mangledName": "$s18TwilioStateMachine0bC0C10TransitionO5ValidV16debugDescriptionSSvp",
+                    "moduleName": "TwilioStateMachine",
+                    "declAttributes": [
+                      "AccessControl"
+                    ],
+                    "accessors": [
+                      {
+                        "kind": "Accessor",
+                        "name": "Get",
+                        "printedName": "Get()",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "String",
+                            "printedName": "Swift.String",
+                            "usr": "s:SS"
+                          }
+                        ],
+                        "declKind": "Accessor",
+                        "usr": "s:18TwilioStateMachine0bC0C10TransitionO5ValidV16debugDescriptionSSvg",
+                        "mangledName": "$s18TwilioStateMachine0bC0C10TransitionO5ValidV16debugDescriptionSSvg",
+                        "moduleName": "TwilioStateMachine",
+                        "genericSig": "<τ_0_0, τ_0_1, τ_0_2 where τ_0_0 : TwilioStateMachine.StateMachineHashable, τ_0_1 : TwilioStateMachine.StateMachineHashable>",
+                        "sugared_genericSig": "<State, Event, SideEffect where State : TwilioStateMachine.StateMachineHashable, Event : TwilioStateMachine.StateMachineHashable>",
+                        "accessorKind": "get"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "Var",
+                    "name": "fromState",
+                    "printedName": "fromState",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "GenericTypeParam",
+                        "printedName": "τ_0_0"
+                      }
+                    ],
+                    "declKind": "Var",
+                    "usr": "s:18TwilioStateMachine0bC0C10TransitionO5ValidV04fromB0xvp",
+                    "mangledName": "$s18TwilioStateMachine0bC0C10TransitionO5ValidV04fromB0xvp",
+                    "moduleName": "TwilioStateMachine",
+                    "declAttributes": [
+                      "HasStorage",
+                      "AccessControl"
+                    ],
+                    "isLet": true,
+                    "hasStorage": true,
+                    "accessors": [
+                      {
+                        "kind": "Accessor",
+                        "name": "Get",
+                        "printedName": "Get()",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "GenericTypeParam",
+                            "printedName": "τ_0_0"
+                          }
+                        ],
+                        "declKind": "Accessor",
+                        "usr": "s:18TwilioStateMachine0bC0C10TransitionO5ValidV04fromB0xvg",
+                        "mangledName": "$s18TwilioStateMachine0bC0C10TransitionO5ValidV04fromB0xvg",
+                        "moduleName": "TwilioStateMachine",
+                        "genericSig": "<τ_0_0, τ_0_1, τ_0_2 where τ_0_0 : TwilioStateMachine.StateMachineHashable, τ_0_1 : TwilioStateMachine.StateMachineHashable>",
+                        "sugared_genericSig": "<State, Event, SideEffect where State : TwilioStateMachine.StateMachineHashable, Event : TwilioStateMachine.StateMachineHashable>",
+                        "implicit": true,
+                        "accessorKind": "get"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "Var",
+                    "name": "event",
+                    "printedName": "event",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "GenericTypeParam",
+                        "printedName": "τ_0_1"
+                      }
+                    ],
+                    "declKind": "Var",
+                    "usr": "s:18TwilioStateMachine0bC0C10TransitionO5ValidV5eventq_vp",
+                    "mangledName": "$s18TwilioStateMachine0bC0C10TransitionO5ValidV5eventq_vp",
+                    "moduleName": "TwilioStateMachine",
+                    "declAttributes": [
+                      "HasStorage",
+                      "AccessControl"
+                    ],
+                    "isLet": true,
+                    "hasStorage": true,
+                    "accessors": [
+                      {
+                        "kind": "Accessor",
+                        "name": "Get",
+                        "printedName": "Get()",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "GenericTypeParam",
+                            "printedName": "τ_0_1"
+                          }
+                        ],
+                        "declKind": "Accessor",
+                        "usr": "s:18TwilioStateMachine0bC0C10TransitionO5ValidV5eventq_vg",
+                        "mangledName": "$s18TwilioStateMachine0bC0C10TransitionO5ValidV5eventq_vg",
+                        "moduleName": "TwilioStateMachine",
+                        "genericSig": "<τ_0_0, τ_0_1, τ_0_2 where τ_0_0 : TwilioStateMachine.StateMachineHashable, τ_0_1 : TwilioStateMachine.StateMachineHashable>",
+                        "sugared_genericSig": "<State, Event, SideEffect where State : TwilioStateMachine.StateMachineHashable, Event : TwilioStateMachine.StateMachineHashable>",
+                        "implicit": true,
+                        "accessorKind": "get"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "Var",
+                    "name": "toState",
+                    "printedName": "toState",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "GenericTypeParam",
+                        "printedName": "τ_0_0"
+                      }
+                    ],
+                    "declKind": "Var",
+                    "usr": "s:18TwilioStateMachine0bC0C10TransitionO5ValidV02toB0xvp",
+                    "mangledName": "$s18TwilioStateMachine0bC0C10TransitionO5ValidV02toB0xvp",
+                    "moduleName": "TwilioStateMachine",
+                    "declAttributes": [
+                      "HasStorage",
+                      "AccessControl"
+                    ],
+                    "isLet": true,
+                    "hasStorage": true,
+                    "accessors": [
+                      {
+                        "kind": "Accessor",
+                        "name": "Get",
+                        "printedName": "Get()",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "GenericTypeParam",
+                            "printedName": "τ_0_0"
+                          }
+                        ],
+                        "declKind": "Accessor",
+                        "usr": "s:18TwilioStateMachine0bC0C10TransitionO5ValidV02toB0xvg",
+                        "mangledName": "$s18TwilioStateMachine0bC0C10TransitionO5ValidV02toB0xvg",
+                        "moduleName": "TwilioStateMachine",
+                        "genericSig": "<τ_0_0, τ_0_1, τ_0_2 where τ_0_0 : TwilioStateMachine.StateMachineHashable, τ_0_1 : TwilioStateMachine.StateMachineHashable>",
+                        "sugared_genericSig": "<State, Event, SideEffect where State : TwilioStateMachine.StateMachineHashable, Event : TwilioStateMachine.StateMachineHashable>",
+                        "implicit": true,
+                        "accessorKind": "get"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "Var",
+                    "name": "sideEffects",
+                    "printedName": "sideEffects",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Array",
+                        "printedName": "[τ_0_2]",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "GenericTypeParam",
+                            "printedName": "τ_0_2"
+                          }
+                        ],
+                        "usr": "s:Sa"
+                      }
+                    ],
+                    "declKind": "Var",
+                    "usr": "s:18TwilioStateMachine0bC0C10TransitionO5ValidV11sideEffectsSayq0_Gvp",
+                    "mangledName": "$s18TwilioStateMachine0bC0C10TransitionO5ValidV11sideEffectsSayq0_Gvp",
+                    "moduleName": "TwilioStateMachine",
+                    "declAttributes": [
+                      "HasStorage",
+                      "AccessControl"
+                    ],
+                    "isLet": true,
+                    "hasStorage": true,
+                    "accessors": [
+                      {
+                        "kind": "Accessor",
+                        "name": "Get",
+                        "printedName": "Get()",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "Array",
+                            "printedName": "[τ_0_2]",
+                            "children": [
+                              {
+                                "kind": "TypeNominal",
+                                "name": "GenericTypeParam",
+                                "printedName": "τ_0_2"
+                              }
+                            ],
+                            "usr": "s:Sa"
+                          }
+                        ],
+                        "declKind": "Accessor",
+                        "usr": "s:18TwilioStateMachine0bC0C10TransitionO5ValidV11sideEffectsSayq0_Gvg",
+                        "mangledName": "$s18TwilioStateMachine0bC0C10TransitionO5ValidV11sideEffectsSayq0_Gvg",
+                        "moduleName": "TwilioStateMachine",
+                        "genericSig": "<τ_0_0, τ_0_1, τ_0_2 where τ_0_0 : TwilioStateMachine.StateMachineHashable, τ_0_1 : TwilioStateMachine.StateMachineHashable>",
+                        "sugared_genericSig": "<State, Event, SideEffect where State : TwilioStateMachine.StateMachineHashable, Event : TwilioStateMachine.StateMachineHashable>",
+                        "implicit": true,
+                        "accessorKind": "get"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "Constructor",
+                    "name": "init",
+                    "printedName": "init(fromState:event:toState:sideEffects:)",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Valid",
+                        "printedName": "TwilioStateMachine.StateMachine<τ_0_0, τ_0_1, τ_0_2>.Transition.Valid",
+                        "usr": "s:18TwilioStateMachine0bC0C10TransitionO5ValidV"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "GenericTypeParam",
+                        "printedName": "τ_0_0"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "GenericTypeParam",
+                        "printedName": "τ_0_1"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "GenericTypeParam",
+                        "printedName": "τ_0_0"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Array",
+                        "printedName": "[τ_0_2]",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "GenericTypeParam",
+                            "printedName": "τ_0_2"
+                          }
+                        ],
+                        "usr": "s:Sa"
+                      }
+                    ],
+                    "declKind": "Constructor",
+                    "usr": "s:18TwilioStateMachine0bC0C10TransitionO5ValidV04fromB05event02toB011sideEffectsAGyxq_q0___Gx_q_xSayq0_Gtcfc",
+                    "mangledName": "$s18TwilioStateMachine0bC0C10TransitionO5ValidV04fromB05event02toB011sideEffectsAGyxq_q0___Gx_q_xSayq0_Gtcfc",
+                    "moduleName": "TwilioStateMachine",
+                    "genericSig": "<τ_0_0, τ_0_1, τ_0_2 where τ_0_0 : TwilioStateMachine.StateMachineHashable, τ_0_1 : TwilioStateMachine.StateMachineHashable>",
+                    "sugared_genericSig": "<State, Event, SideEffect where State : TwilioStateMachine.StateMachineHashable, Event : TwilioStateMachine.StateMachineHashable>",
+                    "implicit": true,
+                    "init_kind": "Designated"
+                  },
+                  {
+                    "kind": "Function",
+                    "name": "==",
+                    "printedName": "==(_:_:)",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Bool",
+                        "printedName": "Swift.Bool",
+                        "usr": "s:Sb"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Valid",
+                        "printedName": "TwilioStateMachine.StateMachine<τ_0_0, τ_0_1, τ_0_2>.Transition.Valid",
+                        "usr": "s:18TwilioStateMachine0bC0C10TransitionO5ValidV"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Valid",
+                        "printedName": "TwilioStateMachine.StateMachine<τ_0_0, τ_0_1, τ_0_2>.Transition.Valid",
+                        "usr": "s:18TwilioStateMachine0bC0C10TransitionO5ValidV"
+                      }
+                    ],
+                    "declKind": "Func",
+                    "usr": "s:18TwilioStateMachine0bC0C10TransitionO5ValidVAASQRzSQR_SQR0_rlE2eeoiySbAGyxq_q0___G_AItFZ",
+                    "mangledName": "$s18TwilioStateMachine0bC0C10TransitionO5ValidVAASQRzSQR_SQR0_rlE2eeoiySbAGyxq_q0___G_AItFZ",
+                    "moduleName": "TwilioStateMachine",
+                    "genericSig": "<τ_0_0, τ_0_1, τ_0_2 where τ_0_0 : Swift.Equatable, τ_0_0 : TwilioStateMachine.StateMachineHashable, τ_0_1 : Swift.Equatable, τ_0_1 : TwilioStateMachine.StateMachineHashable, τ_0_2 : Swift.Equatable>",
+                    "sugared_genericSig": "<State, Event, SideEffect where State : Swift.Equatable, State : TwilioStateMachine.StateMachineHashable, Event : Swift.Equatable, Event : TwilioStateMachine.StateMachineHashable, SideEffect : Swift.Equatable>",
+                    "static": true,
+                    "implicit": true,
+                    "isFromExtension": true,
+                    "funcSelfKind": "NonMutating"
+                  }
+                ],
+                "declKind": "Struct",
+                "usr": "s:18TwilioStateMachine0bC0C10TransitionO5ValidV",
+                "mangledName": "$s18TwilioStateMachine0bC0C10TransitionO5ValidV",
+                "moduleName": "TwilioStateMachine",
+                "genericSig": "<τ_0_0, τ_0_1, τ_0_2 where τ_0_0 : TwilioStateMachine.StateMachineHashable, τ_0_1 : TwilioStateMachine.StateMachineHashable>",
+                "sugared_genericSig": "<State, Event, SideEffect where State : TwilioStateMachine.StateMachineHashable, Event : TwilioStateMachine.StateMachineHashable>",
+                "declAttributes": [
+                  "AccessControl"
+                ],
+                "conformances": [
+                  {
+                    "kind": "Conformance",
+                    "name": "CustomDebugStringConvertible",
+                    "printedName": "CustomDebugStringConvertible",
+                    "usr": "s:s28CustomDebugStringConvertibleP",
+                    "mangledName": "$ss28CustomDebugStringConvertibleP"
+                  },
+                  {
+                    "kind": "Conformance",
+                    "name": "Equatable",
+                    "printedName": "Equatable",
+                    "usr": "s:SQ",
+                    "mangledName": "$sSQ"
+                  }
+                ]
+              },
+              {
+                "kind": "TypeDecl",
+                "name": "Invalid",
+                "printedName": "Invalid",
+                "children": [
+                  {
+                    "kind": "Constructor",
+                    "name": "init",
+                    "printedName": "init()",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Invalid",
+                        "printedName": "TwilioStateMachine.StateMachine<τ_0_0, τ_0_1, τ_0_2>.Transition.Invalid",
+                        "usr": "s:18TwilioStateMachine0bC0C10TransitionO7InvalidV"
+                      }
+                    ],
+                    "declKind": "Constructor",
+                    "usr": "s:18TwilioStateMachine0bC0C10TransitionO7InvalidVAGyxq_q0___Gycfc",
+                    "mangledName": "$s18TwilioStateMachine0bC0C10TransitionO7InvalidVAGyxq_q0___Gycfc",
+                    "moduleName": "TwilioStateMachine",
+                    "genericSig": "<τ_0_0, τ_0_1, τ_0_2 where τ_0_0 : TwilioStateMachine.StateMachineHashable, τ_0_1 : TwilioStateMachine.StateMachineHashable>",
+                    "sugared_genericSig": "<State, Event, SideEffect where State : TwilioStateMachine.StateMachineHashable, Event : TwilioStateMachine.StateMachineHashable>",
+                    "implicit": true,
+                    "init_kind": "Designated"
+                  },
+                  {
+                    "kind": "Function",
+                    "name": "==",
+                    "printedName": "==(_:_:)",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Bool",
+                        "printedName": "Swift.Bool",
+                        "usr": "s:Sb"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Invalid",
+                        "printedName": "TwilioStateMachine.StateMachine<τ_0_0, τ_0_1, τ_0_2>.Transition.Invalid",
+                        "usr": "s:18TwilioStateMachine0bC0C10TransitionO7InvalidV"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Invalid",
+                        "printedName": "TwilioStateMachine.StateMachine<τ_0_0, τ_0_1, τ_0_2>.Transition.Invalid",
+                        "usr": "s:18TwilioStateMachine0bC0C10TransitionO7InvalidV"
+                      }
+                    ],
+                    "declKind": "Func",
+                    "usr": "s:18TwilioStateMachine0bC0C10TransitionO7InvalidV2eeoiySbAGyxq_q0___G_AItFZ",
+                    "mangledName": "$s18TwilioStateMachine0bC0C10TransitionO7InvalidV2eeoiySbAGyxq_q0___G_AItFZ",
+                    "moduleName": "TwilioStateMachine",
+                    "genericSig": "<τ_0_0, τ_0_1, τ_0_2 where τ_0_0 : TwilioStateMachine.StateMachineHashable, τ_0_1 : TwilioStateMachine.StateMachineHashable>",
+                    "sugared_genericSig": "<State, Event, SideEffect where State : TwilioStateMachine.StateMachineHashable, Event : TwilioStateMachine.StateMachineHashable>",
+                    "static": true,
+                    "implicit": true,
+                    "funcSelfKind": "NonMutating"
+                  }
+                ],
+                "declKind": "Struct",
+                "usr": "s:18TwilioStateMachine0bC0C10TransitionO7InvalidV",
+                "mangledName": "$s18TwilioStateMachine0bC0C10TransitionO7InvalidV",
+                "moduleName": "TwilioStateMachine",
+                "genericSig": "<τ_0_0, τ_0_1, τ_0_2 where τ_0_0 : TwilioStateMachine.StateMachineHashable, τ_0_1 : TwilioStateMachine.StateMachineHashable>",
+                "sugared_genericSig": "<State, Event, SideEffect where State : TwilioStateMachine.StateMachineHashable, Event : TwilioStateMachine.StateMachineHashable>",
+                "declAttributes": [
+                  "AccessControl"
+                ],
+                "conformances": [
+                  {
+                    "kind": "Conformance",
+                    "name": "Error",
+                    "printedName": "Error",
+                    "usr": "s:s5ErrorP",
+                    "mangledName": "$ss5ErrorP"
+                  },
+                  {
+                    "kind": "Conformance",
+                    "name": "Equatable",
+                    "printedName": "Equatable",
+                    "usr": "s:SQ",
+                    "mangledName": "$sSQ"
+                  },
+                  {
+                    "kind": "Conformance",
+                    "name": "Sendable",
+                    "printedName": "Sendable",
+                    "usr": "s:s8SendableP",
+                    "mangledName": "$ss8SendableP"
+                  }
+                ]
+              }
+            ],
+            "declKind": "Enum",
+            "usr": "s:18TwilioStateMachine0bC0C10TransitionO",
+            "mangledName": "$s18TwilioStateMachine0bC0C10TransitionO",
+            "moduleName": "TwilioStateMachine",
+            "genericSig": "<τ_0_0, τ_0_1, τ_0_2 where τ_0_0 : TwilioStateMachine.StateMachineHashable, τ_0_1 : TwilioStateMachine.StateMachineHashable>",
+            "sugared_genericSig": "<State, Event, SideEffect where State : TwilioStateMachine.StateMachineHashable, Event : TwilioStateMachine.StateMachineHashable>",
+            "declAttributes": [
+              "AccessControl"
+            ]
+          },
+          {
+            "kind": "TypeDecl",
+            "name": "StateMachineError",
+            "printedName": "StateMachineError",
+            "children": [
+              {
+                "kind": "Var",
+                "name": "recursionDetected",
+                "printedName": "recursionDetected",
+                "children": [
+                  {
+                    "kind": "TypeFunc",
+                    "name": "GenericFunction",
+                    "printedName": "<τ_0_0, τ_0_1, τ_0_2 where τ_0_0 : TwilioStateMachine.StateMachineHashable, τ_0_1 : TwilioStateMachine.StateMachineHashable> (TwilioStateMachine.StateMachine<τ_0_0, τ_0_1, τ_0_2>.StateMachineError.Type) -> TwilioStateMachine.StateMachine<τ_0_0, τ_0_1, τ_0_2>.StateMachineError",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "StateMachineError",
+                        "printedName": "TwilioStateMachine.StateMachine<τ_0_0, τ_0_1, τ_0_2>.StateMachineError",
+                        "usr": "s:18TwilioStateMachine0bC0C0bC5ErrorO"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Metatype",
+                        "printedName": "TwilioStateMachine.StateMachine<τ_0_0, τ_0_1, τ_0_2>.StateMachineError.Type",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "StateMachineError",
+                            "printedName": "TwilioStateMachine.StateMachine<τ_0_0, τ_0_1, τ_0_2>.StateMachineError",
+                            "usr": "s:18TwilioStateMachine0bC0C0bC5ErrorO"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "declKind": "EnumElement",
+                "usr": "s:18TwilioStateMachine0bC0C0bC5ErrorO17recursionDetectedyAEyxq_q0__GAGmAA0bC8HashableRzAaHR_r1_lF",
+                "mangledName": "$s18TwilioStateMachine0bC0C0bC5ErrorO17recursionDetectedyAEyxq_q0__GAGmAA0bC8HashableRzAaHR_r1_lF",
+                "moduleName": "TwilioStateMachine"
+              },
+              {
+                "kind": "Function",
+                "name": "==",
+                "printedName": "==(_:_:)",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Bool",
+                    "printedName": "Swift.Bool",
+                    "usr": "s:Sb"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "StateMachineError",
+                    "printedName": "TwilioStateMachine.StateMachine<τ_0_0, τ_0_1, τ_0_2>.StateMachineError",
+                    "usr": "s:18TwilioStateMachine0bC0C0bC5ErrorO"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "StateMachineError",
+                    "printedName": "TwilioStateMachine.StateMachine<τ_0_0, τ_0_1, τ_0_2>.StateMachineError",
+                    "usr": "s:18TwilioStateMachine0bC0C0bC5ErrorO"
+                  }
+                ],
+                "declKind": "Func",
+                "usr": "s:18TwilioStateMachine0bC0C0bC5ErrorO2eeoiySbAEyxq_q0__G_AGtFZ",
+                "mangledName": "$s18TwilioStateMachine0bC0C0bC5ErrorO2eeoiySbAEyxq_q0__G_AGtFZ",
+                "moduleName": "TwilioStateMachine",
+                "genericSig": "<τ_0_0, τ_0_1, τ_0_2 where τ_0_0 : TwilioStateMachine.StateMachineHashable, τ_0_1 : TwilioStateMachine.StateMachineHashable>",
+                "sugared_genericSig": "<State, Event, SideEffect where State : TwilioStateMachine.StateMachineHashable, Event : TwilioStateMachine.StateMachineHashable>",
+                "static": true,
+                "implicit": true,
+                "funcSelfKind": "NonMutating"
+              },
+              {
+                "kind": "Var",
+                "name": "hashValue",
+                "printedName": "hashValue",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Int",
+                    "printedName": "Swift.Int",
+                    "usr": "s:Si"
+                  }
+                ],
+                "declKind": "Var",
+                "usr": "s:18TwilioStateMachine0bC0C0bC5ErrorO9hashValueSivp",
+                "mangledName": "$s18TwilioStateMachine0bC0C0bC5ErrorO9hashValueSivp",
+                "moduleName": "TwilioStateMachine",
+                "implicit": true,
+                "accessors": [
+                  {
+                    "kind": "Accessor",
+                    "name": "Get",
+                    "printedName": "Get()",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Int",
+                        "printedName": "Swift.Int",
+                        "usr": "s:Si"
+                      }
+                    ],
+                    "declKind": "Accessor",
+                    "usr": "s:18TwilioStateMachine0bC0C0bC5ErrorO9hashValueSivg",
+                    "mangledName": "$s18TwilioStateMachine0bC0C0bC5ErrorO9hashValueSivg",
+                    "moduleName": "TwilioStateMachine",
+                    "genericSig": "<τ_0_0, τ_0_1, τ_0_2 where τ_0_0 : TwilioStateMachine.StateMachineHashable, τ_0_1 : TwilioStateMachine.StateMachineHashable>",
+                    "sugared_genericSig": "<State, Event, SideEffect where State : TwilioStateMachine.StateMachineHashable, Event : TwilioStateMachine.StateMachineHashable>",
+                    "implicit": true,
+                    "accessorKind": "get"
+                  }
+                ]
+              },
+              {
+                "kind": "Function",
+                "name": "hash",
+                "printedName": "hash(into:)",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Void",
+                    "printedName": "()"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Hasher",
+                    "printedName": "Swift.Hasher",
+                    "paramValueOwnership": "InOut",
+                    "usr": "s:s6HasherV"
+                  }
+                ],
+                "declKind": "Func",
+                "usr": "s:18TwilioStateMachine0bC0C0bC5ErrorO4hash4intoys6HasherVz_tF",
+                "mangledName": "$s18TwilioStateMachine0bC0C0bC5ErrorO4hash4intoys6HasherVz_tF",
+                "moduleName": "TwilioStateMachine",
+                "genericSig": "<τ_0_0, τ_0_1, τ_0_2 where τ_0_0 : TwilioStateMachine.StateMachineHashable, τ_0_1 : TwilioStateMachine.StateMachineHashable>",
+                "sugared_genericSig": "<State, Event, SideEffect where State : TwilioStateMachine.StateMachineHashable, Event : TwilioStateMachine.StateMachineHashable>",
+                "implicit": true,
+                "funcSelfKind": "NonMutating"
+              }
+            ],
+            "declKind": "Enum",
+            "usr": "s:18TwilioStateMachine0bC0C0bC5ErrorO",
+            "mangledName": "$s18TwilioStateMachine0bC0C0bC5ErrorO",
+            "moduleName": "TwilioStateMachine",
+            "genericSig": "<τ_0_0, τ_0_1, τ_0_2 where τ_0_0 : TwilioStateMachine.StateMachineHashable, τ_0_1 : TwilioStateMachine.StateMachineHashable>",
+            "sugared_genericSig": "<State, Event, SideEffect where State : TwilioStateMachine.StateMachineHashable, Event : TwilioStateMachine.StateMachineHashable>",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "conformances": [
+              {
+                "kind": "Conformance",
+                "name": "Equatable",
+                "printedName": "Equatable",
+                "usr": "s:SQ",
+                "mangledName": "$sSQ"
+              },
+              {
+                "kind": "Conformance",
+                "name": "Hashable",
+                "printedName": "Hashable",
+                "usr": "s:SH",
+                "mangledName": "$sSH"
+              },
+              {
+                "kind": "Conformance",
+                "name": "Error",
+                "printedName": "Error",
+                "usr": "s:s5ErrorP",
+                "mangledName": "$ss5ErrorP"
+              },
+              {
+                "kind": "Conformance",
+                "name": "Sendable",
+                "printedName": "Sendable",
+                "usr": "s:s8SendableP",
+                "mangledName": "$ss8SendableP"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "state",
+            "printedName": "state",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "GenericTypeParam",
+                "printedName": "τ_0_0"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:18TwilioStateMachine0bC0C5statexvp",
+            "mangledName": "$s18TwilioStateMachine0bC0C5statexvp",
+            "moduleName": "TwilioStateMachine",
+            "isOpen": true,
+            "declAttributes": [
+              "HasStorage",
+              "SetterAccess",
+              "AccessControl"
+            ],
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "GenericTypeParam",
+                    "printedName": "τ_0_0"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:18TwilioStateMachine0bC0C5statexvg",
+                "mangledName": "$s18TwilioStateMachine0bC0C5statexvg",
+                "moduleName": "TwilioStateMachine",
+                "genericSig": "<τ_0_0, τ_0_1, τ_0_2 where τ_0_0 : TwilioStateMachine.StateMachineHashable, τ_0_1 : TwilioStateMachine.StateMachineHashable>",
+                "sugared_genericSig": "<State, Event, SideEffect where State : TwilioStateMachine.StateMachineHashable, Event : TwilioStateMachine.StateMachineHashable>",
+                "implicit": true,
+                "isOpen": true,
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Constructor",
+            "name": "init",
+            "printedName": "init(queue:build:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "StateMachine",
+                "printedName": "TwilioStateMachine.StateMachine<τ_0_0, τ_0_1, τ_0_2>",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "GenericTypeParam",
+                    "printedName": "τ_0_0"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "GenericTypeParam",
+                    "printedName": "τ_0_1"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "GenericTypeParam",
+                    "printedName": "τ_0_2"
+                  }
+                ],
+                "usr": "s:18TwilioStateMachine0bC0C"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "Dispatch.DispatchQueue?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "DispatchQueue",
+                    "printedName": "Dispatch.DispatchQueue",
+                    "usr": "c:objc(cs)OS_dispatch_queue"
+                  }
+                ],
+                "hasDefaultArg": true,
+                "usr": "s:Sq"
+              },
+              {
+                "kind": "TypeFunc",
+                "name": "Function",
+                "printedName": "() -> TwilioStateMachine.StateMachineTypes.Definition<τ_0_0, τ_0_1, τ_0_2>",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Definition",
+                    "printedName": "TwilioStateMachine.StateMachineTypes.Definition<τ_0_0, τ_0_1, τ_0_2>",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "GenericTypeParam",
+                        "printedName": "τ_0_0"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "GenericTypeParam",
+                        "printedName": "τ_0_1"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "GenericTypeParam",
+                        "printedName": "τ_0_2"
+                      }
+                    ],
+                    "usr": "s:18TwilioStateMachine0bC5TypesO10DefinitionV"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Void",
+                    "printedName": "()"
+                  }
+                ],
+                "typeAttributes": [
+                  "noescape"
+                ]
+              }
+            ],
+            "declKind": "Constructor",
+            "usr": "s:18TwilioStateMachine0bC0C5queue5buildACyxq_q0_GSo012OS_dispatch_D0CSg_AA0bC5TypesO10DefinitionVy_xq_q0_GyXEtcfc",
+            "mangledName": "$s18TwilioStateMachine0bC0C5queue5buildACyxq_q0_GSo012OS_dispatch_D0CSg_AA0bC5TypesO10DefinitionVy_xq_q0_GyXEtcfc",
+            "moduleName": "TwilioStateMachine",
+            "genericSig": "<τ_0_0, τ_0_1, τ_0_2 where τ_0_0 : TwilioStateMachine.StateMachineHashable, τ_0_1 : TwilioStateMachine.StateMachineHashable>",
+            "sugared_genericSig": "<State, Event, SideEffect where State : TwilioStateMachine.StateMachineHashable, Event : TwilioStateMachine.StateMachineHashable>",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "init_kind": "Designated"
+          },
+          {
+            "kind": "Function",
+            "name": "startObserving",
+            "printedName": "startObserving(_:callback:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "DynamicSelf",
+                "printedName": "Self"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "AnyObject?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "ProtocolComposition",
+                    "printedName": "AnyObject"
+                  }
+                ],
+                "usr": "s:Sq"
+              },
+              {
+                "kind": "TypeFunc",
+                "name": "Function",
+                "printedName": "(Swift.Result<TwilioStateMachine.StateMachine<τ_0_0, τ_0_1, τ_0_2>.Transition.Valid, Swift.Error>) -> ()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Void",
+                    "printedName": "()"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Result",
+                    "printedName": "Swift.Result<TwilioStateMachine.StateMachine<τ_0_0, τ_0_1, τ_0_2>.Transition.Valid, Swift.Error>",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Valid",
+                        "printedName": "TwilioStateMachine.StateMachine<τ_0_0, τ_0_1, τ_0_2>.Transition.Valid",
+                        "usr": "s:18TwilioStateMachine0bC0C10TransitionO5ValidV"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Error",
+                        "printedName": "Swift.Error",
+                        "usr": "s:s5ErrorP"
+                      }
+                    ],
+                    "usr": "s:s6ResultO"
+                  }
+                ]
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:18TwilioStateMachine0bC0C14startObserving_8callbackACyxq_q0_GXDyXlSg_ys6ResultOyAC10TransitionO5ValidVyxq_q0___Gs5Error_pGctF",
+            "mangledName": "$s18TwilioStateMachine0bC0C14startObserving_8callbackACyxq_q0_GXDyXlSg_ys6ResultOyAC10TransitionO5ValidVyxq_q0___Gs5Error_pGctF",
+            "moduleName": "TwilioStateMachine",
+            "genericSig": "<τ_0_0, τ_0_1, τ_0_2 where τ_0_0 : TwilioStateMachine.StateMachineHashable, τ_0_1 : TwilioStateMachine.StateMachineHashable>",
+            "sugared_genericSig": "<State, Event, SideEffect where State : TwilioStateMachine.StateMachineHashable, Event : TwilioStateMachine.StateMachineHashable>",
+            "isOpen": true,
+            "declAttributes": [
+              "AccessControl",
+              "DiscardableResult"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "stopObserving",
+            "printedName": "stopObserving(_:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Array",
+                "printedName": "[AnyObject?]",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Optional",
+                    "printedName": "AnyObject?",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "ProtocolComposition",
+                        "printedName": "AnyObject"
+                      }
+                    ],
+                    "usr": "s:Sq"
+                  }
+                ],
+                "usr": "s:Sa"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:18TwilioStateMachine0bC0C13stopObservingyyyXlSgd_tF",
+            "mangledName": "$s18TwilioStateMachine0bC0C13stopObservingyyyXlSgd_tF",
+            "moduleName": "TwilioStateMachine",
+            "genericSig": "<τ_0_0, τ_0_1, τ_0_2 where τ_0_0 : TwilioStateMachine.StateMachineHashable, τ_0_1 : TwilioStateMachine.StateMachineHashable>",
+            "sugared_genericSig": "<State, Event, SideEffect where State : TwilioStateMachine.StateMachineHashable, Event : TwilioStateMachine.StateMachineHashable>",
+            "isOpen": true,
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "stopObserving",
+            "printedName": "stopObserving(_:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Array",
+                "printedName": "[AnyObject?]",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Optional",
+                    "printedName": "AnyObject?",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "ProtocolComposition",
+                        "printedName": "AnyObject"
+                      }
+                    ],
+                    "usr": "s:Sq"
+                  }
+                ],
+                "usr": "s:Sa"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:18TwilioStateMachine0bC0C13stopObservingyySayyXlSgGF",
+            "mangledName": "$s18TwilioStateMachine0bC0C13stopObservingyySayyXlSgGF",
+            "moduleName": "TwilioStateMachine",
+            "genericSig": "<τ_0_0, τ_0_1, τ_0_2 where τ_0_0 : TwilioStateMachine.StateMachineHashable, τ_0_1 : TwilioStateMachine.StateMachineHashable>",
+            "sugared_genericSig": "<State, Event, SideEffect where State : TwilioStateMachine.StateMachineHashable, Event : TwilioStateMachine.StateMachineHashable>",
+            "isOpen": true,
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "transition",
+            "printedName": "transition(_:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Valid",
+                "printedName": "TwilioStateMachine.StateMachine<τ_0_0, τ_0_1, τ_0_2>.Transition.Valid",
+                "usr": "s:18TwilioStateMachine0bC0C10TransitionO5ValidV"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "GenericTypeParam",
+                "printedName": "τ_0_1"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:18TwilioStateMachine0bC0C10transitionyAC10TransitionO5ValidVyxq_q0___Gq_KF",
+            "mangledName": "$s18TwilioStateMachine0bC0C10transitionyAC10TransitionO5ValidVyxq_q0___Gq_KF",
+            "moduleName": "TwilioStateMachine",
+            "genericSig": "<τ_0_0, τ_0_1, τ_0_2 where τ_0_0 : TwilioStateMachine.StateMachineHashable, τ_0_1 : TwilioStateMachine.StateMachineHashable>",
+            "sugared_genericSig": "<State, Event, SideEffect where State : TwilioStateMachine.StateMachineHashable, Event : TwilioStateMachine.StateMachineHashable>",
+            "isOpen": true,
+            "declAttributes": [
+              "AccessControl",
+              "DiscardableResult"
+            ],
+            "throwing": true,
+            "funcSelfKind": "NonMutating"
+          }
+        ],
+        "declKind": "Class",
+        "usr": "s:18TwilioStateMachine0bC0C",
+        "mangledName": "$s18TwilioStateMachine0bC0C",
+        "moduleName": "TwilioStateMachine",
+        "genericSig": "<τ_0_0, τ_0_1, τ_0_2 where τ_0_0 : TwilioStateMachine.StateMachineHashable, τ_0_1 : TwilioStateMachine.StateMachineHashable>",
+        "sugared_genericSig": "<State, Event, SideEffect where State : TwilioStateMachine.StateMachineHashable, Event : TwilioStateMachine.StateMachineHashable>",
+        "isOpen": true,
+        "declAttributes": [
+          "AccessControl"
+        ]
+      },
+      {
+        "kind": "TypeDecl",
+        "name": "StateMachineBuilder",
+        "printedName": "StateMachineBuilder",
+        "children": [
+          {
+            "kind": "AssociatedType",
+            "name": "State",
+            "printedName": "State",
+            "declKind": "AssociatedType",
+            "usr": "s:18TwilioStateMachine0bC7BuilderP0B0Qa",
+            "mangledName": "$s18TwilioStateMachine0bC7BuilderP0B0Qa",
+            "moduleName": "TwilioStateMachine",
+            "protocolReq": true
+          },
+          {
+            "kind": "AssociatedType",
+            "name": "Event",
+            "printedName": "Event",
+            "declKind": "AssociatedType",
+            "usr": "s:18TwilioStateMachine0bC7BuilderP5EventQa",
+            "mangledName": "$s18TwilioStateMachine0bC7BuilderP5EventQa",
+            "moduleName": "TwilioStateMachine",
+            "protocolReq": true
+          },
+          {
+            "kind": "AssociatedType",
+            "name": "SideEffect",
+            "printedName": "SideEffect",
+            "declKind": "AssociatedType",
+            "usr": "s:18TwilioStateMachine0bC7BuilderP10SideEffectQa",
+            "mangledName": "$s18TwilioStateMachine0bC7BuilderP10SideEffectQa",
+            "moduleName": "TwilioStateMachine",
+            "protocolReq": true
+          },
+          {
+            "kind": "Function",
+            "name": "initialState",
+            "printedName": "initialState(_:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "InitialState",
+                "printedName": "TwilioStateMachine.StateMachineTypes.InitialState<τ_0_0.State>",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "DependentMember",
+                    "printedName": "τ_0_0.State"
+                  }
+                ],
+                "usr": "s:18TwilioStateMachine0bC5TypesO07InitialB0V"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "DependentMember",
+                "printedName": "τ_0_0.State"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:18TwilioStateMachine0bC7BuilderPAAE07initialB0yAA0bC5TypesO07InitialB0Vy_0B0QzGAJFZ",
+            "mangledName": "$s18TwilioStateMachine0bC7BuilderPAAE07initialB0yAA0bC5TypesO07InitialB0Vy_0B0QzGAJFZ",
+            "moduleName": "TwilioStateMachine",
+            "genericSig": "<τ_0_0 where τ_0_0 : TwilioStateMachine.StateMachineBuilder>",
+            "sugared_genericSig": "<Self where Self : TwilioStateMachine.StateMachineBuilder>",
+            "static": true,
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "state",
+            "printedName": "state(_:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Component",
+                "printedName": "TwilioStateMachine.StateMachineTypes.Component<τ_0_0.State, τ_0_0.Event, τ_0_0.SideEffect>",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "DependentMember",
+                    "printedName": "τ_0_0.State"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "DependentMember",
+                    "printedName": "τ_0_0.Event"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "DependentMember",
+                    "printedName": "τ_0_0.SideEffect"
+                  }
+                ],
+                "usr": "s:18TwilioStateMachine0bC5TypesO9ComponentO"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "DependentMember",
+                "printedName": "τ_0_0.State.HashableIdentifier"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:18TwilioStateMachine0bC7BuilderPAAE5stateyAA0bC5TypesO9ComponentOy_0B0Qz5EventQz10SideEffectQzGAI_18HashableIdentifierQZFZ",
+            "mangledName": "$s18TwilioStateMachine0bC7BuilderPAAE5stateyAA0bC5TypesO9ComponentOy_0B0Qz5EventQz10SideEffectQzGAI_18HashableIdentifierQZFZ",
+            "moduleName": "TwilioStateMachine",
+            "genericSig": "<τ_0_0 where τ_0_0 : TwilioStateMachine.StateMachineBuilder>",
+            "sugared_genericSig": "<Self where Self : TwilioStateMachine.StateMachineBuilder>",
+            "static": true,
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "state",
+            "printedName": "state(_:build:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Component",
+                "printedName": "TwilioStateMachine.StateMachineTypes.Component<τ_0_0.State, τ_0_0.Event, τ_0_0.SideEffect>",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "DependentMember",
+                    "printedName": "τ_0_0.State"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "DependentMember",
+                    "printedName": "τ_0_0.Event"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "DependentMember",
+                    "printedName": "τ_0_0.SideEffect"
+                  }
+                ],
+                "usr": "s:18TwilioStateMachine0bC5TypesO9ComponentO"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "DependentMember",
+                "printedName": "τ_0_0.State.HashableIdentifier"
+              },
+              {
+                "kind": "TypeFunc",
+                "name": "Function",
+                "printedName": "() -> [TwilioStateMachine.StateMachineTypes.EventHandler<τ_0_0.State, τ_0_0.Event, τ_0_0.SideEffect>]",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Array",
+                    "printedName": "[TwilioStateMachine.StateMachineTypes.EventHandler<τ_0_0.State, τ_0_0.Event, τ_0_0.SideEffect>]",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "EventHandler",
+                        "printedName": "TwilioStateMachine.StateMachineTypes.EventHandler<τ_0_0.State, τ_0_0.Event, τ_0_0.SideEffect>",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "DependentMember",
+                            "printedName": "τ_0_0.State"
+                          },
+                          {
+                            "kind": "TypeNominal",
+                            "name": "DependentMember",
+                            "printedName": "τ_0_0.Event"
+                          },
+                          {
+                            "kind": "TypeNominal",
+                            "name": "DependentMember",
+                            "printedName": "τ_0_0.SideEffect"
+                          }
+                        ],
+                        "usr": "s:18TwilioStateMachine0bC5TypesO12EventHandlerV"
+                      }
+                    ],
+                    "usr": "s:Sa"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Void",
+                    "printedName": "()"
+                  }
+                ],
+                "typeAttributes": [
+                  "noescape"
+                ]
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:18TwilioStateMachine0bC7BuilderPAAE5state_5buildAA0bC5TypesO9ComponentOy_0B0Qz5EventQz10SideEffectQzGAJ_18HashableIdentifierQZ_SayAG0I7HandlerVy_AkmOGGyXEtFZ",
+            "mangledName": "$s18TwilioStateMachine0bC7BuilderPAAE5state_5buildAA0bC5TypesO9ComponentOy_0B0Qz5EventQz10SideEffectQzGAJ_18HashableIdentifierQZ_SayAG0I7HandlerVy_AkmOGGyXEtFZ",
+            "moduleName": "TwilioStateMachine",
+            "genericSig": "<τ_0_0 where τ_0_0 : TwilioStateMachine.StateMachineBuilder>",
+            "sugared_genericSig": "<Self where Self : TwilioStateMachine.StateMachineBuilder>",
+            "static": true,
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "on",
+            "printedName": "on(_:perform:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Array",
+                "printedName": "[TwilioStateMachine.StateMachineTypes.EventHandler<τ_0_0.State, τ_0_0.Event, τ_0_0.SideEffect>]",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "EventHandler",
+                    "printedName": "TwilioStateMachine.StateMachineTypes.EventHandler<τ_0_0.State, τ_0_0.Event, τ_0_0.SideEffect>",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "DependentMember",
+                        "printedName": "τ_0_0.State"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "DependentMember",
+                        "printedName": "τ_0_0.Event"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "DependentMember",
+                        "printedName": "τ_0_0.SideEffect"
+                      }
+                    ],
+                    "usr": "s:18TwilioStateMachine0bC5TypesO12EventHandlerV"
+                  }
+                ],
+                "usr": "s:Sa"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "DependentMember",
+                "printedName": "τ_0_0.Event.HashableIdentifier"
+              },
+              {
+                "kind": "TypeFunc",
+                "name": "Function",
+                "printedName": "(τ_0_0.State, τ_0_0.Event) throws -> TwilioStateMachine.StateMachineTypes.Action<τ_0_0.State, τ_0_0.Event, τ_0_0.SideEffect>",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Action",
+                    "printedName": "TwilioStateMachine.StateMachineTypes.Action<τ_0_0.State, τ_0_0.Event, τ_0_0.SideEffect>",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "DependentMember",
+                        "printedName": "τ_0_0.State"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "DependentMember",
+                        "printedName": "τ_0_0.Event"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "DependentMember",
+                        "printedName": "τ_0_0.SideEffect"
+                      }
+                    ],
+                    "usr": "s:18TwilioStateMachine0bC5TypesO6ActionV"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Tuple",
+                    "printedName": "(τ_0_0.State, τ_0_0.Event)",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "DependentMember",
+                        "printedName": "τ_0_0.State"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "DependentMember",
+                        "printedName": "τ_0_0.Event"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:18TwilioStateMachine0bC7BuilderPAAE2on_7performSayAA0bC5TypesO12EventHandlerVy_0B0Qz0H0Qz10SideEffectQzGGAL_18HashableIdentifierQZ_AG6ActionVy_AkmOGAK_AMtKctFZ",
+            "mangledName": "$s18TwilioStateMachine0bC7BuilderPAAE2on_7performSayAA0bC5TypesO12EventHandlerVy_0B0Qz0H0Qz10SideEffectQzGGAL_18HashableIdentifierQZ_AG6ActionVy_AkmOGAK_AMtKctFZ",
+            "moduleName": "TwilioStateMachine",
+            "genericSig": "<τ_0_0 where τ_0_0 : TwilioStateMachine.StateMachineBuilder>",
+            "sugared_genericSig": "<Self where Self : TwilioStateMachine.StateMachineBuilder>",
+            "static": true,
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "on",
+            "printedName": "on(_:perform:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Array",
+                "printedName": "[TwilioStateMachine.StateMachineTypes.EventHandler<τ_0_0.State, τ_0_0.Event, τ_0_0.SideEffect>]",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "EventHandler",
+                    "printedName": "TwilioStateMachine.StateMachineTypes.EventHandler<τ_0_0.State, τ_0_0.Event, τ_0_0.SideEffect>",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "DependentMember",
+                        "printedName": "τ_0_0.State"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "DependentMember",
+                        "printedName": "τ_0_0.Event"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "DependentMember",
+                        "printedName": "τ_0_0.SideEffect"
+                      }
+                    ],
+                    "usr": "s:18TwilioStateMachine0bC5TypesO12EventHandlerV"
+                  }
+                ],
+                "usr": "s:Sa"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "DependentMember",
+                "printedName": "τ_0_0.Event.HashableIdentifier"
+              },
+              {
+                "kind": "TypeFunc",
+                "name": "Function",
+                "printedName": "(τ_0_0.State) throws -> TwilioStateMachine.StateMachineTypes.Action<τ_0_0.State, τ_0_0.Event, τ_0_0.SideEffect>",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Action",
+                    "printedName": "TwilioStateMachine.StateMachineTypes.Action<τ_0_0.State, τ_0_0.Event, τ_0_0.SideEffect>",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "DependentMember",
+                        "printedName": "τ_0_0.State"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "DependentMember",
+                        "printedName": "τ_0_0.Event"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "DependentMember",
+                        "printedName": "τ_0_0.SideEffect"
+                      }
+                    ],
+                    "usr": "s:18TwilioStateMachine0bC5TypesO6ActionV"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "DependentMember",
+                    "printedName": "τ_0_0.State"
+                  }
+                ]
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:18TwilioStateMachine0bC7BuilderPAAE2on_7performSayAA0bC5TypesO12EventHandlerVy_0B0Qz0H0Qz10SideEffectQzGGAL_18HashableIdentifierQZ_AG6ActionVy_AkmOGAKKctFZ",
+            "mangledName": "$s18TwilioStateMachine0bC7BuilderPAAE2on_7performSayAA0bC5TypesO12EventHandlerVy_0B0Qz0H0Qz10SideEffectQzGGAL_18HashableIdentifierQZ_AG6ActionVy_AkmOGAKKctFZ",
+            "moduleName": "TwilioStateMachine",
+            "genericSig": "<τ_0_0 where τ_0_0 : TwilioStateMachine.StateMachineBuilder>",
+            "sugared_genericSig": "<Self where Self : TwilioStateMachine.StateMachineBuilder>",
+            "static": true,
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "on",
+            "printedName": "on(_:perform:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Array",
+                "printedName": "[TwilioStateMachine.StateMachineTypes.EventHandler<τ_0_0.State, τ_0_0.Event, τ_0_0.SideEffect>]",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "EventHandler",
+                    "printedName": "TwilioStateMachine.StateMachineTypes.EventHandler<τ_0_0.State, τ_0_0.Event, τ_0_0.SideEffect>",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "DependentMember",
+                        "printedName": "τ_0_0.State"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "DependentMember",
+                        "printedName": "τ_0_0.Event"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "DependentMember",
+                        "printedName": "τ_0_0.SideEffect"
+                      }
+                    ],
+                    "usr": "s:18TwilioStateMachine0bC5TypesO12EventHandlerV"
+                  }
+                ],
+                "usr": "s:Sa"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "DependentMember",
+                "printedName": "τ_0_0.Event.HashableIdentifier"
+              },
+              {
+                "kind": "TypeFunc",
+                "name": "Function",
+                "printedName": "() throws -> TwilioStateMachine.StateMachineTypes.Action<τ_0_0.State, τ_0_0.Event, τ_0_0.SideEffect>",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Action",
+                    "printedName": "TwilioStateMachine.StateMachineTypes.Action<τ_0_0.State, τ_0_0.Event, τ_0_0.SideEffect>",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "DependentMember",
+                        "printedName": "τ_0_0.State"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "DependentMember",
+                        "printedName": "τ_0_0.Event"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "DependentMember",
+                        "printedName": "τ_0_0.SideEffect"
+                      }
+                    ],
+                    "usr": "s:18TwilioStateMachine0bC5TypesO6ActionV"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Void",
+                    "printedName": "()"
+                  }
+                ]
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:18TwilioStateMachine0bC7BuilderPAAE2on_7performSayAA0bC5TypesO12EventHandlerVy_0B0Qz0H0Qz10SideEffectQzGGAL_18HashableIdentifierQZ_AG6ActionVy_AkmOGyKctFZ",
+            "mangledName": "$s18TwilioStateMachine0bC7BuilderPAAE2on_7performSayAA0bC5TypesO12EventHandlerVy_0B0Qz0H0Qz10SideEffectQzGGAL_18HashableIdentifierQZ_AG6ActionVy_AkmOGyKctFZ",
+            "moduleName": "TwilioStateMachine",
+            "genericSig": "<τ_0_0 where τ_0_0 : TwilioStateMachine.StateMachineBuilder>",
+            "sugared_genericSig": "<Self where Self : TwilioStateMachine.StateMachineBuilder>",
+            "static": true,
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "onEnter",
+            "printedName": "onEnter(emit:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Array",
+                "printedName": "[TwilioStateMachine.StateMachineTypes.EventHandler<τ_0_0.State, τ_0_0.Event, τ_0_0.SideEffect>]",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "EventHandler",
+                    "printedName": "TwilioStateMachine.StateMachineTypes.EventHandler<τ_0_0.State, τ_0_0.Event, τ_0_0.SideEffect>",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "DependentMember",
+                        "printedName": "τ_0_0.State"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "DependentMember",
+                        "printedName": "τ_0_0.Event"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "DependentMember",
+                        "printedName": "τ_0_0.SideEffect"
+                      }
+                    ],
+                    "usr": "s:18TwilioStateMachine0bC5TypesO12EventHandlerV"
+                  }
+                ],
+                "usr": "s:Sa"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Array",
+                "printedName": "[τ_0_0.SideEffect]",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "DependentMember",
+                    "printedName": "τ_0_0.SideEffect"
+                  }
+                ],
+                "usr": "s:Sa"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:18TwilioStateMachine0bC7BuilderPAAE7onEnter4emitSayAA0bC5TypesO12EventHandlerVy_0B0Qz0I0Qz10SideEffectQzGGAOd_tFZ",
+            "mangledName": "$s18TwilioStateMachine0bC7BuilderPAAE7onEnter4emitSayAA0bC5TypesO12EventHandlerVy_0B0Qz0I0Qz10SideEffectQzGGAOd_tFZ",
+            "moduleName": "TwilioStateMachine",
+            "genericSig": "<τ_0_0 where τ_0_0 : TwilioStateMachine.StateMachineBuilder>",
+            "sugared_genericSig": "<Self where Self : TwilioStateMachine.StateMachineBuilder>",
+            "static": true,
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "onExit",
+            "printedName": "onExit(emit:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Array",
+                "printedName": "[TwilioStateMachine.StateMachineTypes.EventHandler<τ_0_0.State, τ_0_0.Event, τ_0_0.SideEffect>]",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "EventHandler",
+                    "printedName": "TwilioStateMachine.StateMachineTypes.EventHandler<τ_0_0.State, τ_0_0.Event, τ_0_0.SideEffect>",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "DependentMember",
+                        "printedName": "τ_0_0.State"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "DependentMember",
+                        "printedName": "τ_0_0.Event"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "DependentMember",
+                        "printedName": "τ_0_0.SideEffect"
+                      }
+                    ],
+                    "usr": "s:18TwilioStateMachine0bC5TypesO12EventHandlerV"
+                  }
+                ],
+                "usr": "s:Sa"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Array",
+                "printedName": "[τ_0_0.SideEffect]",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "DependentMember",
+                    "printedName": "τ_0_0.SideEffect"
+                  }
+                ],
+                "usr": "s:Sa"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:18TwilioStateMachine0bC7BuilderPAAE6onExit4emitSayAA0bC5TypesO12EventHandlerVy_0B0Qz0I0Qz10SideEffectQzGGAOd_tFZ",
+            "mangledName": "$s18TwilioStateMachine0bC7BuilderPAAE6onExit4emitSayAA0bC5TypesO12EventHandlerVy_0B0Qz0I0Qz10SideEffectQzGGAOd_tFZ",
+            "moduleName": "TwilioStateMachine",
+            "genericSig": "<τ_0_0 where τ_0_0 : TwilioStateMachine.StateMachineBuilder>",
+            "sugared_genericSig": "<Self where Self : TwilioStateMachine.StateMachineBuilder>",
+            "static": true,
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "transition",
+            "printedName": "transition(to:emit:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Action",
+                "printedName": "TwilioStateMachine.StateMachineTypes.Action<τ_0_0.State, τ_0_0.Event, τ_0_0.SideEffect>",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "DependentMember",
+                    "printedName": "τ_0_0.State"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "DependentMember",
+                    "printedName": "τ_0_0.Event"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "DependentMember",
+                    "printedName": "τ_0_0.SideEffect"
+                  }
+                ],
+                "usr": "s:18TwilioStateMachine0bC5TypesO6ActionV"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "DependentMember",
+                "printedName": "τ_0_0.State"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Array",
+                "printedName": "[τ_0_0.SideEffect]",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "DependentMember",
+                    "printedName": "τ_0_0.SideEffect"
+                  }
+                ],
+                "usr": "s:Sa"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:18TwilioStateMachine0bC7BuilderPAAE10transition2to4emitAA0bC5TypesO6ActionVy_0B0Qz5EventQz10SideEffectQzGAL_APdtFZ",
+            "mangledName": "$s18TwilioStateMachine0bC7BuilderPAAE10transition2to4emitAA0bC5TypesO6ActionVy_0B0Qz5EventQz10SideEffectQzGAL_APdtFZ",
+            "moduleName": "TwilioStateMachine",
+            "genericSig": "<τ_0_0 where τ_0_0 : TwilioStateMachine.StateMachineBuilder>",
+            "sugared_genericSig": "<Self where Self : TwilioStateMachine.StateMachineBuilder>",
+            "static": true,
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "dontTransition",
+            "printedName": "dontTransition(emit:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Action",
+                "printedName": "TwilioStateMachine.StateMachineTypes.Action<τ_0_0.State, τ_0_0.Event, τ_0_0.SideEffect>",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "DependentMember",
+                    "printedName": "τ_0_0.State"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "DependentMember",
+                    "printedName": "τ_0_0.Event"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "DependentMember",
+                    "printedName": "τ_0_0.SideEffect"
+                  }
+                ],
+                "usr": "s:18TwilioStateMachine0bC5TypesO6ActionV"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Array",
+                "printedName": "[τ_0_0.SideEffect]",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "DependentMember",
+                    "printedName": "τ_0_0.SideEffect"
+                  }
+                ],
+                "usr": "s:Sa"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:18TwilioStateMachine0bC7BuilderPAAE14dontTransition4emitAA0bC5TypesO6ActionVy_0B0Qz5EventQz10SideEffectQzGAOd_tFZ",
+            "mangledName": "$s18TwilioStateMachine0bC7BuilderPAAE14dontTransition4emitAA0bC5TypesO6ActionVy_0B0Qz5EventQz10SideEffectQzGAOd_tFZ",
+            "moduleName": "TwilioStateMachine",
+            "genericSig": "<τ_0_0 where τ_0_0 : TwilioStateMachine.StateMachineBuilder>",
+            "sugared_genericSig": "<Self where Self : TwilioStateMachine.StateMachineBuilder>",
+            "static": true,
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "onTransition",
+            "printedName": "onTransition(_:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Component",
+                "printedName": "TwilioStateMachine.StateMachineTypes.Component<τ_0_0.State, τ_0_0.Event, τ_0_0.SideEffect>",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "DependentMember",
+                    "printedName": "τ_0_0.State"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "DependentMember",
+                    "printedName": "τ_0_0.Event"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "DependentMember",
+                    "printedName": "τ_0_0.SideEffect"
+                  }
+                ],
+                "usr": "s:18TwilioStateMachine0bC5TypesO9ComponentO"
+              },
+              {
+                "kind": "TypeFunc",
+                "name": "Function",
+                "printedName": "(Swift.Result<TwilioStateMachine.StateMachine<τ_0_0.State, τ_0_0.Event, τ_0_0.SideEffect>.Transition.Valid, Swift.Error>) -> ()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Void",
+                    "printedName": "()"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Result",
+                    "printedName": "Swift.Result<TwilioStateMachine.StateMachine<τ_0_0.State, τ_0_0.Event, τ_0_0.SideEffect>.Transition.Valid, Swift.Error>",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Valid",
+                        "printedName": "TwilioStateMachine.StateMachine<τ_0_0.State, τ_0_0.Event, τ_0_0.SideEffect>.Transition.Valid",
+                        "usr": "s:18TwilioStateMachine0bC0C10TransitionO5ValidV"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Error",
+                        "printedName": "Swift.Error",
+                        "usr": "s:s5ErrorP"
+                      }
+                    ],
+                    "usr": "s:s6ResultO"
+                  }
+                ]
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:18TwilioStateMachine0bC7BuilderPAAE12onTransitionyAA0bC5TypesO9ComponentOy_0B0Qz5EventQz10SideEffectQzGys6ResultOyAA0bC0C0F0O5ValidVyAjlN__Gs5Error_pGcFZ",
+            "mangledName": "$s18TwilioStateMachine0bC7BuilderPAAE12onTransitionyAA0bC5TypesO9ComponentOy_0B0Qz5EventQz10SideEffectQzGys6ResultOyAA0bC0C0F0O5ValidVyAjlN__Gs5Error_pGcFZ",
+            "moduleName": "TwilioStateMachine",
+            "genericSig": "<τ_0_0 where τ_0_0 : TwilioStateMachine.StateMachineBuilder>",
+            "sugared_genericSig": "<Self where Self : TwilioStateMachine.StateMachineBuilder>",
+            "static": true,
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
+          }
+        ],
+        "declKind": "Protocol",
+        "usr": "s:18TwilioStateMachine0bC7BuilderP",
+        "mangledName": "$s18TwilioStateMachine0bC7BuilderP",
+        "moduleName": "TwilioStateMachine",
+        "genericSig": "<τ_0_0.Event : TwilioStateMachine.StateMachineHashable, τ_0_0.State : TwilioStateMachine.StateMachineHashable>",
+        "sugared_genericSig": "<Self.Event : TwilioStateMachine.StateMachineHashable, Self.State : TwilioStateMachine.StateMachineHashable>",
+        "declAttributes": [
+          "AccessControl"
+        ]
+      },
+      {
+        "kind": "TypeDecl",
+        "name": "StateMachineTypes",
+        "printedName": "StateMachineTypes",
+        "children": [
+          {
+            "kind": "TypeDecl",
+            "name": "Definition",
+            "printedName": "Definition",
+            "declKind": "Struct",
+            "usr": "s:18TwilioStateMachine0bC5TypesO10DefinitionV",
+            "mangledName": "$s18TwilioStateMachine0bC5TypesO10DefinitionV",
+            "moduleName": "TwilioStateMachine",
+            "genericSig": "<τ_0_0, τ_0_1, τ_0_2 where τ_0_0 : TwilioStateMachine.StateMachineHashable, τ_0_1 : TwilioStateMachine.StateMachineHashable>",
+            "sugared_genericSig": "<State, Event, SideEffect where State : TwilioStateMachine.StateMachineHashable, Event : TwilioStateMachine.StateMachineHashable>",
+            "declAttributes": [
+              "AccessControl"
+            ]
+          },
+          {
+            "kind": "TypeDecl",
+            "name": "DefinitionBuilder",
+            "printedName": "DefinitionBuilder",
+            "children": [
+              {
+                "kind": "Function",
+                "name": "buildBlock",
+                "printedName": "buildBlock(_:_:)",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Definition",
+                    "printedName": "TwilioStateMachine.StateMachineTypes.Definition<τ_0_0, τ_0_1, τ_0_2>",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "GenericTypeParam",
+                        "printedName": "τ_0_0"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "GenericTypeParam",
+                        "printedName": "τ_0_1"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "GenericTypeParam",
+                        "printedName": "τ_0_2"
+                      }
+                    ],
+                    "usr": "s:18TwilioStateMachine0bC5TypesO10DefinitionV"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "InitialState",
+                    "printedName": "TwilioStateMachine.StateMachineTypes.InitialState<τ_0_0>",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "GenericTypeParam",
+                        "printedName": "τ_0_0"
+                      }
+                    ],
+                    "usr": "s:18TwilioStateMachine0bC5TypesO07InitialB0V"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Array",
+                    "printedName": "[TwilioStateMachine.StateMachineTypes.Component<τ_0_0, τ_0_1, τ_0_2>]",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Component",
+                        "printedName": "TwilioStateMachine.StateMachineTypes.Component<τ_0_0, τ_0_1, τ_0_2>",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "GenericTypeParam",
+                            "printedName": "τ_0_0"
+                          },
+                          {
+                            "kind": "TypeNominal",
+                            "name": "GenericTypeParam",
+                            "printedName": "τ_0_1"
+                          },
+                          {
+                            "kind": "TypeNominal",
+                            "name": "GenericTypeParam",
+                            "printedName": "τ_0_2"
+                          }
+                        ],
+                        "usr": "s:18TwilioStateMachine0bC5TypesO9ComponentO"
+                      }
+                    ],
+                    "usr": "s:Sa"
+                  }
+                ],
+                "declKind": "Func",
+                "usr": "s:18TwilioStateMachine0bC5TypesO17DefinitionBuilderV10buildBlockyAC0E0Vy_xq_q0_GAC07InitialB0Vy_xG_AC9ComponentOy_xq_q0_GdtAA0bC8HashableRzAaPR_r1_lFZ",
+                "mangledName": "$s18TwilioStateMachine0bC5TypesO17DefinitionBuilderV10buildBlockyAC0E0Vy_xq_q0_GAC07InitialB0Vy_xG_AC9ComponentOy_xq_q0_GdtAA0bC8HashableRzAaPR_r1_lFZ",
+                "moduleName": "TwilioStateMachine",
+                "genericSig": "<τ_0_0, τ_0_1, τ_0_2 where τ_0_0 : TwilioStateMachine.StateMachineHashable, τ_0_1 : TwilioStateMachine.StateMachineHashable>",
+                "sugared_genericSig": "<State, Event, SideEffect where State : TwilioStateMachine.StateMachineHashable, Event : TwilioStateMachine.StateMachineHashable>",
+                "static": true,
+                "declAttributes": [
+                  "AccessControl"
+                ],
+                "funcSelfKind": "NonMutating"
+              },
+              {
+                "kind": "Constructor",
+                "name": "init",
+                "printedName": "init()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "DefinitionBuilder",
+                    "printedName": "TwilioStateMachine.StateMachineTypes.DefinitionBuilder",
+                    "usr": "s:18TwilioStateMachine0bC5TypesO17DefinitionBuilderV"
+                  }
+                ],
+                "declKind": "Constructor",
+                "usr": "s:18TwilioStateMachine0bC5TypesO17DefinitionBuilderVAEycfc",
+                "mangledName": "$s18TwilioStateMachine0bC5TypesO17DefinitionBuilderVAEycfc",
+                "moduleName": "TwilioStateMachine",
+                "implicit": true,
+                "init_kind": "Designated"
+              }
+            ],
+            "declKind": "Struct",
+            "usr": "s:18TwilioStateMachine0bC5TypesO17DefinitionBuilderV",
+            "mangledName": "$s18TwilioStateMachine0bC5TypesO17DefinitionBuilderV",
+            "moduleName": "TwilioStateMachine",
+            "declAttributes": [
+              "AccessControl",
+              "ResultBuilder"
+            ]
+          },
+          {
+            "kind": "TypeDecl",
+            "name": "InitialState",
+            "printedName": "InitialState",
+            "declKind": "Struct",
+            "usr": "s:18TwilioStateMachine0bC5TypesO07InitialB0V",
+            "mangledName": "$s18TwilioStateMachine0bC5TypesO07InitialB0V",
+            "moduleName": "TwilioStateMachine",
+            "genericSig": "<τ_0_0>",
+            "sugared_genericSig": "<State>",
+            "declAttributes": [
+              "AccessControl"
+            ]
+          },
+          {
+            "kind": "TypeDecl",
+            "name": "Component",
+            "printedName": "Component",
+            "children": [
+              {
+                "kind": "Var",
+                "name": "state",
+                "printedName": "state",
+                "children": [
+                  {
+                    "kind": "TypeFunc",
+                    "name": "GenericFunction",
+                    "printedName": "<τ_0_0, τ_0_1, τ_0_2 where τ_0_0 : TwilioStateMachine.StateMachineHashable, τ_0_1 : TwilioStateMachine.StateMachineHashable> (TwilioStateMachine.StateMachineTypes.Component<τ_0_0, τ_0_1, τ_0_2>.Type) -> (τ_0_0.HashableIdentifier, [TwilioStateMachine.StateMachineTypes.EventHandler<τ_0_0, τ_0_1, τ_0_2>]) -> TwilioStateMachine.StateMachineTypes.Component<τ_0_0, τ_0_1, τ_0_2>",
+                    "children": [
+                      {
+                        "kind": "TypeFunc",
+                        "name": "Function",
+                        "printedName": "(τ_0_0.HashableIdentifier, [TwilioStateMachine.StateMachineTypes.EventHandler<τ_0_0, τ_0_1, τ_0_2>]) -> TwilioStateMachine.StateMachineTypes.Component<τ_0_0, τ_0_1, τ_0_2>",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "Component",
+                            "printedName": "TwilioStateMachine.StateMachineTypes.Component<τ_0_0, τ_0_1, τ_0_2>",
+                            "children": [
+                              {
+                                "kind": "TypeNominal",
+                                "name": "GenericTypeParam",
+                                "printedName": "τ_0_0"
+                              },
+                              {
+                                "kind": "TypeNominal",
+                                "name": "GenericTypeParam",
+                                "printedName": "τ_0_1"
+                              },
+                              {
+                                "kind": "TypeNominal",
+                                "name": "GenericTypeParam",
+                                "printedName": "τ_0_2"
+                              }
+                            ],
+                            "usr": "s:18TwilioStateMachine0bC5TypesO9ComponentO"
+                          },
+                          {
+                            "kind": "TypeNominal",
+                            "name": "Tuple",
+                            "printedName": "(state: τ_0_0.HashableIdentifier, events: [TwilioStateMachine.StateMachineTypes.EventHandler<τ_0_0, τ_0_1, τ_0_2>])",
+                            "children": [
+                              {
+                                "kind": "TypeNominal",
+                                "name": "DependentMember",
+                                "printedName": "τ_0_0.HashableIdentifier"
+                              },
+                              {
+                                "kind": "TypeNominal",
+                                "name": "Array",
+                                "printedName": "[TwilioStateMachine.StateMachineTypes.EventHandler<τ_0_0, τ_0_1, τ_0_2>]",
+                                "children": [
+                                  {
+                                    "kind": "TypeNominal",
+                                    "name": "EventHandler",
+                                    "printedName": "TwilioStateMachine.StateMachineTypes.EventHandler<τ_0_0, τ_0_1, τ_0_2>",
+                                    "children": [
+                                      {
+                                        "kind": "TypeNominal",
+                                        "name": "GenericTypeParam",
+                                        "printedName": "τ_0_0"
+                                      },
+                                      {
+                                        "kind": "TypeNominal",
+                                        "name": "GenericTypeParam",
+                                        "printedName": "τ_0_1"
+                                      },
+                                      {
+                                        "kind": "TypeNominal",
+                                        "name": "GenericTypeParam",
+                                        "printedName": "τ_0_2"
+                                      }
+                                    ],
+                                    "usr": "s:18TwilioStateMachine0bC5TypesO12EventHandlerV"
+                                  }
+                                ],
+                                "usr": "s:Sa"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Metatype",
+                        "printedName": "TwilioStateMachine.StateMachineTypes.Component<τ_0_0, τ_0_1, τ_0_2>.Type",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "Component",
+                            "printedName": "TwilioStateMachine.StateMachineTypes.Component<τ_0_0, τ_0_1, τ_0_2>",
+                            "children": [
+                              {
+                                "kind": "TypeNominal",
+                                "name": "GenericTypeParam",
+                                "printedName": "τ_0_0"
+                              },
+                              {
+                                "kind": "TypeNominal",
+                                "name": "GenericTypeParam",
+                                "printedName": "τ_0_1"
+                              },
+                              {
+                                "kind": "TypeNominal",
+                                "name": "GenericTypeParam",
+                                "printedName": "τ_0_2"
+                              }
+                            ],
+                            "usr": "s:18TwilioStateMachine0bC5TypesO9ComponentO"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "declKind": "EnumElement",
+                "usr": "s:18TwilioStateMachine0bC5TypesO9ComponentO5stateyAEy_xq_q0_G18HashableIdentifierQz_SayAC12EventHandlerVy_xq_q0_GGtcAGmAA0bcG0RzAaNR_r1_lF",
+                "mangledName": "$s18TwilioStateMachine0bC5TypesO9ComponentO5stateyAEy_xq_q0_G18HashableIdentifierQz_SayAC12EventHandlerVy_xq_q0_GGtcAGmAA0bcG0RzAaNR_r1_lF",
+                "moduleName": "TwilioStateMachine"
+              },
+              {
+                "kind": "Var",
+                "name": "callback",
+                "printedName": "callback",
+                "children": [
+                  {
+                    "kind": "TypeFunc",
+                    "name": "GenericFunction",
+                    "printedName": "<τ_0_0, τ_0_1, τ_0_2 where τ_0_0 : TwilioStateMachine.StateMachineHashable, τ_0_1 : TwilioStateMachine.StateMachineHashable> (TwilioStateMachine.StateMachineTypes.Component<τ_0_0, τ_0_1, τ_0_2>.Type) -> (@escaping (Swift.Result<TwilioStateMachine.StateMachine<τ_0_0, τ_0_1, τ_0_2>.Transition.Valid, Swift.Error>) -> ()) -> TwilioStateMachine.StateMachineTypes.Component<τ_0_0, τ_0_1, τ_0_2>",
+                    "children": [
+                      {
+                        "kind": "TypeFunc",
+                        "name": "Function",
+                        "printedName": "(@escaping (Swift.Result<TwilioStateMachine.StateMachine<τ_0_0, τ_0_1, τ_0_2>.Transition.Valid, Swift.Error>) -> ()) -> TwilioStateMachine.StateMachineTypes.Component<τ_0_0, τ_0_1, τ_0_2>",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "Component",
+                            "printedName": "TwilioStateMachine.StateMachineTypes.Component<τ_0_0, τ_0_1, τ_0_2>",
+                            "children": [
+                              {
+                                "kind": "TypeNominal",
+                                "name": "GenericTypeParam",
+                                "printedName": "τ_0_0"
+                              },
+                              {
+                                "kind": "TypeNominal",
+                                "name": "GenericTypeParam",
+                                "printedName": "τ_0_1"
+                              },
+                              {
+                                "kind": "TypeNominal",
+                                "name": "GenericTypeParam",
+                                "printedName": "τ_0_2"
+                              }
+                            ],
+                            "usr": "s:18TwilioStateMachine0bC5TypesO9ComponentO"
+                          },
+                          {
+                            "kind": "TypeNominal",
+                            "name": "Tuple",
+                            "printedName": "(callback: (Swift.Result<TwilioStateMachine.StateMachine<τ_0_0, τ_0_1, τ_0_2>.Transition.Valid, Swift.Error>) -> ())",
+                            "children": [
+                              {
+                                "kind": "TypeFunc",
+                                "name": "Function",
+                                "printedName": "(Swift.Result<TwilioStateMachine.StateMachine<τ_0_0, τ_0_1, τ_0_2>.Transition.Valid, Swift.Error>) -> ()",
+                                "children": [
+                                  {
+                                    "kind": "TypeNominal",
+                                    "name": "Void",
+                                    "printedName": "()"
+                                  },
+                                  {
+                                    "kind": "TypeNominal",
+                                    "name": "Result",
+                                    "printedName": "Swift.Result<TwilioStateMachine.StateMachine<τ_0_0, τ_0_1, τ_0_2>.Transition.Valid, Swift.Error>",
+                                    "children": [
+                                      {
+                                        "kind": "TypeNominal",
+                                        "name": "Valid",
+                                        "printedName": "TwilioStateMachine.StateMachine<τ_0_0, τ_0_1, τ_0_2>.Transition.Valid",
+                                        "usr": "s:18TwilioStateMachine0bC0C10TransitionO5ValidV"
+                                      },
+                                      {
+                                        "kind": "TypeNominal",
+                                        "name": "Error",
+                                        "printedName": "Swift.Error",
+                                        "usr": "s:s5ErrorP"
+                                      }
+                                    ],
+                                    "usr": "s:s6ResultO"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Metatype",
+                        "printedName": "TwilioStateMachine.StateMachineTypes.Component<τ_0_0, τ_0_1, τ_0_2>.Type",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "Component",
+                            "printedName": "TwilioStateMachine.StateMachineTypes.Component<τ_0_0, τ_0_1, τ_0_2>",
+                            "children": [
+                              {
+                                "kind": "TypeNominal",
+                                "name": "GenericTypeParam",
+                                "printedName": "τ_0_0"
+                              },
+                              {
+                                "kind": "TypeNominal",
+                                "name": "GenericTypeParam",
+                                "printedName": "τ_0_1"
+                              },
+                              {
+                                "kind": "TypeNominal",
+                                "name": "GenericTypeParam",
+                                "printedName": "τ_0_2"
+                              }
+                            ],
+                            "usr": "s:18TwilioStateMachine0bC5TypesO9ComponentO"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "declKind": "EnumElement",
+                "usr": "s:18TwilioStateMachine0bC5TypesO9ComponentO8callbackyAEy_xq_q0_Gys6ResultOyAA0bC0C10TransitionO5ValidVyxq_q0___Gs5Error_pGc_tcAGmAA0bC8HashableRzAaSR_r1_lF",
+                "mangledName": "$s18TwilioStateMachine0bC5TypesO9ComponentO8callbackyAEy_xq_q0_Gys6ResultOyAA0bC0C10TransitionO5ValidVyxq_q0___Gs5Error_pGc_tcAGmAA0bC8HashableRzAaSR_r1_lF",
+                "moduleName": "TwilioStateMachine"
+              }
+            ],
+            "declKind": "Enum",
+            "usr": "s:18TwilioStateMachine0bC5TypesO9ComponentO",
+            "mangledName": "$s18TwilioStateMachine0bC5TypesO9ComponentO",
+            "moduleName": "TwilioStateMachine",
+            "genericSig": "<τ_0_0, τ_0_1, τ_0_2 where τ_0_0 : TwilioStateMachine.StateMachineHashable, τ_0_1 : TwilioStateMachine.StateMachineHashable>",
+            "sugared_genericSig": "<State, Event, SideEffect where State : TwilioStateMachine.StateMachineHashable, Event : TwilioStateMachine.StateMachineHashable>",
+            "declAttributes": [
+              "AccessControl"
+            ]
+          },
+          {
+            "kind": "TypeDecl",
+            "name": "EventHandlerArrayBuilder",
+            "printedName": "EventHandlerArrayBuilder",
+            "children": [
+              {
+                "kind": "Function",
+                "name": "buildBlock",
+                "printedName": "buildBlock(_:)",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Array",
+                    "printedName": "[TwilioStateMachine.StateMachineTypes.EventHandler<τ_0_0, τ_0_1, τ_0_2>]",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "EventHandler",
+                        "printedName": "TwilioStateMachine.StateMachineTypes.EventHandler<τ_0_0, τ_0_1, τ_0_2>",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "GenericTypeParam",
+                            "printedName": "τ_0_0"
+                          },
+                          {
+                            "kind": "TypeNominal",
+                            "name": "GenericTypeParam",
+                            "printedName": "τ_0_1"
+                          },
+                          {
+                            "kind": "TypeNominal",
+                            "name": "GenericTypeParam",
+                            "printedName": "τ_0_2"
+                          }
+                        ],
+                        "usr": "s:18TwilioStateMachine0bC5TypesO12EventHandlerV"
+                      }
+                    ],
+                    "usr": "s:Sa"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Array",
+                    "printedName": "[[TwilioStateMachine.StateMachineTypes.EventHandler<τ_0_0, τ_0_1, τ_0_2>]]",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Array",
+                        "printedName": "[TwilioStateMachine.StateMachineTypes.EventHandler<τ_0_0, τ_0_1, τ_0_2>]",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "EventHandler",
+                            "printedName": "TwilioStateMachine.StateMachineTypes.EventHandler<τ_0_0, τ_0_1, τ_0_2>",
+                            "children": [
+                              {
+                                "kind": "TypeNominal",
+                                "name": "GenericTypeParam",
+                                "printedName": "τ_0_0"
+                              },
+                              {
+                                "kind": "TypeNominal",
+                                "name": "GenericTypeParam",
+                                "printedName": "τ_0_1"
+                              },
+                              {
+                                "kind": "TypeNominal",
+                                "name": "GenericTypeParam",
+                                "printedName": "τ_0_2"
+                              }
+                            ],
+                            "usr": "s:18TwilioStateMachine0bC5TypesO12EventHandlerV"
+                          }
+                        ],
+                        "usr": "s:Sa"
+                      }
+                    ],
+                    "usr": "s:Sa"
+                  }
+                ],
+                "declKind": "Func",
+                "usr": "s:18TwilioStateMachine0bC5TypesO24EventHandlerArrayBuilderV10buildBlockySayAC0eF0Vy_xq_q0_GGAJd_tAA0bC8HashableRzAaKR_r1_lFZ",
+                "mangledName": "$s18TwilioStateMachine0bC5TypesO24EventHandlerArrayBuilderV10buildBlockySayAC0eF0Vy_xq_q0_GGAJd_tAA0bC8HashableRzAaKR_r1_lFZ",
+                "moduleName": "TwilioStateMachine",
+                "genericSig": "<τ_0_0, τ_0_1, τ_0_2 where τ_0_0 : TwilioStateMachine.StateMachineHashable, τ_0_1 : TwilioStateMachine.StateMachineHashable>",
+                "sugared_genericSig": "<State, Event, SideEffect where State : TwilioStateMachine.StateMachineHashable, Event : TwilioStateMachine.StateMachineHashable>",
+                "static": true,
+                "declAttributes": [
+                  "AccessControl"
+                ],
+                "funcSelfKind": "NonMutating"
+              },
+              {
+                "kind": "Constructor",
+                "name": "init",
+                "printedName": "init()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "EventHandlerArrayBuilder",
+                    "printedName": "TwilioStateMachine.StateMachineTypes.EventHandlerArrayBuilder",
+                    "usr": "s:18TwilioStateMachine0bC5TypesO24EventHandlerArrayBuilderV"
+                  }
+                ],
+                "declKind": "Constructor",
+                "usr": "s:18TwilioStateMachine0bC5TypesO24EventHandlerArrayBuilderVAEycfc",
+                "mangledName": "$s18TwilioStateMachine0bC5TypesO24EventHandlerArrayBuilderVAEycfc",
+                "moduleName": "TwilioStateMachine",
+                "implicit": true,
+                "init_kind": "Designated"
+              }
+            ],
+            "declKind": "Struct",
+            "usr": "s:18TwilioStateMachine0bC5TypesO24EventHandlerArrayBuilderV",
+            "mangledName": "$s18TwilioStateMachine0bC5TypesO24EventHandlerArrayBuilderV",
+            "moduleName": "TwilioStateMachine",
+            "declAttributes": [
+              "AccessControl",
+              "ResultBuilder"
+            ]
+          },
+          {
+            "kind": "TypeDecl",
+            "name": "EventHandler",
+            "printedName": "EventHandler",
+            "declKind": "Struct",
+            "usr": "s:18TwilioStateMachine0bC5TypesO12EventHandlerV",
+            "mangledName": "$s18TwilioStateMachine0bC5TypesO12EventHandlerV",
+            "moduleName": "TwilioStateMachine",
+            "genericSig": "<τ_0_0, τ_0_1, τ_0_2 where τ_0_0 : TwilioStateMachine.StateMachineHashable, τ_0_1 : TwilioStateMachine.StateMachineHashable>",
+            "sugared_genericSig": "<State, Event, SideEffect where State : TwilioStateMachine.StateMachineHashable, Event : TwilioStateMachine.StateMachineHashable>",
+            "declAttributes": [
+              "AccessControl"
+            ]
+          },
+          {
+            "kind": "TypeDecl",
+            "name": "Action",
+            "printedName": "Action",
+            "declKind": "Struct",
+            "usr": "s:18TwilioStateMachine0bC5TypesO6ActionV",
+            "mangledName": "$s18TwilioStateMachine0bC5TypesO6ActionV",
+            "moduleName": "TwilioStateMachine",
+            "genericSig": "<τ_0_0, τ_0_1, τ_0_2 where τ_0_0 : TwilioStateMachine.StateMachineHashable, τ_0_1 : TwilioStateMachine.StateMachineHashable>",
+            "sugared_genericSig": "<State, Event, SideEffect where State : TwilioStateMachine.StateMachineHashable, Event : TwilioStateMachine.StateMachineHashable>",
+            "declAttributes": [
+              "AccessControl"
+            ]
+          },
+          {
+            "kind": "TypeDecl",
+            "name": "IncorrectTypeError",
+            "printedName": "IncorrectTypeError",
+            "children": [
+              {
+                "kind": "Var",
+                "name": "debugDescription",
+                "printedName": "debugDescription",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ],
+                "declKind": "Var",
+                "usr": "s:18TwilioStateMachine0bC5TypesO18IncorrectTypeErrorV16debugDescriptionSSvp",
+                "mangledName": "$s18TwilioStateMachine0bC5TypesO18IncorrectTypeErrorV16debugDescriptionSSvp",
+                "moduleName": "TwilioStateMachine",
+                "declAttributes": [
+                  "AccessControl"
+                ],
+                "accessors": [
+                  {
+                    "kind": "Accessor",
+                    "name": "Get",
+                    "printedName": "Get()",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "String",
+                        "printedName": "Swift.String",
+                        "usr": "s:SS"
+                      }
+                    ],
+                    "declKind": "Accessor",
+                    "usr": "s:18TwilioStateMachine0bC5TypesO18IncorrectTypeErrorV16debugDescriptionSSvg",
+                    "mangledName": "$s18TwilioStateMachine0bC5TypesO18IncorrectTypeErrorV16debugDescriptionSSvg",
+                    "moduleName": "TwilioStateMachine",
+                    "accessorKind": "get"
+                  }
+                ]
+              },
+              {
+                "kind": "Var",
+                "name": "expectedType",
+                "printedName": "expectedType",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "ExistentialMetatype",
+                    "printedName": "Any.Type",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "ProtocolComposition",
+                        "printedName": "Any"
+                      }
+                    ]
+                  }
+                ],
+                "declKind": "Var",
+                "usr": "s:18TwilioStateMachine0bC5TypesO18IncorrectTypeErrorV08expectedF0ypXpvp",
+                "mangledName": "$s18TwilioStateMachine0bC5TypesO18IncorrectTypeErrorV08expectedF0ypXpvp",
+                "moduleName": "TwilioStateMachine",
+                "declAttributes": [
+                  "HasStorage",
+                  "AccessControl"
+                ],
+                "isLet": true,
+                "hasStorage": true,
+                "accessors": [
+                  {
+                    "kind": "Accessor",
+                    "name": "Get",
+                    "printedName": "Get()",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "ExistentialMetatype",
+                        "printedName": "Any.Type",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "ProtocolComposition",
+                            "printedName": "Any"
+                          }
+                        ]
+                      }
+                    ],
+                    "declKind": "Accessor",
+                    "usr": "s:18TwilioStateMachine0bC5TypesO18IncorrectTypeErrorV08expectedF0ypXpvg",
+                    "mangledName": "$s18TwilioStateMachine0bC5TypesO18IncorrectTypeErrorV08expectedF0ypXpvg",
+                    "moduleName": "TwilioStateMachine",
+                    "implicit": true,
+                    "accessorKind": "get"
+                  }
+                ]
+              },
+              {
+                "kind": "Var",
+                "name": "encounteredType",
+                "printedName": "encounteredType",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "ExistentialMetatype",
+                    "printedName": "Any.Type",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "ProtocolComposition",
+                        "printedName": "Any"
+                      }
+                    ]
+                  }
+                ],
+                "declKind": "Var",
+                "usr": "s:18TwilioStateMachine0bC5TypesO18IncorrectTypeErrorV011encounteredF0ypXpvp",
+                "mangledName": "$s18TwilioStateMachine0bC5TypesO18IncorrectTypeErrorV011encounteredF0ypXpvp",
+                "moduleName": "TwilioStateMachine",
+                "declAttributes": [
+                  "HasStorage",
+                  "AccessControl"
+                ],
+                "isLet": true,
+                "hasStorage": true,
+                "accessors": [
+                  {
+                    "kind": "Accessor",
+                    "name": "Get",
+                    "printedName": "Get()",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "ExistentialMetatype",
+                        "printedName": "Any.Type",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "ProtocolComposition",
+                            "printedName": "Any"
+                          }
+                        ]
+                      }
+                    ],
+                    "declKind": "Accessor",
+                    "usr": "s:18TwilioStateMachine0bC5TypesO18IncorrectTypeErrorV011encounteredF0ypXpvg",
+                    "mangledName": "$s18TwilioStateMachine0bC5TypesO18IncorrectTypeErrorV011encounteredF0ypXpvg",
+                    "moduleName": "TwilioStateMachine",
+                    "implicit": true,
+                    "accessorKind": "get"
+                  }
+                ]
+              },
+              {
+                "kind": "Constructor",
+                "name": "init",
+                "printedName": "init(expectedType:encounteredType:)",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "IncorrectTypeError",
+                    "printedName": "TwilioStateMachine.StateMachineTypes.IncorrectTypeError",
+                    "usr": "s:18TwilioStateMachine0bC5TypesO18IncorrectTypeErrorV"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "ExistentialMetatype",
+                    "printedName": "Any.Type",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "ProtocolComposition",
+                        "printedName": "Any"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "ExistentialMetatype",
+                    "printedName": "Any.Type",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "ProtocolComposition",
+                        "printedName": "Any"
+                      }
+                    ]
+                  }
+                ],
+                "declKind": "Constructor",
+                "usr": "s:18TwilioStateMachine0bC5TypesO18IncorrectTypeErrorV08expectedF0011encounteredF0AEypXp_ypXptcfc",
+                "mangledName": "$s18TwilioStateMachine0bC5TypesO18IncorrectTypeErrorV08expectedF0011encounteredF0AEypXp_ypXptcfc",
+                "moduleName": "TwilioStateMachine",
+                "implicit": true,
+                "init_kind": "Designated"
+              }
+            ],
+            "declKind": "Struct",
+            "usr": "s:18TwilioStateMachine0bC5TypesO18IncorrectTypeErrorV",
+            "mangledName": "$s18TwilioStateMachine0bC5TypesO18IncorrectTypeErrorV",
+            "moduleName": "TwilioStateMachine",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "conformances": [
+              {
+                "kind": "Conformance",
+                "name": "Error",
+                "printedName": "Error",
+                "usr": "s:s5ErrorP",
+                "mangledName": "$ss5ErrorP"
+              },
+              {
+                "kind": "Conformance",
+                "name": "CustomDebugStringConvertible",
+                "printedName": "CustomDebugStringConvertible",
+                "usr": "s:s28CustomDebugStringConvertibleP",
+                "mangledName": "$ss28CustomDebugStringConvertibleP"
+              },
+              {
+                "kind": "Conformance",
+                "name": "Sendable",
+                "printedName": "Sendable",
+                "usr": "s:s8SendableP",
+                "mangledName": "$ss8SendableP"
+              }
+            ]
+          }
+        ],
+        "declKind": "Enum",
+        "usr": "s:18TwilioStateMachine0bC5TypesO",
+        "mangledName": "$s18TwilioStateMachine0bC5TypesO",
+        "moduleName": "TwilioStateMachine",
+        "declAttributes": [
+          "AccessControl"
+        ]
+      },
+      {
+        "kind": "TypeDecl",
+        "name": "StateMachineHashable",
+        "printedName": "StateMachineHashable",
+        "children": [
+          {
+            "kind": "AssociatedType",
+            "name": "HashableIdentifier",
+            "printedName": "HashableIdentifier",
+            "declKind": "AssociatedType",
+            "usr": "s:18TwilioStateMachine0bC8HashableP0D10IdentifierQa",
+            "mangledName": "$s18TwilioStateMachine0bC8HashableP0D10IdentifierQa",
+            "moduleName": "TwilioStateMachine",
+            "protocolReq": true
+          },
+          {
+            "kind": "Var",
+            "name": "hashableIdentifier",
+            "printedName": "hashableIdentifier",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "DependentMember",
+                "printedName": "τ_0_0.HashableIdentifier"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:18TwilioStateMachine0bC8HashableP18hashableIdentifier0dF0Qzvp",
+            "mangledName": "$s18TwilioStateMachine0bC8HashableP18hashableIdentifier0dF0Qzvp",
+            "moduleName": "TwilioStateMachine",
+            "protocolReq": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "DependentMember",
+                    "printedName": "τ_0_0.HashableIdentifier"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:18TwilioStateMachine0bC8HashableP18hashableIdentifier0dF0Qzvg",
+                "mangledName": "$s18TwilioStateMachine0bC8HashableP18hashableIdentifier0dF0Qzvg",
+                "moduleName": "TwilioStateMachine",
+                "genericSig": "<τ_0_0 where τ_0_0 : TwilioStateMachine.StateMachineHashable>",
+                "sugared_genericSig": "<Self where Self : TwilioStateMachine.StateMachineHashable>",
+                "protocolReq": true,
+                "reqNewWitnessTableEntry": true,
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "associatedValue",
+            "printedName": "associatedValue",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "ProtocolComposition",
+                "printedName": "Any"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:18TwilioStateMachine0bC8HashableP15associatedValueypvp",
+            "mangledName": "$s18TwilioStateMachine0bC8HashableP15associatedValueypvp",
+            "moduleName": "TwilioStateMachine",
+            "protocolReq": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "ProtocolComposition",
+                    "printedName": "Any"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:18TwilioStateMachine0bC8HashableP15associatedValueypvg",
+                "mangledName": "$s18TwilioStateMachine0bC8HashableP15associatedValueypvg",
+                "moduleName": "TwilioStateMachine",
+                "genericSig": "<τ_0_0 where τ_0_0 : TwilioStateMachine.StateMachineHashable>",
+                "sugared_genericSig": "<Self where Self : TwilioStateMachine.StateMachineHashable>",
+                "protocolReq": true,
+                "reqNewWitnessTableEntry": true,
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "hashableIdentifier",
+            "printedName": "hashableIdentifier",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "GenericTypeParam",
+                "printedName": "τ_0_0"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:18TwilioStateMachine0bC8HashablePAASHRzrlE18hashableIdentifierxvp",
+            "mangledName": "$s18TwilioStateMachine0bC8HashablePAASHRzrlE18hashableIdentifierxvp",
+            "moduleName": "TwilioStateMachine",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "isFromExtension": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "GenericTypeParam",
+                    "printedName": "τ_0_0"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:18TwilioStateMachine0bC8HashablePAASHRzrlE18hashableIdentifierxvg",
+                "mangledName": "$s18TwilioStateMachine0bC8HashablePAASHRzrlE18hashableIdentifierxvg",
+                "moduleName": "TwilioStateMachine",
+                "genericSig": "<τ_0_0 where τ_0_0 : Swift.Hashable, τ_0_0 : TwilioStateMachine.StateMachineHashable>",
+                "sugared_genericSig": "<Self where Self : Swift.Hashable, Self : TwilioStateMachine.StateMachineHashable>",
+                "isFromExtension": true,
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "associatedValue",
+            "printedName": "associatedValue",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "ProtocolComposition",
+                "printedName": "Any"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:18TwilioStateMachine0bC8HashablePAAE15associatedValueypvp",
+            "mangledName": "$s18TwilioStateMachine0bC8HashablePAAE15associatedValueypvp",
+            "moduleName": "TwilioStateMachine",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "isFromExtension": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "ProtocolComposition",
+                    "printedName": "Any"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:18TwilioStateMachine0bC8HashablePAAE15associatedValueypvg",
+                "mangledName": "$s18TwilioStateMachine0bC8HashablePAAE15associatedValueypvg",
+                "moduleName": "TwilioStateMachine",
+                "genericSig": "<τ_0_0 where τ_0_0 : TwilioStateMachine.StateMachineHashable>",
+                "sugared_genericSig": "<Self where Self : TwilioStateMachine.StateMachineHashable>",
+                "isFromExtension": true,
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Subscript",
+            "name": "subscript",
+            "printedName": "subscript(dynamicMember:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "GenericTypeParam",
+                "printedName": "τ_1_0"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Subscript",
+            "usr": "s:18TwilioStateMachine0bC8HashablePAAE13dynamicMemberqd__SS_tcluip",
+            "mangledName": "$s18TwilioStateMachine0bC8HashablePAAE13dynamicMemberqd__SS_tcluip",
+            "moduleName": "TwilioStateMachine",
+            "genericSig": "<τ_0_0, τ_1_0 where τ_0_0 : TwilioStateMachine.StateMachineHashable>",
+            "sugared_genericSig": "<Self, T where Self : TwilioStateMachine.StateMachineHashable>",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "isFromExtension": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "GenericTypeParam",
+                    "printedName": "τ_1_0"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:18TwilioStateMachine0bC8HashablePAAE13dynamicMemberqd__SS_tcluig",
+                "mangledName": "$s18TwilioStateMachine0bC8HashablePAAE13dynamicMemberqd__SS_tcluig",
+                "moduleName": "TwilioStateMachine",
+                "genericSig": "<τ_0_0, τ_1_0 where τ_0_0 : TwilioStateMachine.StateMachineHashable>",
+                "sugared_genericSig": "<Self, T where Self : TwilioStateMachine.StateMachineHashable>",
+                "isFromExtension": true,
+                "throwing": true,
+                "accessorKind": "get"
+              }
+            ]
+          }
+        ],
+        "declKind": "Protocol",
+        "usr": "s:18TwilioStateMachine0bC8HashableP",
+        "mangledName": "$s18TwilioStateMachine0bC8HashableP",
+        "moduleName": "TwilioStateMachine",
+        "genericSig": "<τ_0_0.HashableIdentifier : Swift.Hashable>",
+        "sugared_genericSig": "<Self.HashableIdentifier : Swift.Hashable>",
+        "declAttributes": [
+          "AccessControl",
+          "DynamicMemberLookup"
+        ]
+      },
+      {
+        "kind": "TypeDecl",
+        "name": "AutoStateMachineHashable",
+        "printedName": "AutoStateMachineHashable",
+        "declKind": "Protocol",
+        "usr": "s:18TwilioStateMachine04AutobC8HashableP",
+        "mangledName": "$s18TwilioStateMachine04AutobC8HashableP",
+        "moduleName": "TwilioStateMachine",
+        "declAttributes": [
+          "AccessControl"
+        ]
+      }
+    ],
+    "json_format_version": 8
+  },
+  "ConstValues": [
+    {
+      "filePath": "\/Users\/distiller\/rtd-sdk-monorepo\/sdk\/ios\/Common\/External\/StateMachine\/Sources\/StateMachine\/StateMachine.swift",
+      "kind": "Array",
+      "offset": 1801,
+      "length": 2,
+      "value": "[]"
+    },
+    {
+      "filePath": "\/Users\/distiller\/rtd-sdk-monorepo\/sdk\/ios\/Common\/External\/StateMachine\/Sources\/StateMachine\/StateMachine.swift",
+      "kind": "BooleanLiteral",
+      "offset": 2032,
+      "length": 5,
+      "value": "false"
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+framework module Pods_ZyvoTests {
+  umbrella header "Pods-ZyvoTests-umbrella.h"
+
+  export *
+  module * { export * }
+}

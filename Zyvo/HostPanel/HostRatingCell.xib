@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23727" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23721"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <array key="Poppins-Medium.ttf">
+            <string>Poppins-Medium</string>
+        </array>
+        <array key="Poppins-Regular.ttf">
+            <string>Poppins-Regular</string>
+        </array>
+    </customFonts>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="HostRatingCell" rowHeight="72" id="KGk-i7-Jjw" customClass="HostRatingCell" customModule="Zyvo" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="430" height="72"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="430" height="72"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4vx-tn-LGb">
+                        <rect key="frame" x="10" y="11" width="50" height="50"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="img" translatesAutoresizingMaskIntoConstraints="NO" id="o3v-rM-IJr">
+                                <rect key="frame" x="5" y="5" width="40" height="40"/>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="o3v-rM-IJr" firstAttribute="leading" secondItem="4vx-tn-LGb" secondAttribute="leading" constant="5" id="aNO-SU-8S6"/>
+                            <constraint firstAttribute="width" constant="50" id="gaI-y8-bpi"/>
+                            <constraint firstAttribute="bottom" secondItem="o3v-rM-IJr" secondAttribute="bottom" constant="5" id="kbJ-oA-VM1"/>
+                            <constraint firstAttribute="trailing" secondItem="o3v-rM-IJr" secondAttribute="trailing" constant="5" id="qAX-FS-ELp"/>
+                            <constraint firstAttribute="height" constant="50" id="yvD-0Y-0fj"/>
+                            <constraint firstItem="o3v-rM-IJr" firstAttribute="top" secondItem="4vx-tn-LGb" secondAttribute="top" constant="5" id="zmd-rN-9XC"/>
+                        </constraints>
+                    </view>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Emily James" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QdU-g7-5JK">
+                        <rect key="frame" x="65" y="11" width="95.666666666666686" height="21"/>
+                        <fontDescription key="fontDescription" name="Poppins-Medium" family="Poppins" pointSize="15"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Mar 09, 22" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dey-cd-v0w">
+                        <rect key="frame" x="345" y="11" width="75" height="21"/>
+                        <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="14.800000190734863"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Host was very helpful. thank you so much" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wMR-ER-5iq">
+                        <rect key="frame" x="65" y="37" width="284.33333333333331" height="19.333333333333329"/>
+                        <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="13.800000190734863"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zpV-NY-6hx" customClass="CosmosView" customModule="Cosmos">
+                        <rect key="frame" x="240" y="11.666666666666664" width="100" height="20"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="20" id="ZbH-yE-Cnr"/>
+                            <constraint firstAttribute="width" constant="100" id="qYg-OK-dLp"/>
+                        </constraints>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="number" keyPath="totalStars">
+                                <integer key="value" value="5"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="number" keyPath="starSize">
+                                <real key="value" value="15"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="number" keyPath="rating">
+                                <real key="value" value="0.0"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="image" keyPath="filledImage" value="Staricon"/>
+                            <userDefinedRuntimeAttribute type="image" keyPath="emptyImage" value="EmptyStar"/>
+                        </userDefinedRuntimeAttributes>
+                    </view>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="4vx-tn-LGb" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="10" id="5W8-hu-J1V"/>
+                    <constraint firstItem="4vx-tn-LGb" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="11" id="6RG-gg-aNR"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="wMR-ER-5iq" secondAttribute="trailing" constant="10" id="7mi-l5-iHP"/>
+                    <constraint firstItem="QdU-g7-5JK" firstAttribute="top" secondItem="4vx-tn-LGb" secondAttribute="top" id="AVO-qX-1P5"/>
+                    <constraint firstItem="QdU-g7-5JK" firstAttribute="leading" secondItem="4vx-tn-LGb" secondAttribute="trailing" constant="5" id="Cm7-dN-LRy"/>
+                    <constraint firstItem="dey-cd-v0w" firstAttribute="centerY" secondItem="QdU-g7-5JK" secondAttribute="centerY" id="FfB-pA-MoH"/>
+                    <constraint firstItem="zpV-NY-6hx" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="QdU-g7-5JK" secondAttribute="trailing" constant="5" id="Mde-p3-5i8"/>
+                    <constraint firstItem="wMR-ER-5iq" firstAttribute="top" secondItem="QdU-g7-5JK" secondAttribute="bottom" constant="5" id="Wyw-8d-M1x"/>
+                    <constraint firstItem="wMR-ER-5iq" firstAttribute="leading" secondItem="QdU-g7-5JK" secondAttribute="leading" id="esF-PC-ZmO"/>
+                    <constraint firstItem="dey-cd-v0w" firstAttribute="leading" secondItem="zpV-NY-6hx" secondAttribute="trailing" constant="5" id="kf2-pc-014"/>
+                    <constraint firstAttribute="trailing" secondItem="dey-cd-v0w" secondAttribute="trailing" constant="10" id="nru-mI-dzu"/>
+                    <constraint firstItem="zpV-NY-6hx" firstAttribute="centerY" secondItem="dey-cd-v0w" secondAttribute="centerY" id="tsu-SX-UzW"/>
+                    <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="wMR-ER-5iq" secondAttribute="bottom" constant="10" id="uXC-nM-Xbe"/>
+                </constraints>
+            </tableViewCellContentView>
+            <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
+            <connections>
+                <outlet property="dateLbl" destination="dey-cd-v0w" id="Ytd-ZY-ov1"/>
+                <outlet property="img" destination="o3v-rM-IJr" id="Mnm-K6-U9r"/>
+                <outlet property="nameLbl" destination="QdU-g7-5JK" id="3fm-ul-N6e"/>
+                <outlet property="ratingLbl" destination="wMR-ER-5iq" id="Oxc-ff-UZ0"/>
+                <outlet property="ratingV" destination="zpV-NY-6hx" id="T8F-XR-2SA"/>
+                <outlet property="view_img" destination="4vx-tn-LGb" id="3gn-YF-akg"/>
+            </connections>
+            <point key="canvasLocation" x="164.8854961832061" y="29.577464788732396"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="EmptyStar" width="13" height="13"/>
+        <image name="Staricon" width="11.333333015441895" height="11.333333015441895"/>
+        <image name="img" width="47" height="47.333332061767578"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

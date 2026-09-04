@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="22505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <array key="Poppins-Regular.ttf">
+            <string>Poppins-Regular</string>
+        </array>
+    </customFonts>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="HostCardCell" id="gTV-IL-0wX" customClass="HostCardCell" customModule="Zyvo" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="215" height="117"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="215" height="117"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Background" translatesAutoresizingMaskIntoConstraints="NO" id="Ovj-RK-PPx">
+                        <rect key="frame" x="2" y="2" width="211" height="113"/>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                <integer key="value" value="10"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
+                    </imageView>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yiZ-Z0-gsA">
+                        <rect key="frame" x="10" y="10" width="80" height="25"/>
+                        <color key="backgroundColor" red="1" green="0.1019607843" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="80" id="6Lq-vZ-PuE"/>
+                            <constraint firstAttribute="height" constant="25" id="jaW-ty-Xra"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="15"/>
+                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                        <state key="normal" title="Primary">
+                            <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                        </state>
+                    </button>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kwp-eK-iu5">
+                        <rect key="frame" x="180" y="7.6666666666666679" width="30" height="30.000000000000004"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="30" id="KSM-Di-hbh"/>
+                            <constraint firstAttribute="height" constant="30" id="ruS-Ue-IGK"/>
+                        </constraints>
+                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                        <state key="normal" image="menu">
+                            <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                        </state>
+                    </button>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Indusland" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fth-wk-CNj">
+                        <rect key="frame" x="10" y="40" width="69.666666666666671" height="19.666666666666671"/>
+                        <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="14"/>
+                        <color key="textColor" red="0.98823529409999999" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="C F Frost" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="P5G-bq-5hu">
+                        <rect key="frame" x="10" y="89.333333333333329" width="135" height="19.666666666666671"/>
+                        <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="14"/>
+                        <color key="textColor" red="0.98823529409999999" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="5535  ****  ****  5535" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aG4-UK-ZTZ">
+                        <rect key="frame" x="10" y="64.666666666666671" width="195" height="19.666666666666671"/>
+                        <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="14"/>
+                        <color key="textColor" red="0.98823529409999999" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="mastercard logo" translatesAutoresizingMaskIntoConstraints="NO" id="JcW-Ko-qDB">
+                        <rect key="frame" x="150" y="89.333333333333329" width="60" height="20"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="60" id="O1T-KM-HUb"/>
+                            <constraint firstAttribute="height" constant="20" id="UgW-ee-Yds"/>
+                        </constraints>
+                    </imageView>
+                </subviews>
+            </view>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <constraints>
+                <constraint firstItem="P5G-bq-5hu" firstAttribute="leading" secondItem="aG4-UK-ZTZ" secondAttribute="leading" id="0DY-lO-qHR"/>
+                <constraint firstAttribute="trailing" secondItem="aG4-UK-ZTZ" secondAttribute="trailing" constant="10" id="5ih-xF-VkQ"/>
+                <constraint firstItem="JcW-Ko-qDB" firstAttribute="centerY" secondItem="P5G-bq-5hu" secondAttribute="centerY" id="7XV-Jr-n6c"/>
+                <constraint firstItem="yiZ-Z0-gsA" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="10" id="8Tl-9G-B2o"/>
+                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="fth-wk-CNj" secondAttribute="trailing" constant="10" id="8hR-7F-mLq"/>
+                <constraint firstItem="Ovj-RK-PPx" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="2" id="8rP-iN-FjK"/>
+                <constraint firstAttribute="bottom" secondItem="Ovj-RK-PPx" secondAttribute="bottom" constant="2" id="AKu-eH-G6d"/>
+                <constraint firstItem="kwp-eK-iu5" firstAttribute="centerY" secondItem="yiZ-Z0-gsA" secondAttribute="centerY" id="Mhv-Gz-nOM"/>
+                <constraint firstItem="aG4-UK-ZTZ" firstAttribute="leading" secondItem="fth-wk-CNj" secondAttribute="leading" id="VZj-Qv-zeC"/>
+                <constraint firstItem="fth-wk-CNj" firstAttribute="leading" secondItem="yiZ-Z0-gsA" secondAttribute="leading" id="Xdf-wd-42I"/>
+                <constraint firstItem="JcW-Ko-qDB" firstAttribute="trailing" secondItem="kwp-eK-iu5" secondAttribute="trailing" id="aCO-rv-ibQ"/>
+                <constraint firstItem="yiZ-Z0-gsA" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="10" id="aIr-Tt-drP"/>
+                <constraint firstAttribute="trailing" secondItem="Ovj-RK-PPx" secondAttribute="trailing" constant="2" id="al9-nH-zfq"/>
+                <constraint firstItem="P5G-bq-5hu" firstAttribute="top" secondItem="aG4-UK-ZTZ" secondAttribute="bottom" constant="5" id="dER-VZ-dSR"/>
+                <constraint firstItem="aG4-UK-ZTZ" firstAttribute="top" secondItem="fth-wk-CNj" secondAttribute="bottom" constant="5" id="p9h-cr-CmI"/>
+                <constraint firstItem="fth-wk-CNj" firstAttribute="top" secondItem="yiZ-Z0-gsA" secondAttribute="bottom" constant="5" id="sdP-2U-oCc"/>
+                <constraint firstItem="JcW-Ko-qDB" firstAttribute="leading" secondItem="P5G-bq-5hu" secondAttribute="trailing" constant="5" id="wRA-8i-aIL"/>
+                <constraint firstAttribute="trailing" secondItem="kwp-eK-iu5" secondAttribute="trailing" constant="5" id="y0Y-Xd-n05"/>
+                <constraint firstItem="Ovj-RK-PPx" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="2" id="ygU-Tu-wtY"/>
+            </constraints>
+            <size key="customSize" width="215" height="117"/>
+            <connections>
+                <outlet property="bank_CardNameLbl" destination="fth-wk-CNj" id="kEk-BY-ogj"/>
+                <outlet property="btnMenu" destination="kwp-eK-iu5" id="uVB-oa-wsS"/>
+                <outlet property="btnPrimary" destination="yiZ-Z0-gsA" id="uDV-Wm-3vY"/>
+                <outlet property="cardImg" destination="JcW-Ko-qDB" id="YEV-rK-6ds"/>
+                <outlet property="nameLbl" destination="P5G-bq-5hu" id="CJ1-30-p1K"/>
+                <outlet property="numberLbl" destination="aG4-UK-ZTZ" id="WIQ-zD-hW4"/>
+            </connections>
+            <point key="canvasLocation" x="251.14503816793894" y="42.605633802816904"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <image name="Background" width="168" height="116"/>
+        <image name="mastercard logo" width="30" height="18.666666030883789"/>
+        <image name="menu" width="512" height="512"/>
+    </resources>
+</document>

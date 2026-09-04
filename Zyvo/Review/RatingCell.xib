@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24504"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <array key="Poppins-Bold.ttf">
+            <string>Poppins-Bold</string>
+        </array>
+        <array key="Poppins-Regular.ttf">
+            <string>Poppins-Regular</string>
+        </array>
+    </customFonts>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="RatingCell" rowHeight="384" id="KGk-i7-Jjw" customClass="RatingCell" customModule="Zyvo" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="430" height="384"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="430" height="384"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4vx-tn-LGb">
+                        <rect key="frame" x="0.0" y="154.66666666666666" width="75" height="75"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="img" translatesAutoresizingMaskIntoConstraints="NO" id="o3v-rM-IJr">
+                                <rect key="frame" x="6.6666666666666643" y="6.3333333333333428" width="61.999999999999993" height="62"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="20"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="75" id="3BO-ue-yRz"/>
+                            <constraint firstAttribute="bottom" secondItem="o3v-rM-IJr" secondAttribute="bottom" constant="6.5" id="TzJ-zJ-DwR"/>
+                            <constraint firstItem="o3v-rM-IJr" firstAttribute="top" secondItem="4vx-tn-LGb" secondAttribute="top" constant="6.5" id="Z6b-CD-cDe"/>
+                            <constraint firstAttribute="width" constant="75" id="gaI-y8-bpi"/>
+                            <constraint firstAttribute="trailing" secondItem="o3v-rM-IJr" secondAttribute="trailing" constant="6.5" id="iLe-NJ-bps"/>
+                            <constraint firstItem="o3v-rM-IJr" firstAttribute="leading" secondItem="4vx-tn-LGb" secondAttribute="leading" constant="6.5" id="t7F-GL-q6X"/>
+                        </constraints>
+                    </view>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="749" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QdU-g7-5JK">
+                        <rect key="frame" x="85" y="164.66666666666666" width="130" height="19.666666666666657"/>
+                        <string key="text">Emily Emily Emily Emily Emily Emily Emily Emily Emily Emily Emily Emily Emily Emily Emily Emily Emily Emily Emily Emily Emily Emily Emily Emily Emily Emily Emily Emily </string>
+                        <fontDescription key="fontDescription" name="Poppins-Bold" family="Poppins" pointSize="14"/>
+                        <color key="textColor" red="0.24705882352941178" green="0.23921568627450979" blue="0.33725490196078434" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Mar 09, 22" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dey-cd-v0w">
+                        <rect key="frame" x="335" y="164.66666666666666" width="85" height="19.666666666666657"/>
+                        <constraints>
+                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="85" id="RhY-Db-YqO"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="14"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wMR-ER-5iq">
+                        <rect key="frame" x="85" y="189.33333333333334" width="333.33333333333331" height="109.33333333333334"/>
+                        <string key="text">Host was very helpful. thank you so much Host was very helpful. thank you so much Host was very helpful. thank you so much Host was very helpful. thank you so much Host was very helpful. thank you so much Host was very helpful. thank you so much</string>
+                        <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="13"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="GNS-ZM-7gN" customClass="CosmosView" customModule="Cosmos">
+                        <rect key="frame" x="225" y="166.33333333333334" width="100" height="30"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="30" id="EXI-hr-fGj"/>
+                            <constraint firstAttribute="width" constant="100" id="LIS-ur-R4H"/>
+                        </constraints>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="image" keyPath="filledImage" value="Staricon"/>
+                            <userDefinedRuntimeAttribute type="image" keyPath="emptyImage" value="EmptyStar"/>
+                            <userDefinedRuntimeAttribute type="number" keyPath="totalStars">
+                                <integer key="value" value="5"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="number" keyPath="starSize">
+                                <real key="value" value="15"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
+                    </view>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="QdU-g7-5JK" firstAttribute="top" secondItem="4vx-tn-LGb" secondAttribute="top" constant="10" id="2Gw-PB-TpD"/>
+                    <constraint firstItem="4vx-tn-LGb" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="5W8-hu-J1V"/>
+                    <constraint firstItem="4vx-tn-LGb" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="I9b-Cm-F0k"/>
+                    <constraint firstItem="4vx-tn-LGb" firstAttribute="top" relation="greaterThanOrEqual" secondItem="H2p-sc-9uM" secondAttribute="top" constant="30" id="O80-sV-MiP"/>
+                    <constraint firstItem="GNS-ZM-7gN" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="QdU-g7-5JK" secondAttribute="trailing" constant="10" id="ReA-rV-duk"/>
+                    <constraint firstItem="dey-cd-v0w" firstAttribute="top" secondItem="QdU-g7-5JK" secondAttribute="top" id="Tz5-ME-6ss"/>
+                    <constraint firstItem="wMR-ER-5iq" firstAttribute="top" secondItem="QdU-g7-5JK" secondAttribute="bottom" constant="5" id="WpJ-uF-cog"/>
+                    <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="4vx-tn-LGb" secondAttribute="bottom" constant="30" id="XBd-Dz-hKf"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="wMR-ER-5iq" secondAttribute="trailing" constant="10" id="aBO-bR-grr"/>
+                    <constraint firstItem="wMR-ER-5iq" firstAttribute="leading" secondItem="QdU-g7-5JK" secondAttribute="leading" id="gwN-jB-lki"/>
+                    <constraint firstItem="QdU-g7-5JK" firstAttribute="leading" secondItem="4vx-tn-LGb" secondAttribute="trailing" constant="10" id="lBO-0W-glO"/>
+                    <constraint firstAttribute="trailing" secondItem="dey-cd-v0w" secondAttribute="trailing" constant="10" id="nru-mI-dzu"/>
+                    <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="wMR-ER-5iq" secondAttribute="bottom" constant="10" id="oMv-hy-uwF"/>
+                    <constraint firstItem="dey-cd-v0w" firstAttribute="leading" secondItem="GNS-ZM-7gN" secondAttribute="trailing" constant="10" id="pcN-zB-BUY"/>
+                    <constraint firstItem="GNS-ZM-7gN" firstAttribute="centerY" secondItem="dey-cd-v0w" secondAttribute="centerY" constant="7" id="rTe-ms-TB0"/>
+                </constraints>
+            </tableViewCellContentView>
+            <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
+            <connections>
+                <outlet property="img" destination="o3v-rM-IJr" id="Mnm-K6-U9r"/>
+                <outlet property="lbl_date" destination="dey-cd-v0w" id="X1c-MD-430"/>
+                <outlet property="lbl_desc" destination="wMR-ER-5iq" id="rag-sz-jAH"/>
+                <outlet property="lbl_name" destination="QdU-g7-5JK" id="rCf-Fk-m6l"/>
+                <outlet property="viewRating" destination="GNS-ZM-7gN" id="bjM-7G-Mfv"/>
+                <outlet property="view_img" destination="4vx-tn-LGb" id="3gn-YF-akg"/>
+            </connections>
+            <point key="canvasLocation" x="167.93893129770993" y="135.91549295774649"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="EmptyStar" width="13" height="13"/>
+        <image name="Staricon" width="11.333333015441895" height="11.333333015441895"/>
+        <image name="img" width="47" height="47.333332061767578"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

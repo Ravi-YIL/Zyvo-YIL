@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23727" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23721"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <array key="Poppins-Regular.ttf">
+            <string>Poppins-Regular</string>
+        </array>
+    </customFonts>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="HostBookingsIncludeCollVCell" customModule="Zyvo" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="211" height="56"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="211" height="56"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Erk-3R-IjX">
+                        <rect key="frame" x="2" y="2" width="207" height="52"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="C5y-ZH-Yjt">
+                                <rect key="frame" x="0.0" y="0.0" width="207" height="52"/>
+                                <subviews>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Parking" translatesAutoresizingMaskIntoConstraints="NO" id="tMM-aR-UY3">
+                                        <rect key="frame" x="6" y="2" width="35" height="48"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="35" id="rRP-mb-0wG"/>
+                                        </constraints>
+                                    </imageView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Parking" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hcg-Ml-tum">
+                                        <rect key="frame" x="43" y="5" width="154" height="42"/>
+                                        <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="14.5"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="hcg-Ml-tum" secondAttribute="trailing" constant="10" id="04d-OG-See"/>
+                                    <constraint firstItem="hcg-Ml-tum" firstAttribute="leading" secondItem="tMM-aR-UY3" secondAttribute="trailing" constant="2" id="390-wr-TN4"/>
+                                    <constraint firstAttribute="bottom" secondItem="hcg-Ml-tum" secondAttribute="bottom" constant="5" id="DEL-KE-zf0"/>
+                                    <constraint firstItem="hcg-Ml-tum" firstAttribute="top" secondItem="C5y-ZH-Yjt" secondAttribute="top" constant="5" id="Eof-fv-jVK"/>
+                                    <constraint firstItem="tMM-aR-UY3" firstAttribute="centerY" secondItem="C5y-ZH-Yjt" secondAttribute="centerY" id="Ghw-3W-LhU"/>
+                                    <constraint firstItem="tMM-aR-UY3" firstAttribute="top" secondItem="C5y-ZH-Yjt" secondAttribute="top" constant="2" id="SYr-d5-Ure"/>
+                                    <constraint firstItem="tMM-aR-UY3" firstAttribute="centerY" secondItem="C5y-ZH-Yjt" secondAttribute="centerY" id="bZa-YX-6TC"/>
+                                    <constraint firstItem="tMM-aR-UY3" firstAttribute="leading" secondItem="C5y-ZH-Yjt" secondAttribute="leading" constant="6" id="m65-wR-awQ"/>
+                                    <constraint firstItem="hcg-Ml-tum" firstAttribute="centerY" secondItem="tMM-aR-UY3" secondAttribute="centerY" id="xep-6g-wLs"/>
+                                    <constraint firstAttribute="bottom" secondItem="tMM-aR-UY3" secondAttribute="bottom" constant="2" id="z9d-Cq-gtv"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="10"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
+                                        <integer key="value" value="10"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="layer.borderColor">
+                                        <color key="value" red="0.68235294120000001" green="0.68235294120000001" blue="0.69803921570000005" alpha="0.90000000000000002" colorSpace="custom" customColorSpace="sRGB"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="C5y-ZH-Yjt" firstAttribute="top" secondItem="Erk-3R-IjX" secondAttribute="top" id="KkX-ot-1nx"/>
+                            <constraint firstItem="C5y-ZH-Yjt" firstAttribute="leading" secondItem="Erk-3R-IjX" secondAttribute="leading" id="coy-ar-57h"/>
+                            <constraint firstAttribute="bottom" secondItem="C5y-ZH-Yjt" secondAttribute="bottom" id="gnD-bB-Mdk"/>
+                            <constraint firstAttribute="trailing" secondItem="C5y-ZH-Yjt" secondAttribute="trailing" id="yvc-Mv-xbR"/>
+                        </constraints>
+                    </view>
+                </subviews>
+            </view>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <constraints>
+                <constraint firstItem="Erk-3R-IjX" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="2" id="Lef-sT-g8e"/>
+                <constraint firstAttribute="bottom" secondItem="Erk-3R-IjX" secondAttribute="bottom" constant="2" id="W6T-pm-2tW"/>
+                <constraint firstItem="Erk-3R-IjX" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="2" id="efp-QB-tE9"/>
+                <constraint firstAttribute="trailing" secondItem="Erk-3R-IjX" secondAttribute="trailing" constant="2" id="gOJ-7O-YKn"/>
+            </constraints>
+            <size key="customSize" width="211" height="56"/>
+            <connections>
+                <outlet property="bgV" destination="C5y-ZH-Yjt" id="vXN-Zk-LfH"/>
+                <outlet property="iconImg" destination="tMM-aR-UY3" id="mLt-bd-PJD"/>
+                <outlet property="titleLbl" destination="hcg-Ml-tum" id="jj1-yM-Bsf"/>
+            </connections>
+            <point key="canvasLocation" x="252.67175572519082" y="-30.281690140845072"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <image name="Parking" width="68.666664123535156" height="65.666664123535156"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

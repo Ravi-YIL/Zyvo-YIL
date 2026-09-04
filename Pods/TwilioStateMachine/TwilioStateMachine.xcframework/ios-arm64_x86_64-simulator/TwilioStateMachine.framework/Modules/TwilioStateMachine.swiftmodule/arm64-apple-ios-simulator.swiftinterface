@@ -1,0 +1,124 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 5.7.2 (swiftlang-5.7.2.135.5 clang-1400.0.29.51)
+// swift-module-flags: -target arm64-apple-ios11.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name TwilioStateMachine
+// swift-module-flags-ignorable: -enable-bare-slash-regex
+import Foundation
+import Swift
+import _Concurrency
+import _StringProcessing
+open class StateMachine<State, Event, SideEffect> where State : TwilioStateMachine.StateMachineHashable, Event : TwilioStateMachine.StateMachineHashable {
+  public enum Transition {
+    public typealias Result = Swift.Result<TwilioStateMachine.StateMachine<State, Event, SideEffect>.Transition.Valid, Swift.Error>
+    public typealias Callback = (_ result: TwilioStateMachine.StateMachine<State, Event, SideEffect>.Transition.Result) -> Swift.Void
+    public struct Valid : Swift.CustomDebugStringConvertible {
+      public var debugDescription: Swift.String {
+        get
+      }
+      public let fromState: State
+      public let event: Event
+      public let toState: State
+      public let sideEffects: [SideEffect]
+    }
+    public struct Invalid : Swift.Error, Swift.Equatable {
+      public static func == (a: TwilioStateMachine.StateMachine<State, Event, SideEffect>.Transition.Invalid, b: TwilioStateMachine.StateMachine<State, Event, SideEffect>.Transition.Invalid) -> Swift.Bool
+    }
+  }
+  public enum StateMachineError : Swift.Error {
+    case recursionDetected
+    public static func == (a: TwilioStateMachine.StateMachine<State, Event, SideEffect>.StateMachineError, b: TwilioStateMachine.StateMachine<State, Event, SideEffect>.StateMachineError) -> Swift.Bool
+    public func hash(into hasher: inout Swift.Hasher)
+    public var hashValue: Swift.Int {
+      get
+    }
+  }
+  public typealias Definition = TwilioStateMachine.StateMachineTypes.Definition<State, Event, SideEffect>
+  public var state: State {
+    get
+  }
+  public init(queue: Dispatch.DispatchQueue? = nil, @TwilioStateMachine.StateMachine<State, Event, SideEffect>.DefinitionBuilder build: () -> TwilioStateMachine.StateMachine<State, Event, SideEffect>.Definition)
+  @discardableResult
+  public func startObserving(_ observer: Swift.AnyObject?, callback: @escaping TwilioStateMachine.StateMachine<State, Event, SideEffect>.Transition.Callback) -> Self
+  public func stopObserving(_ observers: Swift.AnyObject?...)
+  public func stopObserving(_ observers: [Swift.AnyObject?])
+  @discardableResult
+  public func transition(_ event: Event) throws -> TwilioStateMachine.StateMachine<State, Event, SideEffect>.Transition.Valid
+  @objc deinit
+}
+extension TwilioStateMachine.StateMachine.Transition.Valid : Swift.Equatable where State : Swift.Equatable, Event : Swift.Equatable, SideEffect : Swift.Equatable {
+  public static func == (a: TwilioStateMachine.StateMachine<State, Event, SideEffect>.Transition.Valid, b: TwilioStateMachine.StateMachine<State, Event, SideEffect>.Transition.Valid) -> Swift.Bool
+}
+public protocol StateMachineBuilder {
+  associatedtype State : TwilioStateMachine.StateMachineHashable
+  associatedtype Event : TwilioStateMachine.StateMachineHashable
+  associatedtype SideEffect
+  typealias InitialState = TwilioStateMachine.StateMachineTypes.InitialState<Self.State>
+  typealias Component = TwilioStateMachine.StateMachineTypes.Component<Self.State, Self.Event, Self.SideEffect>
+  typealias EventHandlerArrayBuilder = TwilioStateMachine.StateMachineTypes.EventHandlerArrayBuilder
+  typealias EventHandler = TwilioStateMachine.StateMachineTypes.EventHandler<Self.State, Self.Event, Self.SideEffect>
+  typealias Action = TwilioStateMachine.StateMachineTypes.Action<Self.State, Self.Event, Self.SideEffect>
+}
+extension TwilioStateMachine.StateMachineBuilder {
+  public static func initialState(_ state: Self.State) -> Self.InitialState
+  public static func state(_ state: Self.State.HashableIdentifier) -> Self.Component
+  public static func state(_ state: Self.State.HashableIdentifier, @Self.EventHandlerArrayBuilder build: () -> [Self.EventHandler]) -> Self.Component
+  public static func on(_ event: Self.Event.HashableIdentifier, perform: @escaping (Self.State, Self.Event) throws -> Self.Action) -> [Self.EventHandler]
+  public static func on(_ event: Self.Event.HashableIdentifier, perform: @escaping (Self.State) throws -> Self.Action) -> [Self.EventHandler]
+  public static func on(_ event: Self.Event.HashableIdentifier, perform: @escaping () throws -> Self.Action) -> [Self.EventHandler]
+  public static func onEnter(emit sideEffects: Self.SideEffect...) -> [Self.EventHandler]
+  public static func onExit(emit sideEffects: Self.SideEffect...) -> [Self.EventHandler]
+  public static func transition(to state: Self.State, emit sideEffect: Self.SideEffect...) -> Self.Action
+  public static func dontTransition(emit sideEffect: Self.SideEffect...) -> Self.Action
+  public static func onTransition(_ callback: @escaping TwilioStateMachine.StateMachine<Self.State, Self.Event, Self.SideEffect>.Transition.Callback) -> Self.Component
+}
+public enum StateMachineTypes {
+  public struct Definition<State, Event, SideEffect> where State : TwilioStateMachine.StateMachineHashable, Event : TwilioStateMachine.StateMachineHashable {
+  }
+  @_functionBuilder public struct DefinitionBuilder {
+    public static func buildBlock<State, Event, SideEffect>(_ initialState: TwilioStateMachine.StateMachineTypes.InitialState<State>, _ components: TwilioStateMachine.StateMachineTypes.Component<State, Event, SideEffect>...) -> TwilioStateMachine.StateMachineTypes.Definition<State, Event, SideEffect> where State : TwilioStateMachine.StateMachineHashable, Event : TwilioStateMachine.StateMachineHashable
+  }
+  public struct InitialState<State> {
+  }
+  public enum Component<State, Event, SideEffect> where State : TwilioStateMachine.StateMachineHashable, Event : TwilioStateMachine.StateMachineHashable {
+    case state(state: State.HashableIdentifier, events: [TwilioStateMachine.StateMachineTypes.EventHandler<State, Event, SideEffect>])
+    case callback(callback: TwilioStateMachine.StateMachine<State, Event, SideEffect>.Transition.Callback)
+  }
+  @_functionBuilder public struct EventHandlerArrayBuilder {
+    public static func buildBlock<State, Event, SideEffect>(_ events: [TwilioStateMachine.StateMachineTypes.EventHandler<State, Event, SideEffect>]...) -> [TwilioStateMachine.StateMachineTypes.EventHandler<State, Event, SideEffect>] where State : TwilioStateMachine.StateMachineHashable, Event : TwilioStateMachine.StateMachineHashable
+  }
+  public struct EventHandler<State, Event, SideEffect> where State : TwilioStateMachine.StateMachineHashable, Event : TwilioStateMachine.StateMachineHashable {
+  }
+  public struct Action<State, Event, SideEffect> where State : TwilioStateMachine.StateMachineHashable, Event : TwilioStateMachine.StateMachineHashable {
+  }
+  public struct IncorrectTypeError : Swift.Error, Swift.CustomDebugStringConvertible {
+    public var debugDescription: Swift.String {
+      get
+    }
+    public let expectedType: Any.Type
+    public let encounteredType: Any.Type
+  }
+}
+@dynamicMemberLookup public protocol StateMachineHashable {
+  associatedtype HashableIdentifier : Swift.Hashable
+  typealias IncorrectTypeError = TwilioStateMachine.StateMachineTypes.IncorrectTypeError
+  var hashableIdentifier: Self.HashableIdentifier { get }
+  var associatedValue: Any { get }
+}
+extension TwilioStateMachine.StateMachineHashable where Self : Swift.Hashable {
+  public var hashableIdentifier: Self {
+    get
+  }
+}
+extension TwilioStateMachine.StateMachineHashable {
+  public var associatedValue: Any {
+    get
+  }
+  #if compiler(>=5.3) && $EffectfulProp
+  public subscript<T>(dynamicMember member: Swift.String) -> T {
+    get throws
+  }
+  #endif
+}
+public protocol AutoStateMachineHashable {
+}
+extension TwilioStateMachine.StateMachine.StateMachineError : Swift.Equatable {}
+extension TwilioStateMachine.StateMachine.StateMachineError : Swift.Hashable {}

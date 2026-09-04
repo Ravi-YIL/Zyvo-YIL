@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23727" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23721"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <array key="Poppins-Regular.ttf">
+            <string>Poppins-Regular</string>
+        </array>
+    </customFonts>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="CellHost" id="gTV-IL-0wX" customClass="CellHost" customModule="Zyvo" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="298" height="70"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="298" height="70"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nwx-vh-eNm">
+                        <rect key="frame" x="1" y="1" width="296" height="68"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Computer Screen" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Avo-N3-PaN">
+                                <rect key="frame" x="20" y="11.666666666666666" width="272" height="16.666666666666671"/>
+                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="14.800000190734863"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="$10 / Item" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rWg-fe-Ior">
+                                <rect key="frame" x="20" y="31.333333333333336" width="271" height="16.333333333333336"/>
+                                <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="13.800000190734863"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Computer Screen" translatesAutoresizingMaskIntoConstraints="NO" id="5Q8-ce-NtK">
+                                <rect key="frame" x="10" y="16.666666666666671" width="0.0" height="35"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="35" id="6ml-8O-pAd"/>
+                                    <constraint firstAttribute="width" id="JoD-zy-uDI"/>
+                                </constraints>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="rWg-fe-Ior" secondAttribute="trailing" constant="5" id="T0w-aE-KCD"/>
+                            <constraint firstItem="Avo-N3-PaN" firstAttribute="leading" secondItem="5Q8-ce-NtK" secondAttribute="trailing" constant="10" id="TKp-dV-Lwa"/>
+                            <constraint firstItem="rWg-fe-Ior" firstAttribute="leading" secondItem="Avo-N3-PaN" secondAttribute="leading" id="Tjk-BJ-KoX"/>
+                            <constraint firstItem="Avo-N3-PaN" firstAttribute="top" secondItem="5Q8-ce-NtK" secondAttribute="top" constant="-5" id="U7x-Sm-j6r"/>
+                            <constraint firstItem="5Q8-ce-NtK" firstAttribute="centerY" secondItem="nwx-vh-eNm" secondAttribute="centerY" id="hLZ-XF-Pyz"/>
+                            <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="rWg-fe-Ior" secondAttribute="bottom" constant="5" id="iPW-PT-nt9"/>
+                            <constraint firstItem="5Q8-ce-NtK" firstAttribute="leading" secondItem="nwx-vh-eNm" secondAttribute="leading" constant="10" id="nsR-tc-wqP"/>
+                            <constraint firstAttribute="trailing" secondItem="Avo-N3-PaN" secondAttribute="trailing" constant="4" id="yMo-il-B5A"/>
+                            <constraint firstItem="rWg-fe-Ior" firstAttribute="top" secondItem="Avo-N3-PaN" secondAttribute="bottom" constant="3" id="z57-48-gof"/>
+                        </constraints>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                <integer key="value" value="10"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
+                                <integer key="value" value="10"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="color" keyPath="layer.borderColor">
+                                <color key="value" red="0.68235294120000001" green="0.68235294120000001" blue="0.69803921570000005" alpha="0.90000000000000002" colorSpace="custom" customColorSpace="sRGB"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
+                    </view>
+                </subviews>
+            </view>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <constraints>
+                <constraint firstItem="nwx-vh-eNm" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="1" id="BVL-P3-gtB"/>
+                <constraint firstItem="nwx-vh-eNm" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="1" id="TlK-LF-myd"/>
+                <constraint firstAttribute="bottom" secondItem="nwx-vh-eNm" secondAttribute="bottom" constant="1" id="gI3-zh-0yJ"/>
+                <constraint firstAttribute="trailing" secondItem="nwx-vh-eNm" secondAttribute="trailing" constant="1" id="xQS-80-dCV"/>
+            </constraints>
+            <size key="customSize" width="298" height="124"/>
+            <connections>
+                <outlet property="img" destination="5Q8-ce-NtK" id="oAH-Oe-C49"/>
+                <outlet property="lbl_price" destination="rWg-fe-Ior" id="eSC-eP-999"/>
+                <outlet property="lbl_title" destination="Avo-N3-PaN" id="2Sx-Jb-HPQ"/>
+                <outlet property="mainV" destination="nwx-vh-eNm" id="5A3-KZ-LZC"/>
+            </connections>
+            <point key="canvasLocation" x="235.11450381679387" y="20.422535211267608"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <image name="Computer Screen" width="38" height="35"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

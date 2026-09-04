@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="22505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <array key="Poppins-Regular.ttf">
+            <string>Poppins-Regular</string>
+        </array>
+    </customFonts>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" restorationIdentifier="locationCell" selectionStyle="default" indentationWidth="10" reuseIdentifier="locationCell" rowHeight="50" id="KGk-i7-Jjw" customClass="locationCell" customModule="Zyvo" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yy5-8B-40y">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Retângulo 149821" translatesAutoresizingMaskIntoConstraints="NO" id="vut-tX-B8m">
+                                <rect key="frame" x="20" y="2" width="40" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="IQ8-k5-H6p"/>
+                                    <constraint firstAttribute="width" constant="40" id="toh-ld-dld"/>
+                                </constraints>
+                            </imageView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="location line 1" translatesAutoresizingMaskIntoConstraints="NO" id="tJp-rt-rRT">
+                                <rect key="frame" x="27.666666666666671" y="9.6666666666666643" width="25" height="25"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="25" id="Npd-jD-ZTk"/>
+                                    <constraint firstAttribute="width" constant="25" id="U1q-uY-Hn5"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="New York, US" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kKz-Cr-DVQ">
+                                <rect key="frame" x="80" y="11.666666666666664" width="94" height="21"/>
+                                <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="15"/>
+                                <color key="textColor" red="0.2470588235" green="0.23921568630000001" blue="0.25882352939999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="kKz-Cr-DVQ" firstAttribute="leading" secondItem="vut-tX-B8m" secondAttribute="trailing" constant="20" id="8Ft-3V-Ai4"/>
+                            <constraint firstItem="tJp-rt-rRT" firstAttribute="centerX" secondItem="vut-tX-B8m" secondAttribute="centerX" id="A8h-lU-hQ9"/>
+                            <constraint firstItem="tJp-rt-rRT" firstAttribute="centerY" secondItem="vut-tX-B8m" secondAttribute="centerY" id="RLg-Nd-TgC"/>
+                            <constraint firstItem="kKz-Cr-DVQ" firstAttribute="centerY" secondItem="yy5-8B-40y" secondAttribute="centerY" id="SOn-5R-Qz2"/>
+                            <constraint firstItem="vut-tX-B8m" firstAttribute="centerY" secondItem="yy5-8B-40y" secondAttribute="centerY" id="rgn-Qh-Ygb"/>
+                            <constraint firstItem="vut-tX-B8m" firstAttribute="leading" secondItem="yy5-8B-40y" secondAttribute="leading" constant="20" id="xiT-NY-kRS"/>
+                        </constraints>
+                    </view>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="yy5-8B-40y" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="TF8-jM-LhU"/>
+                    <constraint firstAttribute="trailing" secondItem="yy5-8B-40y" secondAttribute="trailing" id="XYf-i4-HUG"/>
+                    <constraint firstAttribute="bottom" secondItem="yy5-8B-40y" secondAttribute="bottom" id="not-Fy-luG"/>
+                    <constraint firstItem="yy5-8B-40y" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="vQa-7q-CZN"/>
+                </constraints>
+            </tableViewCellContentView>
+            <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
+            <point key="canvasLocation" x="126.71755725190839" y="19.718309859154932"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="Retângulo 149821" width="36.333332061767578" height="36.333332061767578"/>
+        <image name="location line 1" width="17.666666030883789" height="20"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

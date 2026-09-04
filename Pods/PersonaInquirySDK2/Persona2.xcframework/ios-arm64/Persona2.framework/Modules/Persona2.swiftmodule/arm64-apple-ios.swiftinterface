@@ -1,0 +1,630 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 6.0.2 effective-5.10 (swiftlang-6.0.2.1.2 clang-1600.0.26.4)
+// swift-module-flags: -target arm64-apple-ios13.0 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -enable-bare-slash-regex -module-name Persona2
+// swift-module-flags-ignorable: -no-verify-emitted-module-interface
+import AVFoundation
+import AVKit
+import CoreImage.CIFilterBuiltins
+import Combine
+import CoreGraphics
+import CoreImage
+import CoreLocation
+import CoreMotion
+import CryptoKit
+import DeveloperToolsSupport
+import Dispatch
+import Foundation
+import MachO
+import Metal
+import MetalKit
+import MetalPerformanceShaders
+import MobileCoreServices
+import OSLog
+import PDFKit
+import PassKit
+@_exported import Persona2
+import PhotosUI
+import QuartzCore
+import SafariServices
+import Swift
+import SwiftUI
+import UIKit
+import UniformTypeIdentifiers
+import Vision
+import VisionKit
+import _Concurrency
+import _StringProcessing
+import _SwiftConcurrencyShims
+import os
+public struct PersonaInlineNavigationState {
+  public let backButtonEnabled: Swift.Bool
+  public let cancelButtonEnabled: Swift.Bool
+}
+public protocol PersonaInlineDelegate : AnyObject {
+  func navigationStateDidUpdate(navigationState: Persona2.PersonaInlineNavigationState)
+}
+@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor @preconcurrency final public class PersonaInlineViewController : UIKit.UIViewController {
+  @_Concurrency.MainActor @preconcurrency final public var isPersonaNavigationHidden: Swift.Bool {
+    get
+    set
+  }
+  @_Concurrency.MainActor @preconcurrency weak final public var delegate: (any Persona2.PersonaInlineDelegate)?
+  @_Concurrency.MainActor @preconcurrency @objc override final public func viewDidLoad()
+  @_Concurrency.MainActor @preconcurrency @objc override final public func viewDidLayoutSubviews()
+  @_Concurrency.MainActor @preconcurrency final public func navigateBack()
+  @_Concurrency.MainActor @preconcurrency final public func presentCancelModal()
+  @_Concurrency.MainActor @preconcurrency @objc override dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
+  @_Concurrency.MainActor @preconcurrency @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @objc deinit
+}
+public protocol AsyncUploadDelegate : AnyObject {
+  func inquiryComplete(asyncUploadEntityFileName: Swift.String)
+}
+public enum DataGroupTypes : Swift.String, Swift.Decodable {
+  case dg1
+  case dg2
+  case dg14
+  case sod
+  case unknown
+  public init(from decoder: any Swift.Decoder) throws
+  public init?(rawValue: Swift.String)
+  public typealias RawValue = Swift.String
+  public var rawValue: Swift.String {
+    get
+  }
+}
+public enum NfcAccessKey {
+  case mrz(Swift.String)
+  case can(Swift.String)
+}
+public enum PersonaError : Swift.Error, Swift.CustomDebugStringConvertible {
+  case networking
+  case invalidSessionToken
+  case rateLimitExceeded
+  case camera
+  case gps
+  case permissions
+  case misconfigured(Persona2.InquiryConfigurationError)
+  case other
+  public var debugDescription: Swift.String {
+    get
+  }
+}
+extension Persona2.PersonaError : Foundation.LocalizedError {
+  public var errorDescription: Swift.String? {
+    get
+  }
+}
+public enum GovernmentIdNfcError : Swift.Error {
+  case invalidAccessKey
+  case userCancelled
+  case userMovedAwayTooSoon
+  case unsupportedDocumentType
+  case retryableError
+  case genericError
+  public static func == (a: Persona2.GovernmentIdNfcError, b: Persona2.GovernmentIdNfcError) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public struct NfcInstructions {
+  public let scanDocumentPrompt: Swift.String
+  public let authenticating: Swift.String
+  public let reading: Swift.String
+  public let scanDocumentSuccess: Swift.String
+  public let errorGeneric: Swift.String
+  public let errorRetryable: Swift.String
+  public let errorUnsupportedDocumentType: Swift.String
+  public let errorLostConnection: Swift.String
+  public let errorNfcKeyNotValid: Swift.String
+}
+public protocol InquiryNfcAdapter : AnyObject {
+  func performGovernmentIdNfc(accessKey: Persona2.NfcAccessKey, backupAccessKey: Persona2.NfcAccessKey?, instructions: Persona2.NfcInstructions, enabledDataGroups: [Persona2.DataGroupTypes], nfcReaderSetupFlags: Persona2.NfcReaderSetupFlags, completion: @escaping (Swift.Result<Persona2.GovernmentIdInfo?, Persona2.GovernmentIdNfcError>) -> Swift.Void)
+  func deviceCanPerformNfc() -> Swift.Bool
+}
+public struct GovernmentIdInfo {
+  public init(dg1: Swift.String, dg2: Swift.String, sod: Swift.String, caFlag: Swift.String)
+}
+public struct NfcReaderSetupFlags {
+  public let usePacePolling: Swift.Bool
+  public let useSmallPollingChunkSize: Swift.Bool
+}
+public enum PersonaConstants {
+  public static let maxFrameRate: Swift.Int
+}
+@_Concurrency.MainActor public protocol InquiryDelegate : AnyObject {
+  @_Concurrency.MainActor func inquiryComplete(inquiryId: Swift.String, status: Swift.String, fields: [Swift.String : Persona2.InquiryField])
+  @_Concurrency.MainActor func inquiryCanceled(inquiryId: Swift.String?, sessionToken: Swift.String?)
+  @_Concurrency.MainActor func inquiryEventOccurred(event: Persona2.InquiryEvent)
+  @_Concurrency.MainActor func inquiryError(_ error: any Swift.Error)
+}
+extension Persona2.InquiryDelegate {
+  @_Concurrency.MainActor public func inquiryEventOccurred(event: Persona2.InquiryEvent)
+}
+final public class Inquiry {
+  public static var versionNumber: Swift.String {
+    get
+  }
+  public init(config: Persona2.InquiryConfiguration, delegate: any Persona2.InquiryDelegate)
+  @objc deinit
+  final public func start(from viewController: UIKit.UIViewController, animated: Swift.Bool = true)
+  final public func startInline() -> Persona2.PersonaInlineViewController?
+  final public func cancel()
+  public static func doAsyncUpload(asyncUploadEntityFileName: Swift.String, onSuccess: (() -> Swift.Void)?, onError: ((any Swift.Error) -> Swift.Void)?)
+  public static func retrieveUnprocessedFilesForAsyncUpload() -> [Swift.String]
+}
+public enum Environment : Swift.String {
+  case production
+  case sandbox
+  public init?(rawValue: Swift.String)
+  public typealias RawValue = Swift.String
+  public var rawValue: Swift.String {
+    get
+  }
+}
+public struct InquiryTheme {
+  public var backgroundColor: UIKit.UIColor
+  public var primaryColor: UIKit.UIColor
+  public var darkPrimaryColor: UIKit.UIColor
+  public var accentColor: UIKit.UIColor
+  public var errorColor: UIKit.UIColor
+  public var errorTextFont: UIKit.UIFont
+  public var overlayBackgroundColor: UIKit.UIColor
+  public var footerBackgroundColor: UIKit.UIColor
+  public var footerBorderColor: UIKit.UIColor
+  public var footerBorderWidth: CoreFoundation.CGFloat
+  public var navigationBarTextColor: UIKit.UIColor
+  public var navigationBarTextFont: UIKit.UIFont
+  public var titleTextAlignment: UIKit.NSTextAlignment
+  public var titleTextColor: UIKit.UIColor
+  public var titleTextFont: UIKit.UIFont
+  public var cardTitleTextFont: UIKit.UIFont
+  public var bodyTextAlignment: UIKit.NSTextAlignment
+  public var bodyTextColor: UIKit.UIColor
+  public var bodyTextFont: UIKit.UIFont
+  public var footnoteTextColor: UIKit.UIColor
+  public var footnoteTextFont: UIKit.UIFont
+  public var formLabelTextColor: UIKit.UIColor
+  public var formLabelTextFont: UIKit.UIFont
+  public var textFieldTextColor: UIKit.UIColor
+  public var textFieldPlaceholderColor: UIKit.UIColor
+  public var textFieldBackgroundColor: UIKit.UIColor
+  public var textFieldBorderColor: UIKit.UIColor
+  public var textFieldCornerRadius: CoreFoundation.CGFloat
+  public var textFieldFont: UIKit.UIFont
+  public var textFieldPlaceholderFont: UIKit.UIFont
+  public var pickerTextColor: UIKit.UIColor
+  public var pickerTextFont: UIKit.UIFont
+  public var buttonBackgroundColor: UIKit.UIColor
+  public var buttonDisabledBackgroundColor: UIKit.UIColor
+  public var buttonTouchedBackgroundColor: UIKit.UIColor
+  public var buttonTextColor: UIKit.UIColor
+  public var buttonDisabledTextColor: UIKit.UIColor
+  public var buttonTextAlignment: UIKit.NSTextAlignment
+  public var buttonImageTintColor: UIKit.UIColor
+  public var buttonCornerRadius: CoreFoundation.CGFloat
+  public var buttonBorderWidth: CoreFoundation.CGFloat
+  public var buttonBorderColor: UIKit.UIColor
+  public var buttonFont: UIKit.UIFont
+  public var buttonShadowColor: UIKit.UIColor
+  public var buttonShadowRadius: CoreFoundation.CGFloat
+  public var buttonShadowOffset: CoreFoundation.CGSize
+  public var buttonSecondaryBackgroundColor: UIKit.UIColor
+  public var buttonSecondaryDisabledBackgroundColor: UIKit.UIColor
+  public var buttonSecondaryTouchedBackgroundColor: UIKit.UIColor
+  public var buttonSecondaryTextColor: UIKit.UIColor
+  public var buttonSecondaryDisabledTextColor: UIKit.UIColor
+  public var buttonSecondaryTextAlignment: UIKit.NSTextAlignment
+  public var buttonSecondaryImageTintColor: UIKit.UIColor
+  public var buttonSecondaryCornerRadius: CoreFoundation.CGFloat
+  public var buttonSecondaryBorderWidth: CoreFoundation.CGFloat
+  public var buttonSecondaryBorderColor: UIKit.UIColor
+  public var buttonSecondaryFont: UIKit.UIFont
+  public var buttonSecondaryShadowColor: UIKit.UIColor
+  public var buttonSecondaryShadowRadius: CoreFoundation.CGFloat
+  public var buttonSecondaryShadowOffset: CoreFoundation.CGSize
+  public var checkboxBackgroundColor: UIKit.UIColor
+  public var checkboxForegroundColor: UIKit.UIColor
+  public var selectedCellBackgroundColor: UIKit.UIColor
+  public var tableViewChevronColor: UIKit.UIColor?
+  public var closeButtonTintColor: UIKit.UIColor
+  public var cancelButtonBackgroundColor: UIKit.UIColor
+  public var cancelButtonTextColor: UIKit.UIColor
+  public var cancelButtonAlternateBackgroundColor: UIKit.UIColor
+  public var cancelButtonAlternateTextColor: UIKit.UIColor
+  public var cancelButtonShadowColor: UIKit.UIColor
+  public var cancelButtonShadowRadius: CoreFoundation.CGFloat
+  public var cancelButtonShadowOffset: CoreFoundation.CGSize
+  public var processingLabelsTextAlignment: UIKit.NSTextAlignment
+  public var loadingAnimation: Persona2.InquiryTheme.AnimationAsset?
+  public var initialLoadingBackgroundImage: UIKit.UIImage?
+  public var processingAnimation: Persona2.InquiryTheme.AnimationAsset?
+  public var selfieAsset: (any Persona2.ThemeAsset)?
+  @available(*, deprecated, message: "Unused in dynamic flows")
+  public var successAsset: (any Persona2.ThemeAsset)?
+  @available(*, deprecated, message: "Unused in dynamic flows")
+  public var failedAsset: (any Persona2.ThemeAsset)?
+  @available(*, deprecated, message: "Unused in dynamic flows")
+  public var verificationFailedAsset: (any Persona2.ThemeAsset)?
+  public var centerAlignRemoteAsset: Swift.Bool
+  public var separatorColor: UIKit.UIColor
+  @available(*, deprecated, message: "Unused in dynamic flows")
+  public var cameraInstructionsTextColor: UIKit.UIColor
+  @available(*, deprecated, message: "Unused in dynamic flows")
+  public var cameraInstructionsTextFont: UIKit.UIFont
+  @available(*, deprecated, message: "Unused in dynamic flows")
+  public var cameraInstructionTextAlignment: UIKit.NSTextAlignment
+  @available(*, deprecated, message: "Unused in dynamic flows")
+  public var cameraButtonBackgroundColor: UIKit.UIColor
+  @available(*, deprecated, message: "Unused in dynamic flows")
+  public var cameraButtonTextColor: UIKit.UIColor
+  @available(*, deprecated, message: "Unused in dynamic flows")
+  public var cameraButtonAlternateBackgroundColor: UIKit.UIColor
+  @available(*, deprecated, message: "Unused in dynamic flows")
+  public var cameraButtonAlternateTextColor: UIKit.UIColor
+  @available(*, deprecated, message: "Unused in dynamic flows")
+  public var cameraHintTextColor: UIKit.UIColor
+  @available(*, deprecated, message: "Unused in dynamic flows")
+  public var cameraHintTextFont: UIKit.UIFont
+  @available(*, deprecated, message: "Unused in dynamic flows")
+  public var cameraGuideHintTextColor: UIKit.UIColor
+  @available(*, deprecated, message: "Unused in dynamic flows")
+  public var cameraGuideCornersColor: UIKit.UIColor
+  @available(*, deprecated, message: "Unused in dynamic flows")
+  public var cameraGuideHintTextFont: UIKit.UIFont
+  @available(*, deprecated, message: "Unused, this asset can still be customized server side via Persona dashboard or account team.")
+  public var governmentIdSelectScreenHeaderIcon: Persona2.InquiryTheme.ImageAsset?
+  public var governmentIdCaptureBackgroundColor: UIKit.UIColor?
+  public var governmentIdScanningStrokeStyle: Persona2.InquiryTheme.IdFrameStrokeStyle
+  public var governmentIdCapturingStrokeStyle: Persona2.InquiryTheme.IdFrameStrokeStyle
+  public var governmentIdConfirmingStrokeStyle: Persona2.InquiryTheme.IdFrameStrokeStyle
+  public var governmentIdScanningAnimation: Persona2.InquiryTheme.AnimationAsset?
+  public var governmentIdCaptureDisclaimerIcon: Persona2.InquiryTheme.ImageAsset?
+  public var governmentIdHintTextAlignment: UIKit.NSTextAlignment
+  public var governmentIdHintTextColor: UIKit.UIColor
+  public var governmentIdHintTextFont: UIKit.UIFont
+  public var governmentIdHintBackgroundColor: UIKit.UIColor
+  public var governmentIdOverlayGenericFrontImage: UIKit.UIImage?
+  public var governmentIdOverlayBarcodeImage: UIKit.UIImage?
+  public var governmentIdOverlayMrzImage: UIKit.UIImage?
+  @available(*, deprecated, message: "Unused, this property can still be customized server side via Persona dashboard or account team.")
+  public var showGovernmentIdIcons: Swift.Bool
+  public var showGovernmentIdOverlays: Swift.Bool
+  public var showGovernmentIdHintIcons: Swift.Bool
+  public var selfieOverlayBackgroundColor: UIKit.UIColor?
+  public var selfieLookLeftAsset: (any Persona2.ThemeAsset)?
+  public var selfieLookRightAsset: (any Persona2.ThemeAsset)?
+  public var selfieStartScreenHeaderIcon: Persona2.InquiryTheme.ImageAsset?
+  public var selfieCountdownFont: UIKit.UIFont
+  @available(*, deprecated, message: "Please migrate to InquiryTheme(themeSource:) initializer instead.")
+  public init()
+  public init(themeSource: Persona2.ThemeSource)
+}
+public enum ThemeSource {
+  case server
+  @available(*, deprecated, message: "Client side theming is deprecated, please configure your theme inside the persona dashboard and use server as the theme source.")
+  case client
+  public static func == (a: Persona2.ThemeSource, b: Persona2.ThemeSource) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public protocol ThemeAsset {
+  var type: Persona2.InquiryTheme.AssetType { get }
+  var size: CoreFoundation.CGSize { get }
+}
+extension Persona2.InquiryTheme {
+  public enum AssetType {
+    case animation
+    case svgImage
+    case image
+    public static func == (a: Persona2.InquiryTheme.AssetType, b: Persona2.InquiryTheme.AssetType) -> Swift.Bool
+    public func hash(into hasher: inout Swift.Hasher)
+    public var hashValue: Swift.Int {
+      get
+    }
+  }
+  public enum LoopMode {
+    case playOnce
+    case loop
+    case autoReverse
+    case `repeat`(Swift.Float)
+    case repeatBackwards(Swift.Float)
+  }
+  public struct AnimationAsset : Persona2.ThemeAsset {
+    public let path: Swift.String?
+    public let size: CoreFoundation.CGSize
+    public let type: Persona2.InquiryTheme.AssetType
+    public let loopMode: Persona2.InquiryTheme.LoopMode
+    public init(path: Swift.String?, size: CoreFoundation.CGSize, loopMode: Persona2.InquiryTheme.LoopMode = .playOnce)
+  }
+  public struct SVGAsset : Persona2.ThemeAsset {
+    public let path: Swift.String?
+    public let size: CoreFoundation.CGSize
+    public let type: Persona2.InquiryTheme.AssetType
+    public init(path: Swift.String?, size: CoreFoundation.CGSize)
+  }
+  public struct ImageAsset : Persona2.ThemeAsset {
+    public let name: Swift.String?
+    public let size: CoreFoundation.CGSize
+    public let type: Persona2.InquiryTheme.AssetType
+    public init(name: Swift.String?, bundle: Foundation.Bundle = Bundle.main, size: CoreFoundation.CGSize? = nil)
+    public init(image: UIKit.UIImage?, size: CoreFoundation.CGSize? = nil)
+  }
+  public struct IdFrameStrokeStyle {
+    public let width: CoreFoundation.CGFloat
+    public let color: UIKit.UIColor
+    public let cornerRadius: CoreFoundation.CGFloat
+    public init(width: CoreFoundation.CGFloat = 4.0, color: UIKit.UIColor = .white, cornerRadius: CoreFoundation.CGFloat = 8.0)
+  }
+}
+public struct InquiryConfiguration {
+  public init(templateId: Swift.String, environment: Persona2.Environment? = .production, fields: [Swift.String : Persona2.InquiryField]? = nil, theme: Persona2.InquiryTheme? = nil, nfcAdapter: (any Persona2.InquiryNfcAdapter)? = nil, collectionDelegate: (any Persona2.InquiryCollectionDelegate)? = nil)
+  public init(templateId: Swift.String, referenceId: Swift.String, environment: Persona2.Environment? = .production, fields: [Swift.String : Persona2.InquiryField]? = nil, theme: Persona2.InquiryTheme? = nil, nfcAdapter: (any Persona2.InquiryNfcAdapter)? = nil, collectionDelegate: (any Persona2.InquiryCollectionDelegate)? = nil)
+  public init(templateId: Swift.String, accountId: Swift.String, environment: Persona2.Environment? = .production, fields: [Swift.String : Persona2.InquiryField]? = nil, theme: Persona2.InquiryTheme? = nil, nfcAdapter: (any Persona2.InquiryNfcAdapter)? = nil, collectionDelegate: (any Persona2.InquiryCollectionDelegate)? = nil)
+  public init(templateVersion: Swift.String, environment: Persona2.Environment? = .production, fields: [Swift.String : Persona2.InquiryField]? = nil, theme: Persona2.InquiryTheme? = nil, nfcAdapter: (any Persona2.InquiryNfcAdapter)? = nil, collectionDelegate: (any Persona2.InquiryCollectionDelegate)? = nil)
+  public init(templateVersion: Swift.String, referenceId: Swift.String, environment: Persona2.Environment? = .production, fields: [Swift.String : Persona2.InquiryField]? = nil, theme: Persona2.InquiryTheme? = nil, nfcAdapter: (any Persona2.InquiryNfcAdapter)? = nil, collectionDelegate: (any Persona2.InquiryCollectionDelegate)? = nil)
+  public init(templateVersion: Swift.String, accountId: Swift.String, environment: Persona2.Environment? = .production, fields: [Swift.String : Persona2.InquiryField]? = nil, theme: Persona2.InquiryTheme? = nil, nfcAdapter: (any Persona2.InquiryNfcAdapter)? = nil, collectionDelegate: (any Persona2.InquiryCollectionDelegate)? = nil)
+  public init(inquiryId: Swift.String, sessionToken: Swift.String? = nil, theme: Persona2.InquiryTheme? = nil, nfcAdapter: (any Persona2.InquiryNfcAdapter)? = nil, collectionDelegate: (any Persona2.InquiryCollectionDelegate)? = nil)
+  public static func build(inquiryId: Swift.String? = nil, sessionToken: Swift.String? = nil, templateVersion: Swift.String? = nil, templateId: Swift.String? = nil, referenceId: Swift.String? = nil, accountId: Swift.String? = nil, environment: Persona2.Environment? = nil, fields: [Swift.String : Persona2.InquiryField]? = nil, theme: Persona2.InquiryTheme? = nil, nfcAdapter: (any Persona2.InquiryNfcAdapter)? = nil, collectionDelegate: (any Persona2.InquiryCollectionDelegate)? = nil) -> Persona2.InquiryConfiguration?
+}
+public enum InquiryField {
+  case string(Swift.String?)
+  case int(Swift.Int?)
+  case float(Swift.Float?)
+  case bool(Swift.Bool?)
+  case date(Foundation.Date?)
+  case datetime(Foundation.Date?)
+  case choices(Swift.String?)
+  case multiChoices([Swift.String]?)
+  case unknown
+  public func toString() -> Swift.String?
+}
+extension Persona2.InquiryField : Swift.Equatable {
+  public static func == (lhs: Persona2.InquiryField, rhs: Persona2.InquiryField) -> Swift.Bool
+}
+extension Persona2.InquiryField : Swift.Codable {
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public enum InquiryConfigurationError : Swift.Error {
+  case invalidTemplateId(Swift.String)
+  case invalidTemplateVersion(Swift.String)
+  case prefixSDKVersionMismatch(Swift.String)
+  case invalidFieldError(Swift.String)
+  case serverConfiguration
+  case webRtcMisconfiguration
+  case invalidStaticTemplate
+  case invalidInlineInquiry
+}
+extension Persona2.InquiryConfigurationError : Foundation.LocalizedError {
+  public var errorDescription: Swift.String? {
+    get
+  }
+}
+public enum FallbackMode : Swift.String, Swift.CaseIterable {
+  case never
+  case always
+  case `defer`
+  public init?(rawValue: Swift.String)
+  public typealias AllCases = [Persona2.FallbackMode]
+  public typealias RawValue = Swift.String
+  nonisolated public static var allCases: [Persona2.FallbackMode] {
+    get
+  }
+  public var rawValue: Swift.String {
+    get
+  }
+}
+public protocol InquiryWebRtcAdapter : AnyObject {
+  func setupConnection(username: Swift.String, credential: Swift.String, serverUrl: Swift.String, jwt: Swift.String?, connectionUrl: Swift.String, size: CoreFoundation.CGSize, isAudioRequired: Swift.Bool, completion: @escaping () -> Swift.Void, onConnectionError: @escaping () -> Swift.Void)
+  func stopRecording(webRtcObjectIdReceived: @escaping (_ objectId: Swift.String) -> Swift.Void)
+  func closeWebRtcConnection()
+  func captureOutput(didOutput sampleBuffer: CoreMedia.CMSampleBuffer, from connection: AVFoundation.AVCaptureConnection, cameraPosition: AVFoundation.AVCaptureDevice.Position)
+}
+public enum InquiryEvent {
+  case start(inquiryId: Swift.String)
+  case pageChange(name: Swift.String, path: Swift.String)
+}
+public enum InquiryStepData : Swift.Codable {
+  case ui(Persona2.UiStepData)
+  case selfie(Persona2.SelfieStepData)
+  case governmentId(Persona2.GovernmentIdStepData)
+  case document(Persona2.DocumentStepData)
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public struct UiStepData : Swift.Codable {
+  public let name: Swift.String
+  public let componentData: [Persona2.UiStepData.ComponentData]
+  public enum ComponentData : Swift.Codable {
+    case int(key: Swift.String, value: Swift.Int?)
+    case bool(key: Swift.String, value: Swift.Bool)
+    case string(key: Swift.String, value: Swift.String)
+    case strings(key: Swift.String, value: [Swift.String])
+    case double(key: Swift.String, value: Swift.Double?)
+    case address(key: Swift.String, value: [Swift.String : Swift.String])
+    case governmentIdNfc(key: Swift.String, value: [Swift.String : Swift.String])
+    case internationalDb(key: Swift.String, value: [Swift.String : Swift.String])
+    public func encode(to encoder: any Swift.Encoder) throws
+    public init(from decoder: any Swift.Decoder) throws
+  }
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public struct SelfieStepData : Swift.Codable {
+  public let name: Swift.String
+  public let centerPhoto: Persona2.SelfieStepData.SelfiePhoto?
+  public let leftPhoto: Persona2.SelfieStepData.SelfiePhoto?
+  public let rightPhoto: Persona2.SelfieStepData.SelfiePhoto?
+  public struct SelfiePhoto : Swift.Codable {
+    public let filePath: Swift.String
+    public let captureMethod: Swift.String
+    public func encode(to encoder: any Swift.Encoder) throws
+    public init(from decoder: any Swift.Decoder) throws
+  }
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public struct GovernmentIdStepData : Swift.Codable {
+  public let name: Swift.String
+  public let idClass: Swift.String
+  public let files: [Persona2.GovernmentIdStepData.GovernmentIdFile]
+  public let idDetails: Persona2.GovernmentIdStepData.GovernmentIdDetails
+  public struct GovernmentIdFile : Swift.Codable {
+    public let page: Swift.String
+    public let captureMethod: Swift.String
+    public let frames: [Persona2.GovernmentIdStepData.GovernmentIdFile.Frame]
+    public struct Frame : Swift.Codable {
+      public let filePath: Swift.String
+      public func encode(to encoder: any Swift.Encoder) throws
+      public init(from decoder: any Swift.Decoder) throws
+    }
+    public func encode(to encoder: any Swift.Encoder) throws
+    public init(from decoder: any Swift.Decoder) throws
+  }
+  public struct GovernmentIdDetails : Swift.Codable {
+    public let expirationDate: Foundation.Date?
+    public let dateOfBirth: Foundation.Date?
+    public func isExpired() -> Swift.Bool?
+    public func ageInYears() -> Swift.Int?
+    public func encode(to encoder: any Swift.Encoder) throws
+    public init(from decoder: any Swift.Decoder) throws
+  }
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public struct InquiryData : Swift.Codable {
+  public let stepData: [Persona2.InquiryStepData]
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public protocol InquiryCollectionDelegate : AnyObject {
+  func collectionComplete(data: Persona2.InquiryData)
+}
+public struct DocumentStepData : Swift.Codable {
+  public let name: Swift.String
+  public let files: [Persona2.DocumentStepData.File]
+  public struct File : Swift.Codable {
+    public let filePath: Swift.String
+    public func encode(to encoder: any Swift.Encoder) throws
+    public init(from decoder: any Swift.Decoder) throws
+  }
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+@_hasMissingDesignatedInitializers public class InquiryTemplateBuilder {
+  @objc deinit
+}
+extension Persona2.InquiryTemplateBuilder {
+  @discardableResult
+  public func accountId(_ accountId: Swift.String?) -> Persona2.InquiryTemplateBuilder
+  @discardableResult
+  public func referenceId(_ referenceId: Swift.String?) -> Persona2.InquiryTemplateBuilder
+  @discardableResult
+  public func fields(_ fields: [Swift.String : Persona2.InquiryField]?) -> Persona2.InquiryTemplateBuilder
+  @discardableResult
+  public func environment(_ environment: Persona2.Environment) -> Persona2.InquiryTemplateBuilder
+  @discardableResult
+  public func environmentId(_ environmentId: Swift.String?) -> Persona2.InquiryTemplateBuilder
+  @discardableResult
+  public func theme(_ theme: Persona2.InquiryTheme?) -> Persona2.InquiryTemplateBuilder
+  @discardableResult
+  public func nfcAdapter(_ nfcAdapter: (any Persona2.InquiryNfcAdapter)?) -> Persona2.InquiryTemplateBuilder
+  @discardableResult
+  public func webRtcAdapter(_ webRtcAdapter: (any Persona2.InquiryWebRtcAdapter)?) -> Persona2.InquiryTemplateBuilder
+  @discardableResult
+  public func collectionDelegate(_ collectionDelegate: (any Persona2.InquiryCollectionDelegate)?) -> Persona2.InquiryTemplateBuilder
+  @discardableResult
+  public func fallbackMode(_ fallbackMode: Persona2.FallbackMode) -> Persona2.InquiryTemplateBuilder
+  @discardableResult
+  public func assetBundle(_ assetBundle: Foundation.Bundle?) -> Persona2.InquiryTemplateBuilder
+  @discardableResult
+  public func themeSetId(_ themeSetId: Swift.String?) -> Persona2.InquiryTemplateBuilder
+  @discardableResult
+  public func routingCountry(_ routingCountry: Swift.String?) -> Persona2.InquiryTemplateBuilder
+  @discardableResult
+  public func locale(_ locale: Swift.String?) -> Persona2.InquiryTemplateBuilder
+  public func build() -> Persona2.Inquiry
+}
+extension Persona2.Inquiry {
+  public static func from(templateId: Swift.String, delegate: any Persona2.InquiryDelegate) -> Persona2.InquiryTemplateBuilder
+  public static func from(templateVersion: Swift.String, delegate: any Persona2.InquiryDelegate) -> Persona2.InquiryTemplateBuilder
+}
+@_hasMissingDesignatedInitializers public class InquiryBuilder {
+  @objc deinit
+}
+extension Persona2.InquiryBuilder {
+  @discardableResult
+  public func sessionToken(_ sessionToken: Swift.String?) -> Persona2.InquiryBuilder
+  @discardableResult
+  public func theme(_ theme: Persona2.InquiryTheme?) -> Persona2.InquiryBuilder
+  @discardableResult
+  public func nfcAdapter(_ nfcAdapter: (any Persona2.InquiryNfcAdapter)?) -> Persona2.InquiryBuilder
+  @discardableResult
+  public func webRtcAdapter(_ webRtcAdapter: (any Persona2.InquiryWebRtcAdapter)?) -> Persona2.InquiryBuilder
+  @discardableResult
+  public func collectionDelegate(_ collectionDelegate: (any Persona2.InquiryCollectionDelegate)?) -> Persona2.InquiryBuilder
+  @discardableResult
+  public func routingCountry(_ routingCountry: Swift.String?) -> Persona2.InquiryBuilder
+  @discardableResult
+  public func locale(_ locale: Swift.String?) -> Persona2.InquiryBuilder
+  public func build() -> Persona2.Inquiry
+}
+extension Persona2.Inquiry {
+  public static func from(inquiryId: Swift.String, delegate: any Persona2.InquiryDelegate) -> Persona2.InquiryBuilder
+}
+@_hasMissingDesignatedInitializers public class InquiryLocalTemplateBuilder {
+  @objc deinit
+}
+extension Persona2.InquiryLocalTemplateBuilder {
+  @discardableResult
+  public func accountId(_ accountId: Swift.String?) -> Persona2.InquiryLocalTemplateBuilder
+  @discardableResult
+  public func referenceId(_ referenceId: Swift.String?) -> Persona2.InquiryLocalTemplateBuilder
+  @discardableResult
+  public func fields(_ fields: [Swift.String : Persona2.InquiryField]?) -> Persona2.InquiryLocalTemplateBuilder
+  @discardableResult
+  public func theme(_ theme: Persona2.InquiryTheme?) -> Persona2.InquiryLocalTemplateBuilder
+  @discardableResult
+  public func nfcAdapter(_ nfcAdapter: (any Persona2.InquiryNfcAdapter)?) -> Persona2.InquiryLocalTemplateBuilder
+  @discardableResult
+  public func collectionDelegate(_ collectionDelegate: (any Persona2.InquiryCollectionDelegate)?) -> Persona2.InquiryLocalTemplateBuilder
+  @discardableResult
+  public func assetBundle(_ assetBundle: Foundation.Bundle?) -> Persona2.InquiryLocalTemplateBuilder
+  @discardableResult
+  public func asyncUploadDelegate(_ asyncUploadDelegate: (any Persona2.AsyncUploadDelegate)?) -> Persona2.InquiryLocalTemplateBuilder
+  public func build() -> Persona2.Inquiry
+}
+extension Persona2.Inquiry {
+  public static func from(staticTemplateFilename filename: Swift.String, delegate: any Persona2.InquiryDelegate) -> Persona2.InquiryLocalTemplateBuilder
+}
+public enum RoutingCountry : Swift.String {
+  case de
+  case us
+  public init?(rawValue: Swift.String)
+  public typealias RawValue = Swift.String
+  public var rawValue: Swift.String {
+    get
+  }
+}
+extension Persona2.DataGroupTypes : Swift.Equatable {}
+extension Persona2.DataGroupTypes : Swift.Hashable {}
+extension Persona2.DataGroupTypes : Swift.RawRepresentable {}
+extension Persona2.GovernmentIdNfcError : Swift.Equatable {}
+extension Persona2.GovernmentIdNfcError : Swift.Hashable {}
+extension Persona2.Environment : Swift.Equatable {}
+extension Persona2.Environment : Swift.Hashable {}
+extension Persona2.Environment : Swift.RawRepresentable {}
+extension Persona2.ThemeSource : Swift.Equatable {}
+extension Persona2.ThemeSource : Swift.Hashable {}
+extension Persona2.InquiryTheme.AssetType : Swift.Equatable {}
+extension Persona2.InquiryTheme.AssetType : Swift.Hashable {}
+extension Persona2.FallbackMode : Swift.Equatable {}
+extension Persona2.FallbackMode : Swift.Hashable {}
+extension Persona2.FallbackMode : Swift.RawRepresentable {}
+extension Persona2.RoutingCountry : Swift.Equatable {}
+extension Persona2.RoutingCountry : Swift.Hashable {}
+extension Persona2.RoutingCountry : Swift.RawRepresentable {}

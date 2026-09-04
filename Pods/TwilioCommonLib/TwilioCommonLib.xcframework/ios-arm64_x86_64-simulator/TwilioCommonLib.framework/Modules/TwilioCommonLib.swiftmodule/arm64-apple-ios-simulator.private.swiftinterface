@@ -1,0 +1,307 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 5.7.2 (swiftlang-5.7.2.135.5 clang-1400.0.29.51)
+// swift-module-flags: -target arm64-apple-ios13.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name TwilioCommonLib
+// swift-module-flags-ignorable: -enable-bare-slash-regex
+import Foundation
+import OSLog
+import Swift
+import SystemConfiguration
+import _Concurrency
+import _StringProcessing
+public struct JSONCodingKeys : Swift.CodingKey {
+  public var stringValue: Swift.String
+  public var intValue: Swift.Int?
+  public init(stringValue: Swift.String)
+  public init?(intValue: Swift.Int)
+}
+extension Swift.KeyedDecodingContainer {
+  public func decode(_ type: [Swift.String : Any].Type, forKey key: K) throws -> [Swift.String : Any]
+  public func decodeIfPresent(_ type: [Swift.String : Any].Type, forKey key: K) throws -> [Swift.String : Any]?
+  public func decode(_ type: [Any].Type, forKey key: K) throws -> [Any]
+  public func decode(_ type: [[Swift.String : Any]].Type, forKey key: K) throws -> [[Swift.String : Any]]
+  public func decodeIfPresent(_ type: [Any].Type, forKey key: K) throws -> [Any]?
+  public func decode(_ type: [Swift.String : Any].Type) throws -> [Swift.String : Any]
+  public func decodeIfPresent<T>(forKey key: K, defaultValue: T) -> T where T : Swift.Decodable
+}
+extension Swift.UnkeyedDecodingContainer {
+  public mutating func decode(_ type: [[Swift.String : Any]].Type) throws -> [[Swift.String : Any]]
+  public mutating func decode(_ type: [Any].Type) throws -> [Any]
+  public mutating func decodeNestedArray(_ type: [Any].Type) throws -> [Any]
+  public mutating func decode(_ type: [Swift.String : Any].Type) throws -> [Swift.String : Any]
+}
+extension Swift.KeyedEncodingContainerProtocol where Self.Key == TwilioCommonLib.JSONCodingKeys {
+  public mutating func encodeIfPresent(_ value: [Swift.String : Any]?) throws
+  public mutating func encode(_ value: [Swift.String : Any]) throws
+}
+extension Swift.KeyedEncodingContainerProtocol {
+  public mutating func encode(_ value: [Swift.String : Any]?, forKey key: Self.Key) throws
+  public mutating func encode(_ value: [Any]?, forKey key: Self.Key) throws
+}
+extension Swift.UnkeyedEncodingContainer {
+  public mutating func encode(_ value: [Any]) throws
+  public mutating func encode(_ value: [Swift.String : Any]) throws
+  public mutating func encodeNestedArray(_ value: [Any]) throws
+}
+@propertyWrapper public class atomic<Value> {
+  public init(wrappedValue: Value)
+  public var projectedValue: TwilioCommonLib.atomic<Value> {
+    get
+  }
+  public var wrappedValue: Value {
+    get
+    set
+  }
+  public func mutate(_ mutation: (inout Value) throws -> Swift.Void) rethrows
+  public func exchange(_ newValue: Value) -> Value
+  @objc deinit
+}
+@objc @objcMembers public class CancellationToken : ObjectiveC.NSObject {
+  @objc public init(onCancel: @escaping () -> Swift.Void)
+  @objc public func cancel()
+  @objc deinit
+}
+extension Swift.Encodable {
+  public func asDictionary() throws -> [Swift.String : Any]
+}
+public enum HTTPStatusCode : Swift.Int, Swift.Error {
+  public enum ResponseType {
+    case informational
+    case success
+    case redirection
+    case clientError
+    case serverError
+    case undefined
+    public static func == (a: TwilioCommonLib.HTTPStatusCode.ResponseType, b: TwilioCommonLib.HTTPStatusCode.ResponseType) -> Swift.Bool
+    public func hash(into hasher: inout Swift.Hasher)
+    public var hashValue: Swift.Int {
+      get
+    }
+  }
+  case `continue`
+  case switchingProtocols
+  case processing
+  case ok
+  case created
+  case accepted
+  case nonAuthoritativeInformation
+  case noContent
+  case resetContent
+  case partialContent
+  case multiStatus
+  case alreadyReported
+  case IMUsed
+  case multipleChoices
+  case movedPermanently
+  case found
+  case seeOther
+  case notModified
+  case useProxy
+  case switchProxy
+  case temporaryRedirect
+  case permanentRedirect
+  case badRequest
+  case unauthorized
+  case paymentRequired
+  case forbidden
+  case notFound
+  case methodNotAllowed
+  case notAcceptable
+  case proxyAuthenticationRequired
+  case requestTimeout
+  case conflict
+  case gone
+  case lengthRequired
+  case preconditionFailed
+  case payloadTooLarge
+  case URITooLong
+  case unsupportedMediaType
+  case rangeNotSatisfiable
+  case expectationFailed
+  case teapot
+  case misdirectedRequest
+  case unprocessableEntity
+  case locked
+  case failedDependency
+  case upgradeRequired
+  case preconditionRequired
+  case tooManyRequests
+  case requestHeaderFieldsTooLarge
+  case noResponse
+  case unavailableForLegalReasons
+  case SSLCertificateError
+  case SSLCertificateRequired
+  case HTTPRequestSentToHTTPSPort
+  case clientClosedRequest
+  case internalServerError
+  case notImplemented
+  case badGateway
+  case serviceUnavailable
+  case gatewayTimeout
+  case HTTPVersionNotSupported
+  case variantAlsoNegotiates
+  case insufficientStorage
+  case loopDetected
+  case notExtended
+  case networkAuthenticationRequired
+  public var responseType: TwilioCommonLib.HTTPStatusCode.ResponseType {
+    get
+  }
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+extension Foundation.HTTPURLResponse {
+  public var status: TwilioCommonLib.HTTPStatusCode? {
+    get
+  }
+}
+public let defaultLogger: TwilioCommonLib.Logger
+public class Logger {
+  @TwilioCommonLib.atomic @_projectedValueProperty($loggerLevel) public static var loggerLevel: TwilioCommonLib.Logger.LoggerLevel {
+    get
+    set
+    _modify
+  }
+  public static var $loggerLevel: TwilioCommonLib.atomic<TwilioCommonLib.Logger.LoggerLevel> {
+    get
+  }
+  public init(prefix: Swift.String = "")
+  public func log(type: TwilioCommonLib.Logger.LoggerLevel, message: Swift.String, function: Swift.String = #function)
+  public func trace(_ message: Swift.String, function: Swift.String = #function)
+  public func debug(_ message: Swift.String, function: Swift.String = #function)
+  public func info(_ message: Swift.String, function: Swift.String = #function)
+  public func warning(_ message: Swift.String, function: Swift.String = #function)
+  public func error(_ message: Swift.String, function: Swift.String = #function)
+  public enum LoggerLevel : Swift.Int {
+    case trace, debug, info, warning, error, silent
+    public init?(rawValue: Swift.Int)
+    public typealias RawValue = Swift.Int
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  @objc deinit
+}
+public enum ReachabilityError : Swift.Error {
+  case failedToCreateWithAddress(Darwin.sockaddr, Swift.Int32)
+  case failedToCreateWithHostname(Swift.String, Swift.Int32)
+  case unableToSetCallback(Swift.Int32)
+  case unableToSetDispatchQueue(Swift.Int32)
+  case unableToGetFlags(Swift.Int32)
+}
+@available(*, unavailable, renamed: "Notification.Name.reachabilityChanged")
+public let ReachabilityChangedNotification: Foundation.NSNotification.Name
+extension Foundation.NSNotification.Name {
+  public static let reachabilityChanged: Foundation.Notification.Name
+}
+public class Reachability {
+  public typealias NetworkReachable = (TwilioCommonLib.Reachability) -> ()
+  public typealias NetworkUnreachable = (TwilioCommonLib.Reachability) -> ()
+  @available(*, unavailable, renamed: "Connection")
+  public enum NetworkStatus : Swift.CustomStringConvertible {
+    case notReachable, reachableViaWiFi, reachableViaWWAN
+    public var description: Swift.String {
+      get
+    }
+    public static func == (a: TwilioCommonLib.Reachability.NetworkStatus, b: TwilioCommonLib.Reachability.NetworkStatus) -> Swift.Bool
+    public func hash(into hasher: inout Swift.Hasher)
+    public var hashValue: Swift.Int {
+      get
+    }
+  }
+  public enum Connection : Swift.CustomStringConvertible {
+    case unavailable, wifi, cellular
+    public var description: Swift.String {
+      get
+    }
+    @available(*, deprecated, renamed: "unavailable")
+    public static let none: TwilioCommonLib.Reachability.Connection
+    public static func == (a: TwilioCommonLib.Reachability.Connection, b: TwilioCommonLib.Reachability.Connection) -> Swift.Bool
+    public func hash(into hasher: inout Swift.Hasher)
+    public var hashValue: Swift.Int {
+      get
+    }
+  }
+  public var whenReachable: TwilioCommonLib.Reachability.NetworkReachable?
+  public var whenUnreachable: TwilioCommonLib.Reachability.NetworkUnreachable?
+  @available(*, deprecated, renamed: "allowsCellularConnection")
+  final public let reachableOnWWAN: Swift.Bool
+  public var allowsCellularConnection: Swift.Bool
+  public var notificationCenter: Foundation.NotificationCenter
+  @available(*, deprecated, renamed: "connection.description")
+  public var currentReachabilityString: Swift.String {
+    get
+  }
+  @available(*, unavailable, renamed: "connection")
+  public var currentReachabilityStatus: TwilioCommonLib.Reachability.Connection {
+    get
+  }
+  public var connection: TwilioCommonLib.Reachability.Connection {
+    get
+  }
+  required public init(reachabilityRef: SystemConfiguration.SCNetworkReachability, queueQoS: Dispatch.DispatchQoS = .default, targetQueue: Dispatch.DispatchQueue? = nil, notificationQueue: Dispatch.DispatchQueue? = .main)
+  convenience public init(hostname: Swift.String, queueQoS: Dispatch.DispatchQoS = .default, targetQueue: Dispatch.DispatchQueue? = nil, notificationQueue: Dispatch.DispatchQueue? = .main) throws
+  convenience public init(queueQoS: Dispatch.DispatchQoS = .default, targetQueue: Dispatch.DispatchQueue? = nil, notificationQueue: Dispatch.DispatchQueue? = .main) throws
+  @objc deinit
+}
+extension TwilioCommonLib.Reachability {
+  public func startNotifier() throws
+  public func stopNotifier()
+  @available(*, deprecated, message: "Please use `connection != .none`")
+  public var isReachable: Swift.Bool {
+    get
+  }
+  @available(*, deprecated, message: "Please use `connection == .cellular`")
+  public var isReachableViaWWAN: Swift.Bool {
+    get
+  }
+  @available(*, deprecated, message: "Please use `connection == .wifi`")
+  public var isReachableViaWiFi: Swift.Bool {
+    get
+  }
+  public var description: Swift.String {
+    get
+  }
+}
+@_hasMissingDesignatedInitializers public class SecurityCheck {
+  public static func isValid(trust: Security.SecTrust, certificates: [Foundation.Data], strict: Swift.Bool) -> Swift.Bool
+  public static func certificateChain(for trust: Security.SecTrust) -> [Security.SecCertificate]
+  @objc deinit
+}
+final public class StringMultiMap : Swift.Codable {
+  final public var keys: [Swift.String] {
+    get
+  }
+  public init()
+  public init(_ dict: [Swift.String : Any]?)
+  final public subscript(key: Swift.String) -> Swift.Set<Swift.String>? {
+    get
+    set
+  }
+  final public func append(_ value: Swift.String, for key: Swift.String)
+  final public func append(_ mmap: TwilioCommonLib.StringMultiMap)
+  final public func appending(_ value: Swift.String, for key: Swift.String) -> TwilioCommonLib.StringMultiMap
+  final public func appending(_ mmap: TwilioCommonLib.StringMultiMap) -> TwilioCommonLib.StringMultiMap
+  final public func encode(to encoder: Swift.Encoder) throws
+  convenience public init(from decoder: Swift.Decoder) throws
+  @objc deinit
+}
+extension TwilioCommonLib.StringMultiMap : Swift.Equatable {
+  public static func == (lhs: TwilioCommonLib.StringMultiMap, rhs: TwilioCommonLib.StringMultiMap) -> Swift.Bool
+}
+extension TwilioCommonLib.HTTPStatusCode : Swift.Equatable {}
+extension TwilioCommonLib.HTTPStatusCode : Swift.Hashable {}
+extension TwilioCommonLib.HTTPStatusCode : Swift.RawRepresentable {}
+extension TwilioCommonLib.HTTPStatusCode.ResponseType : Swift.Equatable {}
+extension TwilioCommonLib.HTTPStatusCode.ResponseType : Swift.Hashable {}
+extension TwilioCommonLib.Logger.LoggerLevel : Swift.Equatable {}
+extension TwilioCommonLib.Logger.LoggerLevel : Swift.Hashable {}
+extension TwilioCommonLib.Logger.LoggerLevel : Swift.RawRepresentable {}
+@available(*, unavailable, renamed: "Connection")
+extension TwilioCommonLib.Reachability.NetworkStatus : Swift.Equatable {}
+@available(*, unavailable, renamed: "Connection")
+extension TwilioCommonLib.Reachability.NetworkStatus : Swift.Hashable {}
+extension TwilioCommonLib.Reachability.Connection : Swift.Equatable {}
+extension TwilioCommonLib.Reachability.Connection : Swift.Hashable {}

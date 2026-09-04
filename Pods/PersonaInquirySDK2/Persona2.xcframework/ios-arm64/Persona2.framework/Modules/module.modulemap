@@ -1,0 +1,11 @@
+framework module Persona2 {
+  umbrella header "Persona2.h"
+  export *
+
+  module * { export * }
+}
+
+module Persona2.Swift {
+  header "Persona2-Swift.h"
+  requires objc
+}

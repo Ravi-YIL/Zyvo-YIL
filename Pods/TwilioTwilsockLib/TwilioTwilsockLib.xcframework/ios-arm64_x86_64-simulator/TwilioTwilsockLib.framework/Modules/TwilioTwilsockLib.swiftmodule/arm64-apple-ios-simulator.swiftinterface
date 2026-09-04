@@ -1,0 +1,330 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 5.7.2 (swiftlang-5.7.2.135.5 clang-1400.0.29.51)
+// swift-module-flags: -target arm64-apple-ios13.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name TwilioTwilsockLib
+// swift-module-flags-ignorable: -enable-bare-slash-regex
+import Foundation
+import Swift
+import TwilioCommonLib
+import TwilioStateMachine
+import _Concurrency
+import _StringProcessing
+public protocol ContinuationTokenStorageProtocol {
+  var continuationToken: Swift.String? { get set }
+}
+public enum ErrorInfo : Swift.Error, Swift.Equatable {
+  case transportError(TwilioTwilsockLib.TransportError)
+  case networkBecomeUnreachable
+  case timeout(reason: Swift.String)
+  case cancelled(message: Swift.String)
+  case tokenUpdatedLocally
+  case disconnected
+  case cannotParseResponse
+  case unauthorized(TwilioTwilsockLib.ErrorInfo.ServerErrorData)
+  case tooManyRequests(TwilioTwilsockLib.ErrorInfo.ServerErrorData)
+  case closeMessageReceived(TwilioTwilsockLib.ErrorInfo.ServerErrorData)
+  case tokenExpired(TwilioTwilsockLib.ErrorInfo.ServerErrorData)
+  case unknownError(TwilioTwilsockLib.ErrorInfo.ServerErrorData)
+  public struct ServerErrorData : Swift.Equatable {
+    public static func == (a: TwilioTwilsockLib.ErrorInfo.ServerErrorData, b: TwilioTwilsockLib.ErrorInfo.ServerErrorData) -> Swift.Bool
+  }
+  public static func == (a: TwilioTwilsockLib.ErrorInfo, b: TwilioTwilsockLib.ErrorInfo) -> Swift.Bool
+}
+public struct HttpRequest {
+  public init(url: Foundation.URL, method: TwilioTwilsockLib.HttpMethod = .get, headers: TwilioCommonLib.StringMultiMap? = nil, timeout: Foundation.TimeInterval = 60.0, payload: Swift.String? = nil)
+}
+public enum HttpMethod : Swift.String {
+  case post
+  case get
+  case put
+  case delete
+  public init?(rawValue: Swift.String)
+  public typealias RawValue = Swift.String
+  public var rawValue: Swift.String {
+    get
+  }
+}
+public struct HttpResponse : Swift.Equatable {
+  public let statusCode: Swift.Int
+  public let status: Swift.String
+  public let headers: TwilioCommonLib.StringMultiMap?
+  public let payload: Swift.String?
+  public static func == (a: TwilioTwilsockLib.HttpResponse, b: TwilioTwilsockLib.HttpResponse) -> Swift.Bool
+}
+public protocol ReachabilityMonitorProtocol {
+  var onNetworkAvailable: (() -> Swift.Void)? { get set }
+  var onNetworkUnavailable: (() -> Swift.Void)? { get set }
+  init(host: Swift.String)
+  func startMonitor()
+  func stopMonitor()
+}
+public protocol TwilsockObserver : AnyObject {
+}
+public protocol ConnectionObserver : TwilioTwilsockLib.TwilsockObserver {
+  func onConnecting()
+  func onConnected()
+  func onDisconnected(_ reason: Swift.String)
+  func onFatalError(_ errorInfo: TwilioTwilsockLib.ErrorInfo)
+  func onNonFatalError(_ errorInfo: TwilioTwilsockLib.ErrorInfo)
+}
+public protocol TokenObserver : TwilioTwilsockLib.TwilsockObserver {
+  func onTokenAboutToExpire()
+  func onTokenExpired()
+}
+public protocol TwilsockMessageObserver : TwilioTwilsockLib.TwilsockObserver {
+  func onMessageReceived(_ messageType: Swift.String, _ message: Swift.String)
+}
+public protocol TwilsockProtocol : AnyObject {
+  init(certificates: [Swift.String], authStruct: TwilioTwilsockLib.AuthStruct, clientMetadata: TwilioTwilsockLib.ClientMetadata, notificationProductId: Swift.String, continuationTokenStorage: TwilioTwilsockLib.ContinuationTokenStorageProtocol?, reachabilityMonitor: TwilioTwilsockLib.ReachabilityMonitorProtocol?, transportConfig: TwilioTwilsockLib.TransportConfig?, transportType: TwilioTwilsockLib.TwilsockTransportProtocol.Type?)
+  func addObserver(_ observer: TwilioTwilsockLib.TwilsockObserver)
+  func removeObserver(_ observer: TwilioTwilsockLib.TwilsockObserver)
+  func populateInitRegistrations(_ messageTypes: Swift.String...)
+  func populateInitRegistrations(_ messageTypes: [Swift.String])
+  func connect() throws
+  func disconnect() throws
+  func shutdown() throws
+  func updateToken(_ token: Swift.String, completion: ((Swift.Result<TwilioTwilsockLib.HttpResponse, TwilioTwilsockLib.ErrorInfo>) throws -> Swift.Void)?) throws -> TwilioCommonLib.CancellationToken
+  func sendRequest(_ request: TwilioTwilsockLib.HttpRequest, completion: ((Swift.Result<TwilioTwilsockLib.HttpResponse, TwilioTwilsockLib.ErrorInfo>) throws -> Swift.Void)?) throws -> TwilioCommonLib.CancellationToken
+}
+public class Twilsock : TwilioTwilsockLib.TwilsockProtocol {
+  required public init(certificates: [Swift.String], authStruct: TwilioTwilsockLib.AuthStruct, clientMetadata: TwilioTwilsockLib.ClientMetadata, notificationProductId: Swift.String, continuationTokenStorage: TwilioTwilsockLib.ContinuationTokenStorageProtocol? = nil, reachabilityMonitor: TwilioTwilsockLib.ReachabilityMonitorProtocol? = nil, transportConfig: TwilioTwilsockLib.TransportConfig? = nil, transportType: TwilioTwilsockLib.TwilsockTransportProtocol.Type? = nil)
+  @objc deinit
+  public func addObserver(_ observer: TwilioTwilsockLib.TwilsockObserver)
+  public func removeObserver(_ observer: TwilioTwilsockLib.TwilsockObserver)
+  public func connect() throws
+  public func shutdown() throws
+  public func disconnect() throws
+  @discardableResult
+  public func updateToken(_ token: Swift.String, completion: ((Swift.Result<TwilioTwilsockLib.HttpResponse, TwilioTwilsockLib.ErrorInfo>) throws -> Swift.Void)? = nil) throws -> TwilioCommonLib.CancellationToken
+  @discardableResult
+  public func sendRequest(_ request: TwilioTwilsockLib.HttpRequest, completion: ((Swift.Result<TwilioTwilsockLib.HttpResponse, TwilioTwilsockLib.ErrorInfo>) throws -> Swift.Void)? = nil) throws -> TwilioCommonLib.CancellationToken
+  public func populateInitRegistrations(_ messageTypes: Swift.String...)
+  public func populateInitRegistrations(_ messageTypes: [Swift.String])
+}
+extension TwilioTwilsockLib.Twilsock : TwilioTwilsockLib.TwilsockTransportDelegate {
+  public func transportConnected()
+  public func transportDisconnected(_ error: TwilioTwilsockLib.TransportError)
+  public func transportError(_ error: TwilioTwilsockLib.TransportError)
+  public func messageReceived(_ message: Foundation.Data)
+  public func messageSent(_ successful: Swift.Bool)
+}
+public struct AuthStruct {
+}
+public struct ClientMetadata : Swift.Encodable {
+  public func encode(to encoder: Swift.Encoder) throws
+}
+public struct TwilsockMessage {
+}
+extension TwilioTwilsockLib.HttpRequest : Swift.Encodable {
+  public func encode(to encoder: Swift.Encoder) throws
+}
+@_inheritsConvenienceInitializers @objc(TCHLogger) @objcMembers public class ObjcLogger : ObjectiveC.NSObject {
+  @objc(TCHLoggerLevel) public enum ObjcLoggerLevel : Swift.Int {
+    case trace, debug, info, warning, error, silent
+    public init?(rawValue: Swift.Int)
+    public typealias RawValue = Swift.Int
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  @objc(setLoggerLevel:) public static func setLoggerLevel(_ logLevel: TwilioTwilsockLib.ObjcLogger.ObjcLoggerLevel)
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc(TCHErrorCode) public enum ObjcErrorCode : Swift.Int {
+  case unknown = 1
+  case cancelled = 2
+  case timeout = 3
+  case transportDisconnected = 8
+  case networkBecameUnreachable = 9
+  case unauthorized = 10
+  case tokenExpired = 11
+  case tokenUpdatedLocally = 12
+  case tooManyRequests = 13
+  case hostnameUnverified = 14
+  case sslHandshakeError = 15
+  case closeMessageReceived = 16
+  case cannotParse = 17
+  public var errorDescription: Swift.String {
+    get
+  }
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+@_hasMissingDesignatedInitializers @objc(TCHErrorInfo) @objcMembers public class ObjCErrorInfo : ObjectiveC.NSObject {
+  @objc public var nestedError: TwilioTwilsockLib.ObjCErrorInfo? {
+    get
+  }
+  @objc public var serverSideError: TwilioTwilsockLib.ServerSideError? {
+    get
+  }
+  @objc public var reason: Swift.String {
+    @objc get
+  }
+  @objc public var errorCode: Swift.Int {
+    @objc get
+  }
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers @objc(TCHServerSideError) @objcMembers public class ServerSideError : ObjectiveC.NSObject {
+  @objc public var code: Swift.Int {
+    get
+  }
+  @objc public var status: Swift.String {
+    get
+  }
+  @objc public var errorCode: Swift.Int {
+    get
+  }
+  @objc deinit
+}
+@objc(TCHTwilsockObserver) public protocol TwilsockObjCObserver {
+  @objc func onConnecting()
+  @objc func onConnected()
+  @objc func onDisconnected(_ reason: Swift.String)
+  @objc func onFatalError(_ errorInfo: TwilioTwilsockLib.ObjCErrorInfo)
+  @objc func onNonFatalError(_ errorInfo: TwilioTwilsockLib.ObjCErrorInfo)
+  @objc func onTokenAboutToExpire()
+  @objc func onTokenExpired()
+  @objc(onMessageReceivedWithType:message:) func onMessageReceived(_ messageType: Swift.String, _ message: Swift.String)
+}
+@_inheritsConvenienceInitializers @objc(TCHStringMultiMap) @objcMembers public class ObjcStringMultiMap : ObjectiveC.NSObject {
+  @objc public var keys: [Swift.String] {
+    @objc get
+  }
+  @objc(initWithDictionary:) convenience public init(_ dict: [Swift.String : Any])
+  @objc public subscript(key: Swift.String) -> Swift.Set<Swift.String>? {
+    @objc get
+    @objc set
+  }
+  @objc(appendValue:forKey:) public func append(_ value: Swift.String, for key: Swift.String)
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc(TCHHttpRequest) @objcMembers public class ObjCHttpRequest : ObjectiveC.NSObject {
+  @objc final public let url: Foundation.URL
+  @objc public var method: TwilioTwilsockLib.ObjCHttpMethod
+  @objc public var headers: TwilioTwilsockLib.ObjcStringMultiMap?
+  @objc public var timeout: Swift.Double
+  @objc public var payload: Swift.String?
+  @objc public init(url: Foundation.URL)
+  @objc public init(url: Foundation.URL, method: TwilioTwilsockLib.ObjCHttpMethod)
+  @objc public init(url: Foundation.URL, headers: TwilioTwilsockLib.ObjcStringMultiMap)
+  @objc public init(url: Foundation.URL, method: TwilioTwilsockLib.ObjCHttpMethod, headers: TwilioTwilsockLib.ObjcStringMultiMap, timeout: Foundation.TimeInterval)
+  @objc public init(url: Foundation.URL, method: TwilioTwilsockLib.ObjCHttpMethod, headers: TwilioTwilsockLib.ObjcStringMultiMap, timeout: Foundation.TimeInterval, payload: Swift.String?)
+  @objc deinit
+}
+@objc(TCHHttpMethod) public enum ObjCHttpMethod : Swift.Int {
+  case get, post, put, delete
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+@_hasMissingDesignatedInitializers @objc(TCHHttpResponse) @objcMembers public class ObjCHttpResponse : ObjectiveC.NSObject {
+  @objc public var statusCode: Swift.Int {
+    get
+  }
+  @objc public var status: Swift.String {
+    get
+  }
+  @objc public var payload: Swift.String? {
+    get
+  }
+  @objc public var headers: TwilioTwilsockLib.ObjcStringMultiMap? {
+    get
+  }
+  @objc deinit
+}
+@objc(TCHAuthStruct) @objcMembers public class ObjCAuthStruct : ObjectiveC.NSObject {
+  @objc public var token: Swift.String
+  @objc public var continuationToken: Swift.String?
+  @objc public var activeGrant: Swift.String
+  @objc public var tweaks: Foundation.Data?
+  @objc public init(token: Swift.String, continuationToken: Swift.String? = nil, activeGrant: Swift.String, tweaks: Foundation.Data? = nil)
+  @objc public init(token: Swift.String, continuationToken: Swift.String? = nil, activeGrant: Swift.String)
+  @objc public init(token: Swift.String, activeGrant: Swift.String)
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers @objc(TCHClientMetadata) @objcMembers public class ObjCClientMetadata : ObjectiveC.NSObject {
+  @objc public var envName: Swift.String
+  @objc public var envVersion: Swift.String
+  @objc public var osName: Swift.String
+  @objc public var osVersion: Swift.String
+  @objc public var osArch: Swift.String
+  @objc public var deviceModel: Swift.String
+  @objc public var deviceVendor: Swift.String
+  @objc public var deviceType: Swift.String
+  @objc public var sdkName: Swift.String
+  @objc public var sdkVersion: Swift.String
+  @objc public var sdkType: Swift.String
+  @objc public var appName: Swift.String
+  @objc public var appVersion: Swift.String
+  @objc public init(envName: Swift.String, envVersion: Swift.String, osName: Swift.String, osVersion: Swift.String, osArch: Swift.String, deviceModel: Swift.String, deviceVendor: Swift.String, deviceType: Swift.String, sdkName: Swift.String, sdkVersion: Swift.String, sdkType: Swift.String, appName: Swift.String, appVersion: Swift.String)
+  @objc deinit
+}
+@objc(TCHTransportConfig) @objcMembers public class ObjcTransportConfig : ObjectiveC.NSObject {
+  @objc public var serviceAddr: Swift.String
+  @objc public var endpoint: Swift.String
+  @objc public var servicePort: Swift.Int
+  @objc public var useProxy: Swift.Bool
+  @objc public var verifyCerts: Swift.Bool
+  @objc public var strictCheck: Swift.Bool
+  @objc public init(serviceAddr: Swift.String, endpoint: Swift.String, servicePort: Swift.Int, useProxy: Swift.Bool, verifyCerts: Swift.Bool, strictCheck: Swift.Bool)
+  @objc deinit
+}
+@objc(TCHTwilsockInterface) @objcMembers public class TwilsockObjCInterface : ObjectiveC.NSObject {
+  final public let twilsock: TwilioTwilsockLib.TwilsockProtocol
+  @objc public init(certificates: [Swift.String], authStruct: TwilioTwilsockLib.ObjCAuthStruct, clientMetadata: TwilioTwilsockLib.ObjCClientMetadata, notificationProductId: Swift.String, transportConfig: TwilioTwilsockLib.ObjcTransportConfig)
+  @objc deinit
+  @objc public func addObserver(_ observer: TwilioTwilsockLib.TwilsockObjCObserver)
+  @objc public func removeObserver(_ observer: TwilioTwilsockLib.TwilsockObjCObserver)
+  public func populateInitRegistrations(_ messageTypes: Swift.String...)
+  @objc public func populateInitRegistrations(_ messageTypes: [Swift.String])
+  @objc public func connect() throws
+  @objc public func disconnect() throws
+  @objc public func shutdown() throws
+  @objc @discardableResult
+  public func updateToken(_ token: Swift.String, completion: ((TwilioTwilsockLib.ObjCHttpResponse?, TwilioTwilsockLib.ObjCErrorInfo?) -> Swift.Void)?) throws -> TwilioCommonLib.CancellationToken
+  @objc public func sendRequest(_ request: TwilioTwilsockLib.ObjCHttpRequest, completion: ((TwilioTwilsockLib.ObjCHttpResponse?, TwilioTwilsockLib.ObjCErrorInfo?) -> Swift.Void)?) throws -> TwilioCommonLib.CancellationToken
+}
+public struct CertificatesValidationSettings {
+}
+public struct ProxySettings {
+}
+public struct TransportConfig {
+}
+public protocol TwilsockTransportDelegate : AnyObject {
+  func transportConnected()
+  func transportDisconnected(_ error: TwilioTwilsockLib.TransportError)
+  func transportError(_ error: TwilioTwilsockLib.TransportError)
+  func messageReceived(_ message: Foundation.Data)
+  func messageSent(_ successful: Swift.Bool)
+}
+public enum TransportError : Swift.Error, Swift.Equatable {
+  case wrongConfig, invalidSslCertificate, internalError, serverError, shuttingDown, normalClosure, connectionTimeout
+  case unknownError(Swift.Error)
+  public static func == (lhs: TwilioTwilsockLib.TransportError, rhs: TwilioTwilsockLib.TransportError) -> Swift.Bool
+}
+public protocol TwilsockTransportProtocol {
+  init(certificates: [Swift.String], delegate: TwilioTwilsockLib.TwilsockTransportDelegate?)
+  func connect(config: TwilioTwilsockLib.TransportConfig, connectionTimeout: Foundation.TimeInterval)
+  func sendMessage(data: Foundation.Data)
+  func disconnect()
+  func shutdown()
+}
+extension TwilioTwilsockLib.HttpMethod : Swift.Equatable {}
+extension TwilioTwilsockLib.HttpMethod : Swift.Hashable {}
+extension TwilioTwilsockLib.HttpMethod : Swift.RawRepresentable {}
+extension TwilioTwilsockLib.ObjcLogger.ObjcLoggerLevel : Swift.Equatable {}
+extension TwilioTwilsockLib.ObjcLogger.ObjcLoggerLevel : Swift.Hashable {}
+extension TwilioTwilsockLib.ObjcLogger.ObjcLoggerLevel : Swift.RawRepresentable {}
+extension TwilioTwilsockLib.ObjcErrorCode : Swift.Equatable {}
+extension TwilioTwilsockLib.ObjcErrorCode : Swift.Hashable {}
+extension TwilioTwilsockLib.ObjcErrorCode : Swift.RawRepresentable {}
+extension TwilioTwilsockLib.ObjCHttpMethod : Swift.Equatable {}
+extension TwilioTwilsockLib.ObjCHttpMethod : Swift.Hashable {}
+extension TwilioTwilsockLib.ObjCHttpMethod : Swift.RawRepresentable {}

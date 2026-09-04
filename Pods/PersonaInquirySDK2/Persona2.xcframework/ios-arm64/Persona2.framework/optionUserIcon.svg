@@ -1,0 +1,11 @@
+<svg role="img" aria-hidden="true" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path
+    d="M32 16C32 7.16344 24.8366 0 16 0C7.16344 0 0 7.16344 0 16C0 24.8366 7.16344 32 16 32C24.8366 32 32 24.8366 32 16Z"
+    fill="#631FFF"/>
+  <path
+    d="M23 23V21.3334C23 20.4493 22.6312 19.6014 21.9748 18.9763C21.3184 18.3513 20.4282 18 19.5 18H12.5C11.5717 18 10.6815 18.3513 10.0251 18.9763C9.36876 19.6014 9 20.4493 9 21.3334V23"
+    stroke="white" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+  <path
+    d="M16 15C18.2092 15 20 13.2091 20 11C20 8.79087 18.2092 7 16 7C13.7909 7 12 8.79087 12 11C12 13.2091 13.7909 15 16 15Z"
+    stroke="white" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
