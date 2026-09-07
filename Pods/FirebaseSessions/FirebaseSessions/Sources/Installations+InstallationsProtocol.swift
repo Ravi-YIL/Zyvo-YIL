@@ -15,20 +15,68 @@
 
 import Foundation
 
-@_implementationOnly import FirebaseInstallations
+internal import FirebaseInstallations
+internal import FirebaseCoreInternal
 
-protocol InstallationsProtocol {
-  func installationID(completion: @escaping (Result<String, Error>) -> Void)
+protocol InstallationsProtocol: Sendable {
+  var installationsWaitTimeInSecond: Int { get }
+
+  /// Override Installation function for testing
+  func authToken(completion: @escaping @Sendable (InstallationsAuthTokenResult?, Error?) -> Void)
+
+  /// Override Installation function for testing
+  func installationID(completion: @escaping @Sendable (String?, Error?) -> Void)
+
+  /// Return a tuple: (installationID, authenticationToken) for success result
+  func installationID(completion: @escaping (Result<(String, String), Error>) -> Void)
 }
 
-extension Installations: InstallationsProtocol {
-  func installationID(completion: @escaping (Result<String, Error>) -> Void) {
+extension InstallationsProtocol {
+  var installationsWaitTimeInSecond: Int {
+    return 10
+  }
+
+  // TODO(ncooke3): Convert o async await ahead of Firebase 12.
+
+  func installationID(completion: @escaping (Result<(String, String), Error>) -> Void) {
+    let authTokenComplete = UnfairLock<String>("")
+    let installationComplete = UnfairLock<String?>(nil)
+    let errorComplete = UnfairLock<Error?>(nil)
+
+    let workingGroup = DispatchGroup()
+
+    workingGroup.enter()
+    authToken { (authTokenResult: InstallationsAuthTokenResult?, error: Error?) in
+      authTokenComplete.withLock { $0 = authTokenResult?.authToken ?? "" }
+      workingGroup.leave()
+    }
+
+    workingGroup.enter()
     installationID { (installationID: String?, error: Error?) in
-      if let installationID = installationID {
-        completion(.success(installationID))
-      } else if let error = error {
-        completion(.failure(error))
+      if let installationID {
+        installationComplete.withLock { $0 = installationID }
+      } else if let error {
+        errorComplete.withLock { $0 = error }
+      }
+      workingGroup.leave()
+    }
+
+    // adding timeout for 10 seconds
+    let result = workingGroup
+      .wait(timeout: .now() + DispatchTimeInterval.seconds(installationsWaitTimeInSecond))
+
+    switch result {
+    case .timedOut:
+      completion(.failure(FirebaseSessionsError.SessionInstallationsTimeOutError))
+      return
+    default:
+      if let installationComplete = installationComplete.value() {
+        completion(.success((installationComplete, authTokenComplete.value())))
+      } else if let errorComplete = errorComplete.value() {
+        completion(.failure(errorComplete))
       }
     }
   }
 }
+
+extension Installations: InstallationsProtocol {}

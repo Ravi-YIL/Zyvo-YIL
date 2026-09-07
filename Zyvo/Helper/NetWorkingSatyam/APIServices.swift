@@ -97,7 +97,7 @@ final class APIServices<T: Decodable>: APIServiceProtocol {
                    print(response.response?.statusCode ?? 0,"STATUS CODE ON API RUN")
                    
                    if (response.response?.statusCode ?? 0) == 401 {
-                       APIServices<T>.logout()
+                       APIServices<T>.logout(request: response.request)
                    }
                    switch response.result {
                    case .success(let value):
@@ -169,7 +169,7 @@ final class APIServices<T: Decodable>: APIServiceProtocol {
                 print(response.response?.statusCode ?? 0, "STATUS CODE ON API RUN")
 
                 if (response.response?.statusCode ?? 0) == 401 {
-                    APIServices<T>.logout()
+                    APIServices<T>.logout(request: response.request)
                 }
 
                 switch response.result {
@@ -230,7 +230,7 @@ final class APIServices<T: Decodable>: APIServiceProtocol {
                     print(response.response?.statusCode ?? 0,"STATUS CODE ON API RUN")
                     
                     if (response.response?.statusCode ?? 0) == 401 {
-                        APIServices<T>.logout()
+                        APIServices<T>.logout(request: response.request)
                     }
                     
                     if let data = response.data {
@@ -280,7 +280,7 @@ final class APIServices<T: Decodable>: APIServiceProtocol {
             print("\n==========================Response=======================\n")
                     print(response.response?.statusCode ?? 0,"STATUS CODE ON API RUN")
                     if (response.response?.statusCode ?? 0) == 401 {
-                        APIServices<T>.logout()
+                        APIServices<T>.logout(request: response.request)
                     }
                     if let data = response.data {
                         print(JSON(data))
@@ -330,7 +330,7 @@ final class APIServices<T: Decodable>: APIServiceProtocol {
             print("\n==========================Response=======================\n")
                     print(response.response?.statusCode ?? 0,"STATUS CODE ON API RUN")
                     if (response.response?.statusCode ?? 0) == 401 {
-                       // APIServices<T>.logout()
+                       // APIServices<T>.logout(request: response.request)
                     }
                     if let data = response.data {
                         print(JSON(data))
@@ -379,7 +379,7 @@ final class APIServices<T: Decodable>: APIServiceProtocol {
             print("\n==========================Response=======================\n")
                     print(response.response?.statusCode ?? 0,"STATUS CODE ON API RUN")
                     if (response.response?.statusCode ?? 0) == 401 {
-                       // APIServices<T>.logout()
+                       // APIServices<T>.logout(request: response.request)
                     }
                     if let data = response.data {
                         print(JSON(data))
@@ -433,7 +433,7 @@ final class APIServices<T: Decodable>: APIServiceProtocol {
             print("\n==========================Response=======================\n")
                     print(response.response?.statusCode ?? 0,"STATUS CODE ON API RUN")
                     if (response.response?.statusCode ?? 0) == 401 {
-                        APIServices<T>.logout()
+                        APIServices<T>.logout(request: response.request)
                     }
                     if let data = response.data {
                         print(JSON(data))
@@ -487,7 +487,7 @@ final class APIServices<T: Decodable>: APIServiceProtocol {
             print("\n==========================Response=======================\n")
                     print(response.response?.statusCode ?? 0,"STATUS CODE ON API RUN")
                     if (response.response?.statusCode ?? 0) == 401 {
-                        APIServices<T>.logout()
+                        APIServices<T>.logout(request: response.request)
                     }
                     if let data = response.data {
                         print(JSON(data))
@@ -540,7 +540,7 @@ final class APIServices<T: Decodable>: APIServiceProtocol {
             print("\n==========================Response=======================\n")
                     print(response.response?.statusCode ?? 0,"STATUS CODE ON API RUN")
                     if (response.response?.statusCode ?? 0) == 401 {
-                        APIServices<T>.logout()
+                        APIServices<T>.logout(request: response.request)
                     }
                     if let data = response.data {
                         print(JSON(data))
@@ -615,7 +615,7 @@ final class APIServices<T: Decodable>: APIServiceProtocol {
                 print(response.response?.statusCode ?? 0,"STATUS CODE ON API RUN")
                 
                 if (response.response?.statusCode ?? 0) == 401 {
-                    APIServices<T>.logout()
+                    APIServices<T>.logout(request: response.request)
                 }
                 
                 if let data = response.data {
@@ -695,7 +695,7 @@ final class APIServices<T: Decodable>: APIServiceProtocol {
                  print(response.response?.statusCode ?? 0,"STATUS CODE ON API RUN")
                  
                  if (response.response?.statusCode ?? 0) == 401 {
-                     APIServices<T>.logout()
+                     APIServices<T>.logout(request: response.request)
                  }
                  if let data = response.data {
                      print(JSON(data))
@@ -777,7 +777,7 @@ final class APIServices<T: Decodable>: APIServiceProtocol {
                 print(response.response?.statusCode ?? 0, "STATUS CODE ON API RUN")
                 
                 if (response.response?.statusCode ?? 0) == 401 {
-                    APIServices<T>.logout()
+                    APIServices<T>.logout(request: response.request)
                 }
                 
                 if let data = response.data {
@@ -797,8 +797,16 @@ final class APIServices<T: Decodable>: APIServiceProtocol {
         .eraseToAnyPublisher()
     }
     
-    static private func logout(){
-        APISessionManager.shared.handleUnauthorized()
+    static private func logout(request: URLRequest?) {
+        let authorization = request?.value(forHTTPHeaderField: "Authorization") ?? ""
+        let token = UserDetail.shared.getTokenWith()
+        let endpoint = request?.url?.lastPathComponent ?? "unknown"
+        print("[Session] HTTP 401 from endpoint: \(endpoint)")
+        guard !token.isEmpty, authorization == "Bearer \(token)" else {
+            print("[Session] Ignoring unauthorized response from an anonymous or outdated request.")
+            return
+        }
+        APISessionManager.shared.handleUnauthorized(expectedToken: token)
     }
 }
 
@@ -808,9 +816,11 @@ final class APISessionManager {
     
     private(set) var isUnauthorizedAlertShowing = false
     
-    func handleUnauthorized() {
+    func handleUnauthorized(expectedToken: String? = nil) {
+        let rejectedToken = expectedToken ?? UserDetail.shared.getTokenWith()
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
+            guard !rejectedToken.isEmpty, UserDetail.shared.getTokenWith() == rejectedToken else { return }
             guard !self.isUnauthorizedAlertShowing else { return }
             self.isUnauthorizedAlertShowing = true
             
@@ -832,6 +842,9 @@ final class APISessionManager {
             targetVC.showOkAlertWithHandler("Unauthorized") { [weak self] in
                 self?.isUnauthorizedAlertShowing = false
                 
+                // A delayed alert must never clear a newly authenticated session.
+                guard UserDetail.shared.getTokenWith() == rejectedToken else { return }
+                FirebaseChatManager.shared.cleanupFirebase()
                 // Clear user session data
                 UserDetail.shared.setUserId("")
                 UserDetail.shared.removeTokenWith()
@@ -914,6 +927,5 @@ extension Result {
         }
     }
 }
-
 
 

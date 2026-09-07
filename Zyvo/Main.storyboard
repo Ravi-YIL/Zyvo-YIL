@@ -22317,7 +22317,7 @@ Where a listing has a host-specific cancellation policy, that policy controls un
                                                                                     <constraint firstItem="BsI-Mr-qre" firstAttribute="centerY" secondItem="0de-Gv-dQj" secondAttribute="centerY" id="t2O-6d-qXw"/>
                                                                                 </constraints>
                                                                             </view>
-                                                                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Vyd-M9-Gkh">
+                                                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Vyd-M9-Gkh">
                                                                                 <rect key="frame" x="0.0" y="0.0" width="345" height="0.0"/>
                                                                                 <subviews>
                                                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yXv-k1-OFQ">
@@ -22388,7 +22388,6 @@ Where a listing has a host-specific cancellation policy, that policy controls un
                                                                                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                                                                 <connections>
                                                                                                     <action selector="btnIhaveDoubt_Tap:" destination="ePe-Dh-eqr" eventType="touchUpInside" id="6uZ-FS-dj9"/>
-                                                                                                    <action selector="btnIhaveDoubt_Tap:" destination="ziH-Pf-Pa6" eventType="touchUpInside" id="bxe-Rw-CkW"/>
                                                                                                 </connections>
                                                                                             </button>
                                                                                         </subviews>
@@ -22420,7 +22419,6 @@ Where a listing has a host-specific cancellation policy, that policy controls un
                                                                                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                                                                 <connections>
                                                                                                     <action selector="btnAvailableDays_Tap:" destination="ePe-Dh-eqr" eventType="touchUpInside" id="Axt-4u-zIv"/>
-                                                                                                    <action selector="btnAvailableDays_Tap:" destination="ziH-Pf-Pa6" eventType="touchUpInside" id="dcf-ZR-G77"/>
                                                                                                 </connections>
                                                                                             </button>
                                                                                         </subviews>
@@ -22451,7 +22449,6 @@ Where a listing has a host-specific cancellation policy, that policy controls un
                                                                                                 <rect key="frame" x="0.0" y="0.0" width="305" height="50"/>
                                                                                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                                                                 <connections>
-                                                                                                    <action selector="btnOtherReason_Tap:" destination="ziH-Pf-Pa6" eventType="touchUpInside" id="Pr2-Oe-UXX"/>
                                                                                                     <action selector="btnOtherReason_Tap:" destination="ePe-Dh-eqr" eventType="touchUpInside" id="yIe-1O-VHR"/>
                                                                                                 </connections>
                                                                                             </button>
@@ -23384,6 +23381,8 @@ Available at checkout. </string>
                         <outlet property="view_Hour" destination="YKn-gH-jfk" id="T75-4Y-Erv"/>
                         <outlet property="view_IhaveDoubt" destination="4f2-fS-QAq" id="9DB-MM-O4i"/>
                         <outlet property="view_MainAddOns" destination="3bj-ub-TAd" id="lbM-dU-fnP"/>
+                        <outlet property="view_MessageHostEntry" destination="yr2-vx-yH3" id="A8k-MsgHost-Conn"/>
+                        <outlet property="hostMessageTextView" destination="KUn-WT-BJZ" id="Loc-Msg-Text"/>
                         <outlet property="view_ParkingDesc" destination="KBG-Zk-EIc" id="1xj-7m-k7h"/>
                         <outlet property="view_Price" destination="yYU-u8-4fb" id="ApR-rI-Pcg"/>
                         <outlet property="view_RulesParking" destination="sWh-bw-FE7" id="NmM-1N-faC"/>

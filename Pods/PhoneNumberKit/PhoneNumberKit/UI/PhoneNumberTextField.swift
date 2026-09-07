@@ -176,8 +176,15 @@ open class PhoneNumberTextField: UITextField, UITextFieldDelegate {
         return self.partialFormatter.nationalNumber(from: rawNumber)
     }
 
-   
-   
+    public var isValidNumber: Bool {
+        let rawNumber = self.text ?? String()
+        do {
+            _ = try phoneNumberKit.parse(rawNumber, withRegion: currentRegion)
+            return true
+        } catch {
+            return false
+        }
+    }
 
     /**
      Returns the current valid phone number.

@@ -241,6 +241,8 @@ void FIRCLSUserLoggingRecordKeysAndValues(NSDictionary *keysAndValues,
                                           FIRCLSUserLoggingKVStorage *storage,
                                           uint32_t *counter) {
   if (!FIRCLSContextIsInitialized()) {
+    FIRCLSSDKLogWarn(
+        "Failed to write key/value pairs. Crashlytics context has not initialized yet.\n");
     return;
   }
 
@@ -281,7 +283,7 @@ void FIRCLSUserLoggingRecordKeysAndValues(NSDictionary *keysAndValues,
     }
   }
 
-  dispatch_sync(FIRCLSGetLoggingQueue(), ^{
+  FIRCLSExecuteOnLoggingQueue(^{
     FIRCLSUserLoggingWriteKeysAndValues(sanitizedKeysAndValues, storage, counter,
                                         containsNullValue);
   });
@@ -317,6 +319,8 @@ static void FIRCLSUserLoggingWriteKeysAndValues(NSDictionary *keysAndValues,
 
 NSArray *FIRCLSUserLoggingStoredKeyValues(const char *path) {
   if (!FIRCLSContextIsInitialized()) {
+    FIRCLSSDKLogWarn(
+        "Failed to read key/value pairs. Crashlytics context has not initialized yet.\n");
     return nil;
   }
 
@@ -355,7 +359,8 @@ static void FIRCLSUserLoggingWriteError(FIRCLSFile *file,
                                         NSError *error,
                                         NSDictionary<NSString *, id> *additionalUserInfo,
                                         NSArray *addresses,
-                                        uint64_t timestamp) {
+                                        uint64_t timestamp,
+                                        NSString *rolloutsInfoJSON) {
   FIRCLSFileWriteSectionStart(file, "error");
   FIRCLSFileWriteHashStart(file);
   FIRCLSFileWriteHashEntryHexEncodedString(file, "domain", [[error domain] UTF8String]);
@@ -374,29 +379,36 @@ static void FIRCLSUserLoggingWriteError(FIRCLSFile *file,
   FIRCLSUserLoggingRecordErrorUserInfo(file, "info", [error userInfo]);
   FIRCLSUserLoggingRecordErrorUserInfo(file, "extra_info", additionalUserInfo);
 
+  // rollouts
+  if (rolloutsInfoJSON) {
+    FIRCLSFileWriteHashKey(file, "rollouts");
+    FIRCLSFileWriteStringUnquoted(file, [rolloutsInfoJSON UTF8String]);
+    FIRCLSFileWriteHashEnd(file);
+  }
+
   FIRCLSFileWriteHashEnd(file);
   FIRCLSFileWriteSectionEnd(file);
 }
 
 void FIRCLSUserLoggingRecordError(NSError *error,
-                                  NSDictionary<NSString *, id> *additionalUserInfo) {
+                                  NSDictionary<NSString *, id> *additionalUserInfo,
+                                  NSString *rolloutsInfoJSON,
+                                  NSArray *addresses,
+                                  uint64_t timestamp) {
   if (!error) {
     return;
   }
 
   if (!FIRCLSContextIsInitialized()) {
+    FIRCLSSDKLogWarn("Failed to record error. Crashlytics context has not initialized yet.\n");
     return;
   }
-
-  // record the stacktrace and timestamp here, so we
-  // are as close as possible to the user's log statement
-  NSArray *addresses = [NSThread callStackReturnAddresses];
-  uint64_t timestamp = time(NULL);
 
   FIRCLSUserLoggingWriteAndCheckABFiles(
       &_firclsContext.readonly->logging.errorStorage,
       &_firclsContext.writable->logging.activeErrorLogPath, ^(FIRCLSFile *file) {
-        FIRCLSUserLoggingWriteError(file, error, additionalUserInfo, addresses, timestamp);
+        FIRCLSUserLoggingWriteError(file, error, additionalUserInfo, addresses, timestamp,
+                                    rolloutsInfoJSON);
       });
 }
 
@@ -529,7 +541,7 @@ void FIRCLSUserLoggingWriteAndCheckABFiles(FIRCLSUserLoggingABStorage *storage,
     }
   }
 
-  dispatch_sync(FIRCLSGetLoggingQueue(), ^{
+  FIRCLSExecuteOnLoggingQueue(^{
     FIRCLSFile file;
 
     if (!FIRCLSFileInitWithPath(&file, *activePath, true)) {

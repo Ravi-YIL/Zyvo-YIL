@@ -119,7 +119,7 @@ class DiscoverVC: UIViewController,LocationPickerDelegate {
                object: nil
            )
         
-        viewModel.apiforGetChatToken(role: "guest")
+        FirebaseChatManager.shared.connect()
 
         self.view_RemainingTime.isHidden = true
         self.stackV_TimeLeft.isHidden = true
@@ -1265,4 +1265,3 @@ extension DiscoverVC {
         return (hours, minutes, seconds)
     }
 }
-

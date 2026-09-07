@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import TwilioConversationsClient
 
 class ChatCell: UITableViewCell {
 

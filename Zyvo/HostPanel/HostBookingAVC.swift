@@ -813,12 +813,12 @@ extension HostBookingAVC{
                     // self.reviewsArr = self.getBookingDetails?.reviews
                     let guestID = self.bookingDetailArr?.guestID ?? 0
                     let hostID = self.bookingDetailArr?.hostID ?? 0
-                    let id1 = min(guestID, hostID)
-                    let id2 = max(guestID, hostID)
-                    
-                    self.channelName = "ZYVOOPROJ_\(id1)_\(id2)_\(self.propertyID)"
+                    self.channelName = ChatChannelName.make(
+                        userId1: "\(guestID)",
+                        userId2: "\(hostID)"
+                    )
                     print(self.channelName,"self.channelName")
-                    print(id1,id2,self.propertyID,"ASDFASDF")
+                    print(guestID, hostID, self.propertyID, "ASDFASDF")
                     
                     self.guestNameLbl.text = self.bookingDetailArr?.guestName
                     self.guestRatingLbl.text = self.bookingDetailArr?.guestRating

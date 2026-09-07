@@ -70,9 +70,26 @@ NSString *_Nullable FIRHeaderValueFromHeartbeatsPayload(FIRHeartbeatsPayload *he
 }
 
 #ifndef FIREBASE_BUILD_CMAKE
+- (NSString *_Nullable)headerValue {
+  return FIRHeaderValueFromHeartbeatsPayload([self flushHeartbeatsIntoPayload]);
+}
+
+- (void)asyncHeaderValueWithCompletionHandler:(void (^)(NSString *_Nullable))completionHandler {
+  [self flushHeartbeatsIntoPayloadWithCompletionHandler:^(FIRHeartbeatsPayload *payload) {
+    completionHandler(FIRHeaderValueFromHeartbeatsPayload(payload));
+  }];
+}
+
 - (FIRHeartbeatsPayload *)flushHeartbeatsIntoPayload {
   FIRHeartbeatsPayload *payload = [_heartbeatController flush];
   return payload;
+}
+
+- (void)flushHeartbeatsIntoPayloadWithCompletionHandler:
+    (void (^)(FIRHeartbeatsPayload *))completionHandler {
+  [_heartbeatController flushAsyncWithCompletionHandler:^(FIRHeartbeatsPayload *payload) {
+    completionHandler(payload);
+  }];
 }
 #endif  // FIREBASE_BUILD_CMAKE
 

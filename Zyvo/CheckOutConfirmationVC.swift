@@ -309,12 +309,12 @@ Where a listing has a host-specific cancellation policy, that policy controls un
         let guestID = Int(UserDetail.shared.getUserId())
         let hostID = self.hostID
         
-        let id1 = min(guestID ?? 0, hostID)
-        let id2 = max(guestID ?? 0, hostID)
-        
-        self.channelName = "ZYVOOPROJ_\(id1)_\(id2)_\(self.bookingID)"
+        self.channelName = ChatChannelName.make(
+            userId1: "\(guestID ?? 0)",
+            userId2: "\(hostID)"
+        )
         print(self.channelName,"self.channelName")
-        print(id1,id2,self.bookingID,"Details")
+        print(guestID ?? 0, hostID, self.bookingID, "Details")
         
         if (booking_hours ?? 0) > 1 {
             self.lbl_AboveHours.text = "\(booking_hours ?? 0) hours"

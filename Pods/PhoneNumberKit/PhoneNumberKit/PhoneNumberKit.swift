@@ -15,7 +15,6 @@ public typealias MetadataCallback = (() throws -> Data?)
 
 public final class PhoneNumberKit: NSObject {
     // Manager objects
-    
     let metadataManager: MetadataManager
     let parseManager: ParseManager
     let regexManager = RegexManager()
@@ -73,8 +72,6 @@ public final class PhoneNumberKit: NSObject {
     public func isValidPhoneNumber(_ numberString: String, withRegion region: String = PhoneNumberKit.defaultRegionCode(), ignoreType: Bool = false) -> Bool {
         return (try? self.parse(numberString, withRegion: region, ignoreType: ignoreType)) != nil
     }
-    
-   
 
     // MARK: Formatting
 

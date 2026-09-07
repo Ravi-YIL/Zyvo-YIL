@@ -8,7 +8,6 @@
 import UIKit
 import DropDown
 import ISEmojiView
-import TwilioConversationsClient
 import AVFoundation
 import MobileCoreServices
 import UniformTypeIdentifiers
@@ -204,7 +203,10 @@ class HostChatVC: UIViewController, UITextViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        super.viewDidLoad()
+
+        if !user_id.isEmpty, !friend_id.isEmpty {
+            uniqueConversationName = ChatChannelName.make(userId1: user_id, userId2: friend_id)
+        }
         
         bindVC()
         
@@ -261,6 +263,7 @@ class HostChatVC: UIViewController, UITextViewDelegate {
         
         //self.tabBarController?.setTabBarHidden(true, animated: true)
         friend_identity = friend_id
+        uniqueConversationName = ChatChannelName.make(userId1: user_id, userId2: friend_identity)
         
         print(friend_identity,"friendidentity")
         self.conversationsManager.delegate = self
@@ -268,12 +271,9 @@ class HostChatVC: UIViewController, UITextViewDelegate {
         self.keyboardNotifications()
         
         txtChat.delegate = self
-        if let token = UserDefaults.standard.object(forKey: "twilioToken") as? String, self.conversationsManager.client == nil {
-            self.conversationsManager.loginWithAccessToken(token) { (res) in
-                self.getChat()
-            }
-        }else{
-            self.getChat()
+        self.conversationsManager.connect { [weak self] client in
+            guard client != nil else { return }
+            self?.getChat()
         }
         self.setUp()
         self.loadUserImage()
@@ -1251,5 +1251,3 @@ extension HostChatVC: QuickstartConversationsManagerDelegate {
         self.addMessages(newMessages: Set(items))
     }
 }
-
-

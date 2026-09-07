@@ -1,5 +1,5 @@
 # Uncomment the next line to define a global platform for your project
-# platform :ios, '16.0'
+platform :ios, '16.0'
 
 target 'Zyvo' do
   # Comment the next line if you don't want to use dynamic frameworks
@@ -20,6 +20,7 @@ target 'Zyvo' do
     pod 'MBProgressHUD'
     pod 'FirebaseMessaging'
     pod 'FirebaseAnalytics'
+    pod 'FirebaseFirestore'
     pod 'Alamofire'
     pod 'SwiftyJSON', '~> 4.0'
     pod 'NVActivityIndicatorView'
@@ -36,8 +37,6 @@ target 'Zyvo' do
     pod 'RangeSeekSlider'
     pod 'PersonaInquirySDK2'
      pod 'ISEmojiView'
-    #pod 'TwilioConversationsClient', '~> 3.1'
-    pod 'TwilioConversationsClient'
      pod 'AppsFlyerFramework'
     # pod 'libPhoneNumber-iOS'
 pod 'PhoneNumberKit', '~> 3.3.3'
@@ -55,8 +54,21 @@ end
 
 post_install do |installer|
   installer.pods_project.targets.each do |target|
+    # Xcode 26 treats CocoaPods' legacy warning-suppression token as the
+    # unsupported GCC "-G" option when compiling BoringSSL-GRPC.
+    if target.name == 'BoringSSL-GRPC'
+      target.source_build_phase.files.each do |file|
+        next unless file.settings && file.settings['COMPILER_FLAGS']
+
+        flags = file.settings['COMPILER_FLAGS'].split
+        flags.delete('-GCC_WARN_INHIBIT_ALL_WARNINGS')
+        file.settings['COMPILER_FLAGS'] = flags.join(' ')
+      end
+    end
+
     target.build_configurations.each do |config|
       config.build_settings['ENABLE_USER_SCRIPT_SANDBOXING'] = 'NO'
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '16.0'
     end
   end
   

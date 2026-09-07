@@ -27,12 +27,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate,AppsFlyerLibDelegate {
     static let shared = UIApplication.shared.delegate as! AppDelegate
     var deviceToken = String()
     var window: UIWindow?
-    private var conversationsManager = QuickstartConversationsManager.shared
     
     
     func applicationWillTerminate(_ application: UIApplication) {
 
-        QuickstartConversationsManager.shared.cleanupTwilio()
+        FirebaseChatManager.shared.cleanupFirebase()
       }
     
     
@@ -84,11 +83,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate,AppsFlyerLibDelegate {
         UITabBar.appearance().tintColor = UIColor.darkGray
         UITabBar.appearance().unselectedItemTintColor = .lightGray
         
-        APIManager.shared.apiforGetChatToken(role: "guest") { t in
-            
-        }
-        
         FirebaseApp.configure()
+
+        // Firestore must only be created after the default Firebase app exists.
+        FirebaseChatManager.shared.connect()
         
         if #available(iOS 10.0, *) {
                    // For iOS 10 display notification (sent via APNS)
@@ -447,5 +445,3 @@ extension AppDelegate: DeepLinkDelegate {
     }
   
 }
-
-

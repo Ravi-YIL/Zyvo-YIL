@@ -13,11 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0 ||                                          \
-    __MAC_OS_X_VERSION_MAX_ALLOWED >= __MAC_10_14 || __TV_OS_VERSION_MAX_ALLOWED >= __TV_10_0 || \
-    __WATCH_OS_VERSION_MAX_ALLOWED >= __WATCHOS_3_0 || TARGET_OS_MACCATALYST
+
 #import <UserNotifications/UserNotifications.h>
-#endif
 
 #import "FirebaseMessaging/Sources/FIRMessagingContextManagerService.h"
 
@@ -63,6 +60,12 @@ typedef NS_ENUM(NSUInteger, FIRMessagingContextManagerMessageType) {
   FIRMessagingContextManagerMessageTypeNone,
   FIRMessagingContextManagerMessageTypeLocalTime,
 };
+
+@interface FIRMessagingContextManagerService ()
+
++ (void)scheduleLocalNotificationForMessage:(NSDictionary *)message atDate:(NSDate *)date;
+
+@end
 
 @implementation FIRMessagingContextManagerService
 
@@ -137,9 +140,13 @@ typedef NS_ENUM(NSUInteger, FIRMessagingContextManagerMessageType) {
   return YES;
 }
 
-+ (void)scheduleiOS10LocalNotificationForMessage:(NSDictionary *)message
-                                          atDate:(NSDate *)date
-    API_AVAILABLE(macosx(10.14), ios(10.0), watchos(3.0), tvos(10.0)) {
++ (void)scheduleLocalNotificationForMessage:(NSDictionary *)message atDate:(NSDate *)date {
+  if (!date) {
+    FIRMessagingLoggerError(kFIRMessagingMessageCodeContextManagerServiceFailedLocalSchedule,
+                            @"Cannot schedule local timezone notification with a nil date.");
+    return;
+  }
+
   NSCalendar *calendar = [NSCalendar currentCalendar];
   NSCalendarUnit unit = NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay |
                         NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond;
@@ -167,8 +174,7 @@ typedef NS_ENUM(NSUInteger, FIRMessagingContextManagerMessageType) {
        }];
 }
 
-+ (UNMutableNotificationContent *)contentFromContextualMessage:(NSDictionary *)message
-    API_AVAILABLE(macosx(10.14), ios(10.0), watchos(3.0), tvos(10.0)) {
++ (UNMutableNotificationContent *)contentFromContextualMessage:(NSDictionary *)message {
   UNMutableNotificationContent *content = [[UNMutableNotificationContent alloc] init];
   NSDictionary *apsDictionary = message;
 
@@ -176,7 +182,7 @@ typedef NS_ENUM(NSUInteger, FIRMessagingContextManagerMessageType) {
   if (apsDictionary[kFIRMessagingContextManagerBadgeKey]) {
     content.badge = apsDictionary[kFIRMessagingContextManagerBadgeKey];
   }
-#if TARGET_OS_IOS || TARGET_OS_OSX || TARGET_OS_WATCH
+#if !TARGET_OS_TV
   // The following fields are not available on tvOS
   if ([apsDictionary[kFIRMessagingContextManagerBodyKey] length]) {
     content.body = apsDictionary[kFIRMessagingContextManagerBodyKey];
@@ -204,15 +210,8 @@ typedef NS_ENUM(NSUInteger, FIRMessagingContextManagerMessageType) {
   if (userInfo.count) {
     content.userInfo = userInfo;
   }
-#endif  // TARGET_OS_IOS || TARGET_OS_OSX || TARGET_OS_WATCH
+#endif  // !TARGET_OS_TV
   return content;
-}
-
-+ (void)scheduleLocalNotificationForMessage:(NSDictionary *)message atDate:(NSDate *)date {
-  if (@available(macOS 10.14, *)) {
-    [self scheduleiOS10LocalNotificationForMessage:message atDate:date];
-    return;
-  }
 }
 
 + (NSDictionary *)parseDataFromMessage:(NSDictionary *)message {

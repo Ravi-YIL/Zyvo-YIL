@@ -23,9 +23,19 @@
 
 #if TARGET_OS_IOS
 #import <UIKit/UIKit.h>
-#endif
+#endif  // TARGET_OS_IOS
 
 @implementation GULAppEnvironmentUtil
+
+static NSProcessInfo *gProcessInfo = nil;
+
++ (NSProcessInfo *)processInfo {
+  return gProcessInfo ?: [NSProcessInfo processInfo];
+}
+
++ (void)setProcessInfoForTest:(NSProcessInfo *)processInfo {
+  gProcessInfo = processInfo;
+}
 
 /// A key for the Info.plist to enable or disable checking if the App Store is running in a sandbox.
 /// This will affect your data integrity when using Firebase Analytics, as it will disable some
@@ -167,7 +177,7 @@ static BOOL HasEmbeddedMobileProvision(void) {
     model = @"watchOS Simulator";
 #elif TARGET_OS_TV
     model = @"tvOS Simulator";
-#elif defined(TARGET_OS_VISION) && TARGET_OS_VISION
+#elif TARGET_OS_VISION
     model = @"visionOS Simulator";
 #elif TARGET_OS_IOS
     switch ([[UIDevice currentDevice] userInterfaceIdiom]) {
@@ -195,10 +205,9 @@ static BOOL HasEmbeddedMobileProvision(void) {
 + (NSString *)systemVersion {
 #if TARGET_OS_IOS
   return [UIDevice currentDevice].systemVersion;
-#elif TARGET_OS_OSX || TARGET_OS_TV || TARGET_OS_WATCH || \
-    (defined(TARGET_OS_VISION) && TARGET_OS_VISION)
+#elif TARGET_OS_OSX || TARGET_OS_TV || TARGET_OS_WATCH || TARGET_OS_VISION
   // Assemble the systemVersion, excluding the patch version if it's 0.
-  NSOperatingSystemVersion osVersion = [NSProcessInfo processInfo].operatingSystemVersion;
+  NSOperatingSystemVersion osVersion = [self processInfo].operatingSystemVersion;
   NSMutableString *versionString = [[NSMutableString alloc]
       initWithFormat:@"%ld.%ld", (long)osVersion.majorVersion, (long)osVersion.minorVersion];
   if (osVersion.patchVersion != 0) {
@@ -218,22 +227,23 @@ static BOOL HasEmbeddedMobileProvision(void) {
 #endif
 }
 
-+ (BOOL)isIOS7OrHigher {
-  return YES;
++ (BOOL)isAppClip {
+#if TARGET_OS_IOS
+  // Documented by <a
+  // href="https://developer.apple.com/documentation/bundleresources/information-property-list/nsappclip">Apple</a>
+  // App clips have an NSAppClip entry in the top level of their Info.plist.
+  NSDictionary *appClipEntry = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSAppClip"];
+  return appClipEntry != nil;
+#elif TARGET_OS_OSX || TARGET_OS_TV || TARGET_OS_WATCH || TARGET_OS_VISION
+  return NO;
+#endif
 }
 
-+ (BOOL)hasSwiftRuntime {
-  // The class
-  // [Swift._SwiftObject](https://github.com/apple/swift/blob/5eac3e2818eb340b11232aff83edfbd1c307fa03/stdlib/public/runtime/SwiftObject.h#L35)
-  // is a part of Swift runtime, so it should be present if Swift runtime is available.
-
-  BOOL hasSwiftRuntime =
-      objc_lookUpClass("Swift._SwiftObject") != nil ||
-      // Swift object class name before
-      // https://github.com/apple/swift/commit/9637b4a6e11ddca72f5f6dbe528efc7c92f14d01
-      objc_getClass("_TtCs12_SwiftObject") != nil;
-
-  return hasSwiftRuntime;
++ (BOOL)supportsBackgroundURLSessionUploads {
+  // Neither app extensions nor App Clips support background uploads.
+  BOOL isExtension = self.isAppExtension;
+  BOOL isAppClip = self.isAppClip;
+  return !(isExtension || isAppClip);
 }
 
 + (NSString *)applePlatform {
@@ -243,28 +253,23 @@ static BOOL HasEmbeddedMobileProvision(void) {
   // `true`, which means the condition list is order-sensitive.
 #if TARGET_OS_MACCATALYST
   applePlatform = @"maccatalyst";
-#elif TARGET_OS_IOS && (!defined(TARGET_OS_VISION) || !TARGET_OS_VISION)
-#if defined(__IPHONE_14_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 140000
+#elif TARGET_OS_IOS
   if (@available(iOS 14.0, *)) {
     // Early iOS 14 betas do not include isiOSAppOnMac (#6969)
-    applePlatform = ([[NSProcessInfo processInfo] respondsToSelector:@selector(isiOSAppOnMac)] &&
-                     [NSProcessInfo processInfo].isiOSAppOnMac)
+    applePlatform = ([[self processInfo] respondsToSelector:@selector(isiOSAppOnMac)] &&
+                     [self processInfo].isiOSAppOnMac)
                         ? @"ios_on_mac"
                         : @"ios";
   } else {
     applePlatform = @"ios";
   }
-#else   // defined(__IPHONE_14_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 140000
-  applePlatform = @"ios";
-#endif  // defined(__IPHONE_14_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 140000
-
 #elif TARGET_OS_TV
   applePlatform = @"tvos";
 #elif TARGET_OS_OSX
   applePlatform = @"macos";
 #elif TARGET_OS_WATCH
   applePlatform = @"watchos";
-#elif defined(TARGET_OS_VISION) && TARGET_OS_VISION
+#elif TARGET_OS_VISION
   applePlatform = @"visionos";
 #endif  // TARGET_OS_MACCATALYST
 

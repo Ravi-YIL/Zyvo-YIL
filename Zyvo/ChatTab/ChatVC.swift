@@ -9,7 +9,6 @@
 import UIKit
 import DropDown
 import ISEmojiView
-import TwilioConversationsClient
 import AVFoundation
 import MobileCoreServices
 import UniformTypeIdentifiers
@@ -191,6 +190,10 @@ class ChatVC: UIViewController, UITextViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        if !user_id.isEmpty, !friend_id.isEmpty {
+            uniqueConversationName = ChatChannelName.make(userId1: user_id, userId2: friend_id)
+        }
         
         bindVC()
         
@@ -253,6 +256,7 @@ class ChatVC: UIViewController, UITextViewDelegate {
         viewBlock.layer.cornerRadius = viewBlock.layer.frame.height / 2
 
         friend_identity = friend_id
+        uniqueConversationName = ChatChannelName.make(userId1: user_id, userId2: friend_identity)
         
         print(friend_identity,"friendidentity")
         self.conversationsManager.delegate = self
@@ -260,12 +264,9 @@ class ChatVC: UIViewController, UITextViewDelegate {
         self.keyboardNotifications()
         
         txtChat.delegate = self
-        if let token = UserDefaults.standard.object(forKey: "twilioToken") as? String, self.conversationsManager.client == nil {
-            self.conversationsManager.loginWithAccessToken(token) { [weak self] (res) in
-                self?.getChat()
-            }
-        } else {
-            self.getChat()
+        self.conversationsManager.connect { [weak self] client in
+            guard client != nil else { return }
+            self?.getChat()
         }
         self.loadUserImage()
     }
@@ -1253,9 +1254,6 @@ struct Media{
     var fileName:String?
     var ext:String?
 }
-
-
-
 
 
 

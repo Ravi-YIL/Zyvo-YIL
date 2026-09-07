@@ -5,8 +5,6 @@
 //  Created by ravi on 21/03/25.
 //
 
-import TwilioConversationsClient
-
 // MARK: - ChatDataModel
 struct ChatDataModel: Codable {
 
@@ -174,4 +172,3 @@ struct ChannelListModel {
     var isMuted: Int = 0
     var isArchived: Int = 0
 }
-

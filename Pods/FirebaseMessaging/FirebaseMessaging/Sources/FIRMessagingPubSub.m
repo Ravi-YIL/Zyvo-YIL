@@ -16,7 +16,6 @@
 
 #import "FirebaseMessaging/Sources/FIRMessagingPubSub.h"
 
-#import <GoogleUtilities/GULSecureCoding.h>
 #import <GoogleUtilities/GULUserDefaults.h>
 #import "FirebaseMessaging/Sources/FIRMessagingDefines.h"
 #import "FirebaseMessaging/Sources/FIRMessagingLogger.h"
@@ -58,9 +57,9 @@ static NSString *const kPendingSubscriptionsListKey =
   return self;
 }
 
-- (void)subscribeWithToken:(NSString *)token
+- (void)subscribeWithToken:(nullable NSString *)token
                      topic:(NSString *)topic
-                   options:(NSDictionary *)options
+                   options:(nullable NSDictionary *)options
                    handler:(FIRMessagingTopicOperationCompletion)handler {
   token = [token copy];
   topic = [topic copy];
@@ -100,12 +99,12 @@ static NSString *const kPendingSubscriptionsListKey =
 
 #pragma mark - FIRMessaging subscribe
 
-- (void)updateSubscriptionWithToken:(NSString *)token
+- (void)updateSubscriptionWithToken:(nullable NSString *)token
                               topic:(NSString *)topic
-                            options:(NSDictionary *)options
+                            options:(nullable NSDictionary *)options
                        shouldDelete:(BOOL)shouldDelete
                             handler:(FIRMessagingTopicOperationCompletion)handler {
-  if ([_tokenManager hasValidCheckinInfo]) {
+  if ([FIRMessaging messaging].isInstallationIdEnabled || [_tokenManager hasValidCheckinInfo]) {
     FIRMessagingTopicAction action =
         shouldDelete ? FIRMessagingTopicActionUnsubscribe : FIRMessagingTopicActionSubscribe;
     FIRMessagingTopicOperation *operation = [[FIRMessagingTopicOperation alloc]
@@ -141,9 +140,9 @@ static NSString *const kPendingSubscriptionsListKey =
   }
 }
 
-- (void)unsubscribeWithToken:(NSString *)token
+- (void)unsubscribeWithToken:(nullable NSString *)token
                        topic:(NSString *)topic
-                     options:(NSDictionary *)options
+                     options:(nullable NSDictionary *)options
                      handler:(FIRMessagingTopicOperationCompletion)handler {
   token = [token copy];
   topic = [topic copy];
@@ -192,8 +191,7 @@ static NSString *const kPendingSubscriptionsListKey =
 }
 
 - (void)scheduleSync:(BOOL)immediately {
-  NSString *fcmToken = _tokenManager.defaultFCMToken;
-  if (fcmToken.length) {
+  if ([FIRMessaging messaging].isInstallationIdEnabled || _tokenManager.defaultFCMToken.length) {
     [self.pendingTopicUpdates resumeOperationsIfNeeded];
   }
 }
@@ -204,11 +202,14 @@ static NSString *const kPendingSubscriptionsListKey =
     requestedUpdateForTopic:(NSString *)topic
                      action:(FIRMessagingTopicAction)action
                  completion:(FIRMessagingTopicOperationCompletion)completion {
-  NSString *fcmToken = _tokenManager.defaultFCMToken;
+  NSString *token = nil;
+  if (![FIRMessaging messaging].isInstallationIdEnabled) {
+    token = _tokenManager.defaultFCMToken;
+  }
   if (action == FIRMessagingTopicActionSubscribe) {
-    [self subscribeWithToken:fcmToken topic:topic options:nil handler:completion];
+    [self subscribeWithToken:token topic:topic options:nil handler:completion];
   } else {
-    [self unsubscribeWithToken:fcmToken topic:topic options:nil handler:completion];
+    [self unsubscribeWithToken:token topic:topic options:nil handler:completion];
   }
 }
 
@@ -217,6 +218,9 @@ static NSString *const kPendingSubscriptionsListKey =
 }
 
 - (BOOL)pendingTopicsListCanRequestTopicUpdates:(FIRMessagingPendingTopicsList *)list {
+  if ([FIRMessaging messaging].isInstallationIdEnabled) {
+    return YES;
+  }
   NSString *fcmToken = _tokenManager.defaultFCMToken;
   return (fcmToken.length > 0);
 }
@@ -226,14 +230,15 @@ static NSString *const kPendingSubscriptionsListKey =
 - (void)archivePendingTopicsList:(FIRMessagingPendingTopicsList *)topicsList {
   GULUserDefaults *defaults = [GULUserDefaults standardUserDefaults];
   NSError *error;
-  NSData *pendingData = [GULSecureCoding archivedDataWithRootObject:topicsList error:&error];
+  NSData *pendingData = [NSKeyedArchiver archivedDataWithRootObject:topicsList
+                                              requiringSecureCoding:YES
+                                                              error:&error];
   if (error) {
     FIRMessagingLoggerError(kFIRMessagingMessageCodePubSubArchiveError,
                             @"Failed to archive topic list data %@", error);
     return;
   }
   [defaults setObject:pendingData forKey:kPendingSubscriptionsListKey];
-  [defaults synchronize];
 }
 
 - (void)restorePendingTopicsList {
@@ -242,7 +247,7 @@ static NSString *const kPendingSubscriptionsListKey =
   FIRMessagingPendingTopicsList *subscriptions;
   if (pendingData) {
     NSError *error;
-    subscriptions = [GULSecureCoding
+    subscriptions = [NSKeyedUnarchiver
         unarchivedObjectOfClasses:[NSSet setWithObjects:FIRMessagingPendingTopicsList.class, nil]
                          fromData:pendingData
                             error:&error];
@@ -310,7 +315,7 @@ static NSString *const kTopicRegexPattern = @"/topics/([a-zA-Z0-9-_.~%]+)";
 }
 
 /**
- *  Gets the class describing occurences of topic names and sender IDs in the sender.
+ *  Gets the class describing occurrences of topic names and sender IDs in the sender.
  *
  *  @param topic The topic expression used to generate a pubsub topic
  *

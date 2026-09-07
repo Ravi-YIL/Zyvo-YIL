@@ -19,6 +19,7 @@
 #import "FirebaseMessaging/Sources/FIRMessagingConstants.h"
 #import "FirebaseMessaging/Sources/FIRMessagingLogger.h"
 #import "FirebaseMessaging/Sources/FIRMessagingUtilities.h"
+#import "FirebaseMessaging/Sources/Public/FirebaseMessaging/FIRMessaging.h"
 
 /**
  *  @enum Token Info Dictionary Key Constants
@@ -26,7 +27,7 @@
  *              created from a dictionary. The same keys are used
  *              when decoding/encoding an archive.
  */
-/// Specifies a dictonary key whose value represents the authorized entity, or
+/// Specifies a dictionary key whose value represents the authorized entity, or
 /// Sender ID for the token.
 static NSString *const kFIRInstanceIDAuthorizedEntityKey = @"authorized_entity";
 /// Specifies a dictionary key whose value represents the scope of the token,
@@ -45,6 +46,8 @@ static NSString *const kFIRInstanceIDFirebaseAppIDKey = @"firebase_app_id";
 static NSString *const kFIRInstanceIDAPNSInfoKey = @"apns_info";
 /// Specifies a dictionary key representing the "last cached" time for the token.
 static NSString *const kFIRInstanceIDCacheTimeKey = @"cache_time";
+/// Specifies a dictionary key representing the token type (V4 or FID).
+static NSString *const kFIRInstanceIDTokenTypeKey = @"token_type";
 /// Default interval that token stays fresh.
 static const NSTimeInterval kDefaultFetchTokenInterval = 7 * 24 * 60 * 60;  // 7 days.
 
@@ -54,7 +57,8 @@ static const NSTimeInterval kDefaultFetchTokenInterval = 7 * 24 * 60 * 60;  // 7
                                    scope:(NSString *)scope
                                    token:(NSString *)token
                               appVersion:(NSString *)appVersion
-                           firebaseAppID:(NSString *)firebaseAppID {
+                           firebaseAppID:(NSString *)firebaseAppID
+                               tokenType:(NSString *)tokenType {
   self = [super init];
   if (self) {
     _authorizedEntity = [authorizedEntity copy];
@@ -62,6 +66,7 @@ static const NSTimeInterval kDefaultFetchTokenInterval = 7 * 24 * 60 * 60;  // 7
     _token = [token copy];
     _appVersion = [appVersion copy];
     _firebaseAppID = [firebaseAppID copy];
+    _tokenType = [tokenType copy] ?: @"V4";
   }
   return self;
 }
@@ -73,6 +78,21 @@ static const NSTimeInterval kDefaultFetchTokenInterval = 7 * 24 * 60 * 60;  // 7
     return NO;
   }
   if (!_cacheTime) {
+    return NO;
+  }
+
+  // Check if token type matches isInstallationIdEnabled
+  BOOL isInstallationIdEnabled = [FIRMessaging messaging].isInstallationIdEnabled;
+  if (isInstallationIdEnabled && ![self.tokenType isEqualToString:@"FID"]) {
+    FIRMessagingLoggerDebug(kFIRMessagingMessageCodeTokenManager004,
+                            @"Invalidating cached token due to isInstallationIdEnabled being YES "
+                            @"but token is not FID.");
+    return NO;
+  }
+  if (!isInstallationIdEnabled && ![self.tokenType isEqualToString:@"V4"]) {
+    FIRMessagingLoggerDebug(
+        kFIRMessagingMessageCodeTokenManager004,
+        @"Invalidating cached token due to isInstallationIdEnabled being NO but token is FID.");
     return NO;
   }
 
@@ -140,45 +160,61 @@ static const NSTimeInterval kDefaultFetchTokenInterval = 7 * 24 * 60 * 60;  // 7
 }
 
 - (nullable instancetype)initWithCoder:(NSCoder *)aDecoder {
+  BOOL needsMigration = NO;
   // These value cannot be nil
 
-  id authorizedEntity = [aDecoder decodeObjectForKey:kFIRInstanceIDAuthorizedEntityKey];
-  if (![authorizedEntity isKindOfClass:[NSString class]]) {
+  NSString *authorizedEntity = [aDecoder decodeObjectOfClass:[NSString class]
+                                                      forKey:kFIRInstanceIDAuthorizedEntityKey];
+  if (!authorizedEntity) {
     return nil;
   }
 
-  id scope = [aDecoder decodeObjectForKey:kFIRInstanceIDScopeKey];
-  if (![scope isKindOfClass:[NSString class]]) {
+  NSString *scope = [aDecoder decodeObjectOfClass:[NSString class] forKey:kFIRInstanceIDScopeKey];
+  if (!scope) {
     return nil;
   }
 
-  id token = [aDecoder decodeObjectForKey:kFIRInstanceIDTokenKey];
-  if (![token isKindOfClass:[NSString class]]) {
+  NSString *token = [aDecoder decodeObjectOfClass:[NSString class] forKey:kFIRInstanceIDTokenKey];
+  if (!token) {
     return nil;
   }
 
-  // These values are nullable, so only fail the decode if the type does not match
+  // These values are nullable, so don't fail on nil.
 
-  id appVersion = [aDecoder decodeObjectForKey:kFIRInstanceIDAppVersionKey];
-  if (appVersion && ![appVersion isKindOfClass:[NSString class]]) {
-    return nil;
-  }
+  NSString *appVersion = [aDecoder decodeObjectOfClass:[NSString class]
+                                                forKey:kFIRInstanceIDAppVersionKey];
+  NSString *firebaseAppID = [aDecoder decodeObjectOfClass:[NSString class]
+                                                   forKey:kFIRInstanceIDFirebaseAppIDKey];
 
-  id firebaseAppID = [aDecoder decodeObjectForKey:kFIRInstanceIDFirebaseAppIDKey];
-  if (firebaseAppID && ![firebaseAppID isKindOfClass:[NSString class]]) {
-    return nil;
-  }
   NSSet *classes = [[NSSet alloc] initWithArray:@[ FIRMessagingAPNSInfo.class ]];
   FIRMessagingAPNSInfo *rawAPNSInfo = [aDecoder decodeObjectOfClasses:classes
                                                                forKey:kFIRInstanceIDAPNSInfoKey];
   if (rawAPNSInfo && ![rawAPNSInfo isKindOfClass:[FIRMessagingAPNSInfo class]]) {
-    return nil;
+    // If the decoder fails to decode a FIRMessagingAPNSInfo, check if this was archived by a
+    // FirebaseMessaging 10.18.0 or earlier.
+    // TODO(#12246) This block may be replaced with `rawAPNSInfo = nil` once we're confident all
+    // users have upgraded to at least 10.19.0. Perhaps, after privacy manifests have been required
+    // for awhile?
+    @try {
+      NSKeyedUnarchiver *unarchiver =
+          [[NSKeyedUnarchiver alloc] initForReadingFromData:(NSData *)rawAPNSInfo error:nil];
+      unarchiver.requiresSecureCoding = NO;
+      [unarchiver setClass:[FIRMessagingAPNSInfo class] forClassName:@"FIRInstanceIDAPNSInfo"];
+      rawAPNSInfo = [unarchiver decodeObjectForKey:NSKeyedArchiveRootObjectKey];
+      [unarchiver finishDecoding];
+      needsMigration = YES;
+    } @catch (NSException *exception) {
+      FIRMessagingLoggerInfo(kFIRMessagingMessageCodeTokenInfoBadAPNSInfo,
+                             @"Could not parse raw APNS Info while parsing archived token info.");
+      rawAPNSInfo = nil;
+    } @finally {
+    }
   }
 
-  id cacheTime = [aDecoder decodeObjectForKey:kFIRInstanceIDCacheTimeKey];
-  if (cacheTime && ![cacheTime isKindOfClass:[NSDate class]]) {
-    return nil;
-  }
+  NSDate *cacheTime = [aDecoder decodeObjectOfClass:[NSDate class]
+                                             forKey:kFIRInstanceIDCacheTimeKey];
+  NSString *tokenType = [aDecoder decodeObjectOfClass:[NSString class]
+                                               forKey:kFIRInstanceIDTokenTypeKey];
 
   self = [super init];
   if (self) {
@@ -189,6 +225,8 @@ static const NSTimeInterval kDefaultFetchTokenInterval = 7 * 24 * 60 * 60;  // 7
     _firebaseAppID = [firebaseAppID copy];
     _APNSInfo = [rawAPNSInfo copy];
     _cacheTime = cacheTime;
+    _needsMigration = needsMigration;
+    _tokenType = [tokenType copy] ?: @"V4";
   }
   return self;
 }
@@ -203,6 +241,9 @@ static const NSTimeInterval kDefaultFetchTokenInterval = 7 * 24 * 60 * 60;  // 7
     [aCoder encodeObject:self.APNSInfo forKey:kFIRInstanceIDAPNSInfoKey];
   }
   [aCoder encodeObject:self.cacheTime forKey:kFIRInstanceIDCacheTimeKey];
+  if (self.tokenType) {
+    [aCoder encodeObject:self.tokenType forKey:kFIRInstanceIDTokenTypeKey];
+  }
 }
 
 @end

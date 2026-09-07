@@ -14,17 +14,19 @@
 
 import Foundation
 
-protocol SessionCoordinatorProtocol {
+protocol SessionCoordinatorProtocol: Sendable {
   func attemptLoggingSessionStart(event: SessionStartEvent,
-                                  callback: @escaping (Result<Void, FirebaseSessionsError>) -> Void)
+                                  callback: @escaping @Sendable (Result<Void,
+                                    FirebaseSessionsError>) -> Void)
 }
 
 ///
 /// SessionCoordinator is responsible for coordinating the systems in this SDK
 /// involved with sending a Session Start event.
 ///
-class SessionCoordinator: SessionCoordinatorProtocol {
+final class SessionCoordinator: SessionCoordinatorProtocol {
   let installations: InstallationsProtocol
+
   let fireLogger: EventGDTLoggerProtocol
 
   init(installations: InstallationsProtocol,
@@ -36,7 +38,10 @@ class SessionCoordinator: SessionCoordinatorProtocol {
   /// Begins the process of logging a SessionStartEvent to FireLog after
   /// it has been approved for sending
   func attemptLoggingSessionStart(event: SessionStartEvent,
-                                  callback: @escaping (Result<Void, FirebaseSessionsError>)
+                                  callback: @escaping @Sendable (Result<
+                                    Void,
+                                    FirebaseSessionsError
+                                  >)
                                     -> Void) {
     /// Order of execution
     /// 1. Fetch the installations Id. Regardless of success, move to step 2
@@ -67,11 +72,13 @@ class SessionCoordinator: SessionCoordinatorProtocol {
                             -> Void) {
     installations.installationID { result in
       switch result {
-      case let .success(fiid):
-        event.setInstallationID(installationId: fiid)
+      case let .success(installationsInfo):
+        event.setInstallationID(installationId: installationsInfo.0)
+        event.setAuthenticationToken(authenticationToken: installationsInfo.1)
         callback(.success(()))
       case let .failure(error):
         event.setInstallationID(installationId: "")
+        event.setAuthenticationToken(authenticationToken: "")
         callback(.failure(FirebaseSessionsError.SessionInstallationsError(error)))
       }
     }

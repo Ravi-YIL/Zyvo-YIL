@@ -30,15 +30,13 @@
                                    scope:(NSString *)scope
                       checkinPreferences:(FIRMessagingCheckinPreferences *)checkinPreferences
                               instanceID:(NSString *)instanceID
-                                  action:(FIRMessagingTokenAction)action
-                         heartbeatLogger:(id<FIRHeartbeatLoggerProtocol>)heartbeatLogger {
+                                  action:(FIRMessagingTokenAction)action {
   return [super initWithAction:action
            forAuthorizedEntity:authorizedEntity
                          scope:scope
                        options:nil
             checkinPreferences:checkinPreferences
-                    instanceID:instanceID
-               heartbeatLogger:heartbeatLogger];
+                    instanceID:instanceID];
 }
 
 - (void)performTokenOperation {
@@ -77,7 +75,7 @@
         [self handleResponseWithData:data response:response error:error];
       };
 
-  NSURLSessionConfiguration *config = NSURLSessionConfiguration.defaultSessionConfiguration;
+  NSURLSessionConfiguration *config = NSURLSessionConfiguration.ephemeralSessionConfiguration;
   config.timeoutIntervalForResource = 60.0f;  // 1 minute
   NSURLSession *session = [NSURLSession sessionWithConfiguration:config];
   self.dataTask = [session dataTaskWithRequest:request completionHandler:requestHandler];

@@ -8,7 +8,6 @@
 import UIKit
 import DropDown
 import Combine
-import TwilioConversationsClient
 import IQKeyboardManagerSwift
 
 class MessageVC: UIViewController {
@@ -453,7 +452,9 @@ extension MessageVC: UITableViewDelegate, UITableViewDataSource {
         let data = chatDataArr[indexPath.row]
         
         cell.userName.text = data.receiverName ?? ""
-        cell.lbl_PropertyTitle.text = "(\(data.propertyTitle ?? ""))"
+        let propertyTitle = data.propertyTitle?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        cell.lbl_PropertyTitle.text = propertyTitle.isEmpty ? "" : "(\(propertyTitle))"
+        cell.lbl_PropertyTitle.isHidden = propertyTitle.isEmpty
         
         let image = data.receiverImage ?? ""
         let imgURL = AppURL.imageURL + image
@@ -760,7 +761,8 @@ extension MessageVC {
                 }
                 result?.handle(success: { response in
                     let arr = response.data ?? []
-                    self.chatDataArr = arr.filter { $0.isDeleted == false && $0.propertyTitle != "" }
+                    // Direct host/guest conversations may have no booking or property.
+                    self.chatDataArr = arr.filter { $0.isDeleted == false }
                     
                     if self.chatDataArr.isEmpty {
                         self.tblV.setEmptyView(message: "No Conversation Found.")
@@ -880,4 +882,3 @@ class Debouncer {
         }
     }
 }
-

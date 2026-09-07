@@ -944,9 +944,6 @@ extension ReviewVC {
                     let guestID = self.getBookingDetails?.guestID ?? 0
                     let hostID = self.getBookingDetails?.hostID ?? 0
                     
-                    let id1 = min(guestID, hostID)
-                    let id2 = max(guestID, hostID)
-                    
                     self.heartStatus = self.getBookingDetails?.isInWishlist ?? 0
                     
                     if self.heartStatus == 0 {
@@ -956,9 +953,12 @@ extension ReviewVC {
                         self.imgHeart.image = UIImage(named: "day")
                         
                     }
-                    self.channelName = "ZYVOOPROJ_\(id1)_\(id2)_\(self.bookingID)"
+                    self.channelName = ChatChannelName.make(
+                        userId1: "\(guestID)",
+                        userId2: "\(hostID)"
+                    )
                     print(self.channelName,"self.channelName")
-                    print(id1,id2,self.propertyID,"ASDFASDF")
+                    print(guestID, hostID, self.propertyID, "ASDFASDF")
                     
                     self.IncludesServiceArr = self.getBookingDetails?.amenities ?? []
                     

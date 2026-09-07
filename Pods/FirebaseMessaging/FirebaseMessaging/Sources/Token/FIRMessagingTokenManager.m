@@ -25,6 +25,8 @@
 #import "FirebaseMessaging/Sources/Token/FIRMessagingAuthService.h"
 #import "FirebaseMessaging/Sources/Token/FIRMessagingCheckinPreferences.h"
 #import "FirebaseMessaging/Sources/Token/FIRMessagingCheckinStore.h"
+#import "FirebaseMessaging/Sources/Token/FIRMessagingFIDRegisterOperation.h"
+#import "FirebaseMessaging/Sources/Token/FIRMessagingFIDUnregisterOperation.h"
 #import "FirebaseMessaging/Sources/Token/FIRMessagingTokenDeleteOperation.h"
 #import "FirebaseMessaging/Sources/Token/FIRMessagingTokenFetchOperation.h"
 #import "FirebaseMessaging/Sources/Token/FIRMessagingTokenInfo.h"
@@ -75,13 +77,16 @@
     return _defaultFCMToken;
   }
 
+  BOOL isInstallationIdEnabled = [FIRMessaging messaging].isInstallationIdEnabled;
+  NSString *expectedTokenType = isInstallationIdEnabled ? @"FID" : @"V4";
+
   FIRMessagingTokenInfo *cachedTokenInfo =
       [self cachedTokenInfoWithAuthorizedEntity:self.fcmSenderID
                                           scope:kFIRMessagingDefaultTokenScope];
-  NSString *cachedToken = cachedTokenInfo.token;
-
-  if (cachedToken) {
-    return cachedToken;
+  if (cachedTokenInfo.token.length > 0 &&
+      [cachedTokenInfo.tokenType isEqualToString:expectedTokenType]) {
+    _defaultFCMToken = [cachedTokenInfo.token copy];
+    return _defaultFCMToken;
   } else {
     [self tokenWithAuthorizedEntity:self.fcmSenderID
                               scope:kFIRMessagingDefaultTokenScope
@@ -97,7 +102,7 @@
   return _defaultFCMToken;
 }
 
-- (void)postTokenRefreshNotificationWithDefaultFCMToken:(NSString *)defaultFCMToken {
+- (void)postTokenRefreshNotificationWithDefaultFCMToken:(nullable NSString *)defaultFCMToken {
   // Should always trigger the token refresh notification when the delegate method is called
   // No need to check if the token has changed, it's handled in the notification receiver.
   NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
@@ -107,13 +112,18 @@
 
 - (void)saveDefaultTokenInfoInKeychain:(NSString *)defaultFcmToken {
   if ([self hasTokenChangedFromOldToken:_defaultFCMToken toNewToken:defaultFcmToken]) {
+    FIRMessagingLoggerDebug(kFIRMessagingMessageCodeDebug,
+                            @"Update default token from '%@' to '%@'", _defaultFCMToken,
+                            defaultFcmToken);
     _defaultFCMToken = [defaultFcmToken copy];
+    NSString *tokenType = [FIRMessaging messaging].isInstallationIdEnabled ? @"FID" : @"V4";
     FIRMessagingTokenInfo *tokenInfo =
         [[FIRMessagingTokenInfo alloc] initWithAuthorizedEntity:_fcmSenderID
                                                           scope:kFIRMessagingDefaultTokenScope
                                                           token:defaultFcmToken
                                                      appVersion:FIRMessagingCurrentAppVersion()
-                                                  firebaseAppID:_firebaseAppID];
+                                                  firebaseAppID:_firebaseAppID
+                                                      tokenType:tokenType];
     tokenInfo.APNSInfo =
         [[FIRMessagingAPNSInfo alloc] initWithTokenOptionsDictionary:[self tokenOptions]];
 
@@ -168,7 +178,8 @@
 - (void)tokenWithAuthorizedEntity:(NSString *)authorizedEntity
                             scope:(NSString *)scope
                           options:(NSDictionary *)options
-                          handler:(FIRMessagingFCMTokenFetchCompletion)handler {
+                          handler:(void (^)(NSString *_Nullable token,
+                                            NSError *_Nullable error))handler {
   if (!handler) {
     FIRMessagingLoggerError(kFIRMessagingMessageCodeInstanceID000, @"Invalid nil handler");
     return;
@@ -194,13 +205,13 @@
     return;
   }
 
-#if TARGET_OS_SIMULATOR && TARGET_OS_IOS
+#if TARGET_OS_SIMULATOR
   if (tokenOptions[kFIRMessagingTokenOptionsAPNSKey] != nil) {
     // If APNS token is available on iOS Simulator, we must use the sandbox profile
     // https://developer.apple.com/documentation/xcode-release-notes/xcode-14-release-notes
     tokenOptions[kFIRMessagingTokenOptionsAPNSIsSandboxKey] = @(YES);
   }
-#endif
+#endif  // TARGET_OS_SIMULATOR
 
   if (tokenOptions[kFIRMessagingTokenOptionsAPNSKey] != nil &&
       tokenOptions[kFIRMessagingTokenOptionsAPNSIsSandboxKey] == nil) {
@@ -224,7 +235,7 @@
     errorCode = kFIRMessagingErrorCodeMissingFid;
   }
 
-  FIRMessagingFCMTokenFetchCompletion newHandler = ^(NSString *token, NSError *error) {
+  void (^newHandler)(NSString *, NSError *) = ^(NSString *token, NSError *error) {
     dispatch_async(dispatch_get_main_queue(), ^{
       handler(token, error);
     });
@@ -239,27 +250,11 @@
   }
 
   FIRMessaging_WEAKIFY(self);
-  [_authService fetchCheckinInfoWithHandler:^(FIRMessagingCheckinPreferences *preferences,
-                                              NSError *error) {
-    FIRMessaging_STRONGIFY(self);
-    if (error) {
-      newHandler(nil, error);
-      return;
-    }
-
-    if (!self) {
-      NSError *derefErr =
-          [NSError messagingErrorWithCode:kFIRMessagingErrorCodeInternal
-                            failureReason:@"Unable to fetch token. Lost Reference to TokenManager"];
-      handler(nil, derefErr);
-      return;
-    }
-
-    FIRMessaging_WEAKIFY(self);
+  BOOL isInstallationIdEnabled = [FIRMessaging messaging].isInstallationIdEnabled;
+  if (isInstallationIdEnabled) {
     [self->_installations
         installationIDWithCompletion:^(NSString *_Nullable identifier, NSError *_Nullable error) {
           FIRMessaging_STRONGIFY(self);
-
           if (error) {
             newHandler(nil, error);
           } else {
@@ -283,22 +278,80 @@
                                             handler:newHandler];
           }
         }];
-  }];
+  } else {
+    [_authService
+        fetchCheckinInfoWithHandler:^(FIRMessagingCheckinPreferences *preferences, NSError *error) {
+          FIRMessaging_STRONGIFY(self);
+          if (error) {
+            newHandler(nil, error);
+            return;
+          }
+
+          if (!self) {
+            NSError *derefErr = [NSError
+                messagingErrorWithCode:kFIRMessagingErrorCodeInternal
+                         failureReason:@"Unable to fetch token. Lost Reference to TokenManager"];
+            handler(nil, derefErr);
+            return;
+          }
+
+          FIRMessaging_WEAKIFY(self);
+          [self->_installations installationIDWithCompletion:^(NSString *_Nullable identifier,
+                                                               NSError *_Nullable error) {
+            FIRMessaging_STRONGIFY(self);
+
+            if (error) {
+              newHandler(nil, error);
+            } else {
+              FIRMessagingTokenInfo *cachedTokenInfo =
+                  [self cachedTokenInfoWithAuthorizedEntity:authorizedEntity scope:scope];
+              FIRMessagingAPNSInfo *optionsAPNSInfo =
+                  [[FIRMessagingAPNSInfo alloc] initWithTokenOptionsDictionary:tokenOptions];
+              // Check if APNS Info is changed
+              if ((!cachedTokenInfo.APNSInfo && !optionsAPNSInfo) ||
+                  [cachedTokenInfo.APNSInfo isEqualToAPNSInfo:optionsAPNSInfo]) {
+                // check if token is fresh
+                if ([cachedTokenInfo isFreshWithIID:identifier]) {
+                  newHandler(cachedTokenInfo.token, nil);
+                  return;
+                }
+              }
+              [self fetchNewTokenWithAuthorizedEntity:[authorizedEntity copy]
+                                                scope:[scope copy]
+                                           instanceID:identifier
+                                              options:tokenOptions
+                                              handler:newHandler];
+            }
+          }];
+        }];
+  }
 }
 
 - (void)fetchNewTokenWithAuthorizedEntity:(NSString *)authorizedEntity
                                     scope:(NSString *)scope
                                instanceID:(NSString *)instanceID
                                   options:(NSDictionary *)options
-                                  handler:(FIRMessagingFCMTokenFetchCompletion)handler {
+                                  handler:(void (^)(NSString *_Nullable token,
+                                                    NSError *_Nullable error))handler {
   FIRMessagingLoggerDebug(kFIRMessagingMessageCodeTokenManager000,
                           @"Fetch new token for authorizedEntity: %@, scope: %@", authorizedEntity,
                           scope);
-  FIRMessagingTokenFetchOperation *operation =
-      [self createFetchOperationWithAuthorizedEntity:authorizedEntity
-                                               scope:scope
-                                             options:options
-                                          instanceID:instanceID];
+  FIRMessagingTokenOperation *operation;
+  BOOL isInstallationIdEnabled = [FIRMessaging messaging].isInstallationIdEnabled;
+  if (isInstallationIdEnabled) {
+    operation =
+        [[FIRMessagingFIDRegisterOperation alloc] initWithAuthorizedEntity:authorizedEntity
+                                                                     scope:scope
+                                                                   options:options
+                                                                instanceID:instanceID
+                                                             installations:self.installations];
+  } else {
+    operation = [self createFetchOperationWithAuthorizedEntity:authorizedEntity
+                                                         scope:scope
+                                                       options:options
+                                                    instanceID:instanceID];
+  }
+
   FIRMessaging_WEAKIFY(self);
   FIRMessagingTokenOperationCompletion completion = ^(FIRMessagingTokenOperationResult result,
                                                       NSString *_Nullable token,
@@ -320,12 +373,14 @@
       [self postTokenRefreshNotificationWithDefaultFCMToken:token];
     }
     NSString *firebaseAppID = options[kFIRMessagingTokenOptionsFirebaseAppIDKey];
+    NSString *tokenType = isInstallationIdEnabled ? @"FID" : @"V4";
     FIRMessagingTokenInfo *tokenInfo =
         [[FIRMessagingTokenInfo alloc] initWithAuthorizedEntity:authorizedEntity
                                                           scope:scope
                                                           token:token
                                                      appVersion:FIRMessagingCurrentAppVersion()
-                                                  firebaseAppID:firebaseAppID];
+                                                  firebaseAppID:firebaseAppID
+                                                      tokenType:tokenType];
     tokenInfo.APNSInfo = [[FIRMessagingAPNSInfo alloc] initWithTokenOptionsDictionary:options];
 
     [self->_tokenStore
@@ -333,7 +388,7 @@
               handler:^(NSError *error) {
                 if (!error) {
                   // Do not send the token back in case the save was unsuccessful. Since with
-                  // the new asychronous fetch mechanism this can lead to infinite loops, for
+                  // the new asynchronous fetch mechanism this can lead to infinite loops, for
                   // example, we will return a valid token even though we weren't able to store
                   // it in our cache. The first token will lead to a onTokenRefresh callback
                   // wherein the user again calls `getToken` but since we weren't able to save
@@ -384,14 +439,14 @@
 - (void)deleteTokenWithAuthorizedEntity:(NSString *)authorizedEntity
                                   scope:(NSString *)scope
                              instanceID:(NSString *)instanceID
-                                handler:(FIRMessagingDeleteFCMTokenCompletion)handler {
+                                handler:(void (^)(NSError *_Nullable error))handler {
   if ([_tokenStore tokenInfoWithAuthorizedEntity:authorizedEntity scope:scope]) {
     [_tokenStore removeTokenWithAuthorizedEntity:authorizedEntity scope:scope];
   }
   // Does not matter if we cannot find it in the cache. Still make an effort to unregister
   // from the server.
   FIRMessagingCheckinPreferences *checkinPreferences = self.authService.checkinPreferences;
-  FIRMessagingTokenDeleteOperation *operation =
+  FIRMessagingTokenOperation *operation =
       [self createDeleteOperationWithAuthorizedEntity:authorizedEntity
                                                 scope:scope
                                    checkinPreferences:checkinPreferences
@@ -436,7 +491,7 @@
           });
           return;
         }
-        FIRMessagingTokenDeleteOperation *operation = [self
+        FIRMessagingTokenOperation *operation = [self
             createDeleteOperationWithAuthorizedEntity:kFIRMessagingKeychainWildcardIdentifier
                                                 scope:kFIRMessagingKeychainWildcardIdentifier
                                    checkinPreferences:checkinPreferences
@@ -549,7 +604,7 @@
   // pubsub notifications if he is again subscribed to the same topic.
   //
   // The client state should be cleared on the server for the provided checkin preferences.
-  FIRMessagingTokenDeleteOperation *operation =
+  FIRMessagingTokenOperation *operation =
       [self createDeleteOperationWithAuthorizedEntity:nil
                                                 scope:nil
                                    checkinPreferences:checkin
@@ -589,19 +644,28 @@
 }
 
 // We really have this method so that we can more easily stub it out for unit testing
-- (FIRMessagingTokenDeleteOperation *)
+- (FIRMessagingTokenOperation *)
     createDeleteOperationWithAuthorizedEntity:(NSString *)authorizedEntity
                                         scope:(NSString *)scope
                            checkinPreferences:(FIRMessagingCheckinPreferences *)checkinPreferences
                                    instanceID:(NSString *)instanceID
                                        action:(FIRMessagingTokenAction)action {
-  FIRMessagingTokenDeleteOperation *operation =
-      [[FIRMessagingTokenDeleteOperation alloc] initWithAuthorizedEntity:authorizedEntity
-                                                                   scope:scope
-                                                      checkinPreferences:checkinPreferences
-                                                              instanceID:instanceID
-                                                                  action:action
-                                                         heartbeatLogger:self.heartbeatLogger];
+  FIRMessagingTokenOperation *operation;
+  if ([FIRMessaging messaging].isInstallationIdEnabled) {
+    operation =
+        [[FIRMessagingFIDUnregisterOperation alloc] initWithAuthorizedEntity:authorizedEntity
+                                                                       scope:scope
+                                                                     options:nil
+                                                                  instanceID:instanceID
+                                                               installations:self.installations];
+  } else {
+    operation =
+        [[FIRMessagingTokenDeleteOperation alloc] initWithAuthorizedEntity:authorizedEntity
+                                                                     scope:scope
+                                                        checkinPreferences:checkinPreferences
+                                                                instanceID:instanceID
+                                                                    action:action];
+  }
   return operation;
 }
 
@@ -689,17 +753,17 @@
     return;
   }
   // Use this token type for when we have to automatically fetch tokens in the future
-#if TARGET_OS_SIMULATOR && TARGET_OS_IOS
+#if TARGET_OS_SIMULATOR
   // If APNS token is available on iOS Simulator, we must use the sandbox profile
   // https://developer.apple.com/documentation/xcode-release-notes/xcode-14-release-notes
   BOOL isSandboxApp = YES;
-#else
+#else   // TARGET_OS_SIMULATOR
   NSInteger type = [userInfo[kFIRMessagingAPNSTokenType] integerValue];
   BOOL isSandboxApp = (type == FIRMessagingAPNSTokenTypeSandbox);
   if (type == FIRMessagingAPNSTokenTypeUnknown) {
     isSandboxApp = FIRMessagingIsSandboxApp();
   }
-#endif
+#endif  // TARGET_OS_SIMULATOR
 
   // Pro-actively invalidate the default token, if the APNs change makes it
   // invalid. Previously, we invalidated just before fetching the token.
@@ -744,7 +808,7 @@
                                         handler:^(NSString *_Nullable token,
                                                   NSError *_Nullable error){
                                             // Do nothing as callback is not needed and the
-                                            // sub-funciton already handle errors.
+                                            // sub-function already handle errors.
                                         }];
       }
       if ([self->_tokenStore cachedTokenInfos].count == 0) {
@@ -752,7 +816,7 @@
                                   scope:kFIRMessagingDefaultTokenScope
                                 options:tokenOptions
                                 handler:^(NSString *_Nullable FCMToken, NSError *_Nullable error){
-                                    // Do nothing as callback is not needed and the sub-funciton
+                                    // Do nothing as callback is not needed and the sub-function
                                     // already handle errors.
                                 }];
       }

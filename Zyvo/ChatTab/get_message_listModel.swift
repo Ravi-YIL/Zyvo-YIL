@@ -1,9 +1,6 @@
 
 
 import Foundation
-import TwilioConversationsClient
-
-
 struct get_message_listModel : Codable {
        let message: String?
        let success: Bool?

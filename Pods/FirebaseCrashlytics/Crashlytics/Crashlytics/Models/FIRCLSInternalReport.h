@@ -22,8 +22,6 @@ extern NSString *const FIRCLSReportExceptionFile;
 extern NSString *const FIRCLSReportCustomExceptionAFile;
 extern NSString *const FIRCLSReportCustomExceptionBFile;
 extern NSString *const FIRCLSReportSignalFile;
-extern NSString *const FIRCLSMetricKitFatalReportFile;
-extern NSString *const FIRCLSMetricKitNonfatalReportFile;
 #if CLS_MACH_EXCEPTION_SUPPORTED
 extern NSString *const FIRCLSReportMachExceptionFile;
 #endif
@@ -36,6 +34,7 @@ extern NSString *const FIRCLSReportInternalIncrementalKVFile;
 extern NSString *const FIRCLSReportInternalCompactedKVFile;
 extern NSString *const FIRCLSReportUserIncrementalKVFile;
 extern NSString *const FIRCLSReportUserCompactedKVFile;
+extern NSString *const FIRCLSReportRolloutsFile;
 
 @class FIRCLSFileManager;
 

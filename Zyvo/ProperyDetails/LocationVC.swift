@@ -86,6 +86,9 @@ class LocationVC: UIViewController, FSCalendarDataSource, FSCalendarDelegate, Ci
     @IBOutlet weak var view_Kitchen: UIView!
     @IBOutlet weak var view_HostDesc: UIView!
     @IBOutlet weak var view_ParkingDesc: UIView!
+    @IBOutlet weak var view_MessageHostEntry: UIView!
+    @IBOutlet weak var hostMessageTextView: UITextView!
+    private var selectedHostMessage = "I have a doubt"
     @IBOutlet weak var viewHold_MessageHost: UIView!
     @IBOutlet weak var view_otherReason: UIView!
     @IBOutlet weak var view_availableDays: UIView!
@@ -269,6 +272,13 @@ class LocationVC: UIViewController, FSCalendarDataSource, FSCalendarDelegate, Ci
         view_Calendar.bringSubviewToFront(btnPrevMoth)
         view_BtnReadAboutSpace.isHidden = true
         viewHold_MessageHost.isHidden = true
+        view_ShareMessage.isHidden = true
+        hostMessageTextView.text = ""
+        hostMessageTextView.accessibilityLabel = "Message to host"
+        btnIhaveDoubt_Tap(btnShowMsgHost)
+        viewHold_MessageHost.layer.cornerRadius = 20
+        viewHold_MessageHost.layer.borderWidth = 1.5
+        viewHold_MessageHost.layer.borderColor = UIColor(white: 228/255, alpha: 1).cgColor
         selectHourPriceV.isHidden = false
         selectTimeV.isHidden = true
         view_IhaveDoubt.layer.cornerRadius = 10
@@ -402,6 +412,14 @@ class LocationVC: UIViewController, FSCalendarDataSource, FSCalendarDelegate, Ci
         
         self.tabBarController?.tabBar.isHidden = true
         self.additionalSafeAreaInsets.bottom = 0
+        updateMessageHostVisibility()
+    }
+
+    private func updateMessageHostVisibility() {
+        let currentUserId = UserDetail.shared.getUserId().trimmingCharacters(in: .whitespacesAndNewlines)
+        let canMessageHost = !currentUserId.isEmpty && hostID > 0 && currentUserId != "\(hostID)"
+        view_MessageHostEntry.isHidden = !canMessageHost
+        if !canMessageHost { viewHold_MessageHost.isHidden = true }
     }
     
     override func viewDidLayoutSubviews() {
@@ -632,6 +650,8 @@ private func updateAddOnsCollectionViewHeight() {
     }
     
     @IBAction func btnIhaveDoubt_Tap(_ sender: UIButton) {
+        selectedHostMessage = "I have a doubt"
+        view_ShareMessage.isHidden = true
         view_IhaveDoubt.backgroundColor = UIColor.init(red: 154/255, green: 154/255, blue: 154/255, alpha: 0.25)
         view_availableDays.backgroundColor = UIColor.white
         view_otherReason.backgroundColor = UIColor.clear
@@ -644,6 +664,8 @@ private func updateAddOnsCollectionViewHeight() {
         self.navigationController?.pushViewController(vc, animated: true)
     }
     @IBAction func btnAvailableDays_Tap(_ sender: UIButton) {
+        selectedHostMessage = "Available days"
+        view_ShareMessage.isHidden = true
         
         view_IhaveDoubt.backgroundColor = UIColor.clear
         view_availableDays.backgroundColor =  UIColor.init(red: 154/255, green: 154/255, blue: 154/255, alpha: 0.25)
@@ -664,20 +686,31 @@ private func updateAddOnsCollectionViewHeight() {
     }
     
     @IBAction func btnOtherReason_Tap(_ sender: UIButton) {
+        selectedHostMessage = "Others"
+        view_ShareMessage.isHidden = false
         view_IhaveDoubt.backgroundColor = UIColor.clear
         view_availableDays.backgroundColor = UIColor.clear
         view_otherReason.backgroundColor = UIColor.init(red: 154/255, green: 154/255, blue: 154/255, alpha: 0.25)
     }
     
     @IBAction func btnshowMessageHost_Tap(_ sender: UIButton) {
-        
-        let senderID = UserDetail.shared.getUserId()
-        
-        viewModel1.apiForJoinChannel(senderId: senderID, receiverId: "\(self.hostID )", groupChannel: self.channelName, userType: "guest")
+        guard !UserDetail.shared.getUserId().isEmpty, hostID > 0,
+              UserDetail.shared.getUserId() != "\(hostID)" else { return }
+        viewHold_MessageHost.isHidden.toggle()
+        view.endEditing(true)
     }
-    
+
     @IBAction func btnSendMessageHost_Tap(_ sender: UIButton) {
-        viewHold_MessageHost.isHidden = true
+        let senderID = UserDetail.shared.getUserId().trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !senderID.isEmpty, hostID > 0, senderID != "\(hostID)" else { return }
+        if selectedHostMessage == "Others",
+           hostMessageTextView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            showAlert(for: "Please enter your message")
+            return
+        }
+        view.endEditing(true)
+        channelName = ChatChannelName.make(userId1: senderID, userId2: "\(hostID)")
+        viewModel1.apiForJoinChannel(senderId: senderID, receiverId: "\(self.hostID )", groupChannel: self.channelName, userType: "guest")
     }
     
     @IBAction func btnChooseHours_Tap(_ sender: UIButton) {
@@ -1548,14 +1581,15 @@ extension LocationVC {
                     
                     self.hostID =  self.getPropertyDetails?.hostID ?? 0
                     
-                    let guestID = Int(UserDetail.shared.getUserId())
+                    let guestID = UserDetail.shared.getUserId()
                     
-                    let id1 = min(guestID ?? 0 , self.hostID)
-                    let id2 = max(guestID ?? 0, self.hostID)
-                    
-                    self.channelName = "ZYVOOPROJ_\(id1)_\(id2)_\(self.propertyID)"
+                    self.channelName = ChatChannelName.make(
+                        userId1: guestID,
+                        userId2: "\(self.hostID)"
+                    )
+                    self.updateMessageHostVisibility()
                     print(self.channelName,"self.channelName")
-                    print(id1,id2,self.propertyID,"ASDFASDF")
+                    print(guestID, self.hostID, self.propertyID, "ASDFASDF")
                     
                     self.IncludesServiceArr = self.getPropertyDetails?.amenities ?? []
                     
@@ -1889,6 +1923,10 @@ extension LocationVC {
                     let stryB = UIStoryboard(name: "Chat", bundle: nil)
                     if let vc = stryB.instantiateViewController(withIdentifier: "ChatVC") as? ChatVC {
                         vc.uniqueConversationName = self.channelName
+                        vc.Message = self.selectedHostMessage == "Others"
+                            ? self.hostMessageTextView.text.trimmingCharacters(in: .whitespacesAndNewlines)
+                            : self.selectedHostMessage
+                        self.viewHold_MessageHost.isHidden = true
                         vc.friend_id = "\(receiverID)"
                         vc.SenderID = senderID
                         vc.guestName = self.getJoinChannelDetails?.senderName ?? ""
