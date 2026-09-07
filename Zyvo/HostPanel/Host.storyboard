@@ -3459,7 +3459,7 @@ Note: This filter's content is dynamic and adjusts in real-time as new bookings 
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="70"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Add Profile picture" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ksY-Ag-1wI">
-                                                    <rect key="frame" x="113.00000000000001" y="30" width="149.33333333333337" height="21"/>
+                                                    <rect key="frame" x="104.33333333333333" y="30" width="166.33333333333337" height="25.333333333333329"/>
                                                     <fontDescription key="fontDescription" name="Poppins-Medium" family="Poppins" pointSize="18"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -14558,7 +14558,7 @@ Note: This filter's content is dynamic and adjusts in real-time as new bookings 
                                 <rect key="frame" x="0.0" y="198" width="393" height="586"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="CCF-AH-Wzk">
-                                        <rect key="frame" x="20" y="0.0" width="353" height="1614"/>
+                                        <rect key="frame" x="20" y="0.0" width="353" height="1574"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mum-Ss-gV9">
                                                 <rect key="frame" x="0.0" y="0.0" width="353" height="167"/>
@@ -14914,7 +14914,7 @@ Note: This filter's content is dynamic and adjusts in real-time as new bookings 
                                                 </constraints>
                                             </view>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gzm-MU-Hpi">
-                                                <rect key="frame" x="0.0" y="889" width="353" height="445"/>
+                                                <rect key="frame" x="0.0" y="889" width="353" height="405"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Customer Support" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uSg-a1-dNy">
                                                         <rect key="frame" x="15" y="15" width="165.33333333333334" height="25"/>
@@ -14935,7 +14935,7 @@ Note: This filter's content is dynamic and adjusts in real-time as new bookings 
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="nAb-vu-s7Z">
-                                                        <rect key="frame" x="15" y="125" width="323" height="310"/>
+                                                        <rect key="frame" x="15" y="125" width="323" height="270"/>
                                                         <subviews>
                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NCV-uC-csM">
                                                                 <rect key="frame" x="0.0" y="0.0" width="323" height="90"/>
@@ -15031,7 +15031,7 @@ Note: This filter's content is dynamic and adjusts in real-time as new bookings 
                                                                 </constraints>
                                                             </view>
                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Lhh-wd-nfJ">
-                                                                <rect key="frame" x="0.0" y="180" width="323" height="130"/>
+                                                                <rect key="frame" x="0.0" y="180" width="323" height="90"/>
                                                                 <subviews>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="grV-1a-mGO">
                                                                         <rect key="frame" x="0.0" y="0.0" width="323" height="1"/>
@@ -15050,15 +15050,14 @@ Note: This filter's content is dynamic and adjusts in real-time as new bookings 
                                                                             <constraint firstAttribute="height" constant="50" id="XkG-Qu-asP"/>
                                                                         </constraints>
                                                                     </imageView>
-                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Location" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Q3O-eA-861">
-                                                                        <rect key="frame" x="65" y="15.000000000000002" width="68" height="22.666666666666671"/>
+                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Location" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Q3O-eA-861">
+                                                                        <rect key="frame" x="65" y="15" width="68" height="22.666666666666671"/>
                                                                         <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="16"/>
                                                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                         <nil key="highlightedColor"/>
                                                                     </label>
-                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hod-f0-R1i">
-                                                                        <rect key="frame" x="65" y="42.666666666666735" width="243" height="67.333333333333314"/>
-                                                                        <string key="text">Atlanta, Georgia, United States                                                                                               www.zyvoapp.com </string>
+                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Atlanta, Georgia, United States " textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hod-f0-R1i">
+                                                                        <rect key="frame" x="65" y="42.666666666666742" width="243" height="45"/>
                                                                         <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="16"/>
                                                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                         <nil key="highlightedColor"/>
@@ -15070,8 +15069,8 @@ Note: This filter's content is dynamic and adjusts in real-time as new bookings 
                                                                     <constraint firstItem="hod-f0-R1i" firstAttribute="leading" secondItem="C9x-MN-o2b" secondAttribute="trailing" constant="15" id="9if-qz-zLW"/>
                                                                     <constraint firstAttribute="trailing" secondItem="grV-1a-mGO" secondAttribute="trailing" id="F3e-XR-ccI"/>
                                                                     <constraint firstItem="Q3O-eA-861" firstAttribute="leading" secondItem="C9x-MN-o2b" secondAttribute="trailing" constant="15" id="K0q-uY-GC5"/>
-                                                                    <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="hod-f0-R1i" secondAttribute="bottom" constant="20" id="RiC-Zx-adO"/>
-                                                                    <constraint firstAttribute="height" constant="130" id="XNd-Nv-Hpc"/>
+                                                                    <constraint firstAttribute="bottom" secondItem="hod-f0-R1i" secondAttribute="bottom" constant="20" id="RiC-Zx-adO"/>
+                                                                    <constraint firstAttribute="height" constant="90" id="XNd-Nv-Hpc"/>
                                                                     <constraint firstItem="C9x-MN-o2b" firstAttribute="top" secondItem="grV-1a-mGO" secondAttribute="bottom" constant="10" id="YSk-Bk-8QF"/>
                                                                     <constraint firstItem="hod-f0-R1i" firstAttribute="top" secondItem="Q3O-eA-861" secondAttribute="bottom" constant="5" id="YY9-N8-XHV"/>
                                                                     <constraint firstItem="grV-1a-mGO" firstAttribute="top" secondItem="Lhh-wd-nfJ" secondAttribute="top" id="Yxj-y6-kVy"/>
@@ -15105,14 +15104,14 @@ Note: This filter's content is dynamic and adjusts in real-time as new bookings 
                                                 </userDefinedRuntimeAttributes>
                                             </view>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gAF-w6-SzM">
-                                                <rect key="frame" x="0.0" y="1334" width="353" height="20"/>
+                                                <rect key="frame" x="0.0" y="1294" width="353" height="20"/>
                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="20" id="yJI-qg-dFy"/>
                                                 </constraints>
                                             </view>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="n1C-jK-I0Y">
-                                                <rect key="frame" x="0.0" y="1354" width="353" height="260"/>
+                                                <rect key="frame" x="0.0" y="1314" width="353" height="260"/>
                                                 <subviews>
                                                     <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Retângulo 150003 2" translatesAutoresizingMaskIntoConstraints="NO" id="AJ2-PD-5cC">
                                                         <rect key="frame" x="0.0" y="0.0" width="353" height="250"/>
