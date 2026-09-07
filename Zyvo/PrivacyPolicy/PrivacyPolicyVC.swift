@@ -413,7 +413,6 @@ extension PrivacyPolicyVC {
 
     /// Converts:
     /// 2026-08-31T06:37:31.000000Z
-    ///
     /// into:
     /// 08/31/2026
     private func convertToMMDDYYYY(
