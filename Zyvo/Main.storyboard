@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24412" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Pnz-rY-r2c">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24765" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Pnz-rY-r2c">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24405"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24743"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -5469,7 +5469,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="70"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Add Profile picture" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RHs-JD-Mdw">
-                                                    <rect key="frame" x="104.5" y="30" width="166.5" height="25.5"/>
+                                                    <rect key="frame" x="113" y="30" width="149.5" height="21"/>
                                                     <fontDescription key="fontDescription" name="Poppins-Medium" family="Poppins" pointSize="18"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -9979,7 +9979,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="70"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Add Profile picture" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wcW-IS-DfT">
-                                                    <rect key="frame" x="104.5" y="30" width="166.5" height="25.5"/>
+                                                    <rect key="frame" x="113" y="30" width="149.5" height="21"/>
                                                     <fontDescription key="fontDescription" name="Poppins-Medium" family="Poppins" pointSize="18"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -17702,7 +17702,7 @@ Available at checkout. </string>
                                 <rect key="frame" x="0.0" y="90" width="375" height="577"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="qk2-w8-LlX">
-                                        <rect key="frame" x="0.0" y="0.0" width="375" height="3716"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="3642"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gZA-TR-S7s">
                                                 <rect key="frame" x="0.0" y="0.0" width="375" height="70"/>
@@ -17735,166 +17735,175 @@ Available at checkout. </string>
                                                 </constraints>
                                             </view>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IjW-Oh-4eZ">
-                                                <rect key="frame" x="0.0" y="70" width="375" height="177"/>
+                                                <rect key="frame" x="0.0" y="70" width="375" height="103"/>
                                                 <subviews>
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="ehr-Yl-oIQ">
-                                                        <rect key="frame" x="10" y="0.0" width="355" height="172"/>
+                                                        <rect key="frame" x="10" y="0.0" width="355" height="98"/>
                                                         <subviews>
-                                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jlU-vq-OgY">
+                                                            <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="checkout-host-row">
                                                                 <rect key="frame" x="0.0" y="0.0" width="355" height="98"/>
                                                                 <subviews>
-                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qEo-dr-IWZ">
-                                                                        <rect key="frame" x="147.5" y="19" width="60" height="60"/>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jlU-vq-OgY">
+                                                                        <rect key="frame" x="0.0" y="0.0" width="149" height="98"/>
                                                                         <subviews>
-                                                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Border" translatesAutoresizingMaskIntoConstraints="NO" id="Fgo-Ou-kV1">
-                                                                                <rect key="frame" x="0.0" y="0.0" width="60" height="60"/>
-                                                                            </imageView>
-                                                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="woman-s-face-38289 7" translatesAutoresizingMaskIntoConstraints="NO" id="mkI-Sd-xgJ">
-                                                                                <rect key="frame" x="5" y="5" width="50" height="50"/>
+                                                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qEo-dr-IWZ">
+                                                                                <rect key="frame" x="12" y="39.5" width="44" height="44"/>
+                                                                                <subviews>
+                                                                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Border" translatesAutoresizingMaskIntoConstraints="NO" id="Fgo-Ou-kV1">
+                                                                                        <rect key="frame" x="0.0" y="0.0" width="44" height="44"/>
+                                                                                    </imageView>
+                                                                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="woman-s-face-38289 7" translatesAutoresizingMaskIntoConstraints="NO" id="mkI-Sd-xgJ">
+                                                                                        <rect key="frame" x="4" y="4" width="36" height="36"/>
+                                                                                        <constraints>
+                                                                                            <constraint firstAttribute="width" constant="36" id="VDO-tV-5J2"/>
+                                                                                            <constraint firstAttribute="height" constant="36" id="wwt-Qb-uet"/>
+                                                                                        </constraints>
+                                                                                    </imageView>
+                                                                                </subviews>
+                                                                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                                                 <constraints>
-                                                                                    <constraint firstAttribute="width" constant="50" id="VDO-tV-5J2"/>
-                                                                                    <constraint firstAttribute="height" constant="50" id="wwt-Qb-uet"/>
+                                                                                    <constraint firstAttribute="bottom" secondItem="Fgo-Ou-kV1" secondAttribute="bottom" id="4CB-b7-WQe"/>
+                                                                                    <constraint firstItem="Fgo-Ou-kV1" firstAttribute="top" secondItem="qEo-dr-IWZ" secondAttribute="top" id="ANk-rq-Ld0"/>
+                                                                                    <constraint firstAttribute="height" constant="44" id="HGW-M5-z4C"/>
+                                                                                    <constraint firstAttribute="trailing" secondItem="Fgo-Ou-kV1" secondAttribute="trailing" id="eGm-fv-KpD"/>
+                                                                                    <constraint firstItem="mkI-Sd-xgJ" firstAttribute="centerY" secondItem="qEo-dr-IWZ" secondAttribute="centerY" id="fxo-qM-jaS"/>
+                                                                                    <constraint firstItem="Fgo-Ou-kV1" firstAttribute="leading" secondItem="qEo-dr-IWZ" secondAttribute="leading" id="nVJ-P0-oFs"/>
+                                                                                    <constraint firstAttribute="width" constant="44" id="rxL-qD-GgO"/>
+                                                                                    <constraint firstItem="mkI-Sd-xgJ" firstAttribute="centerX" secondItem="qEo-dr-IWZ" secondAttribute="centerX" id="vlm-2R-VVy"/>
                                                                                 </constraints>
-                                                                            </imageView>
-                                                                        </subviews>
-                                                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                                                        <constraints>
-                                                                            <constraint firstAttribute="bottom" secondItem="Fgo-Ou-kV1" secondAttribute="bottom" id="4CB-b7-WQe"/>
-                                                                            <constraint firstItem="Fgo-Ou-kV1" firstAttribute="top" secondItem="qEo-dr-IWZ" secondAttribute="top" id="ANk-rq-Ld0"/>
-                                                                            <constraint firstAttribute="height" constant="60" id="HGW-M5-z4C"/>
-                                                                            <constraint firstAttribute="trailing" secondItem="Fgo-Ou-kV1" secondAttribute="trailing" id="eGm-fv-KpD"/>
-                                                                            <constraint firstItem="mkI-Sd-xgJ" firstAttribute="centerY" secondItem="qEo-dr-IWZ" secondAttribute="centerY" id="fxo-qM-jaS"/>
-                                                                            <constraint firstItem="Fgo-Ou-kV1" firstAttribute="leading" secondItem="qEo-dr-IWZ" secondAttribute="leading" id="nVJ-P0-oFs"/>
-                                                                            <constraint firstAttribute="width" constant="60" id="rxL-qD-GgO"/>
-                                                                            <constraint firstItem="mkI-Sd-xgJ" firstAttribute="centerX" secondItem="qEo-dr-IWZ" secondAttribute="centerX" id="vlm-2R-VVy"/>
-                                                                        </constraints>
-                                                                    </view>
-                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Mia J." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="W38-rn-AmR">
-                                                                        <rect key="frame" x="217.5" y="38" width="45" height="22.5"/>
-                                                                        <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="16"/>
-                                                                        <nil key="textColor"/>
-                                                                        <nil key="highlightedColor"/>
-                                                                    </label>
-                                                                    <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Starssicon" translatesAutoresizingMaskIntoConstraints="NO" id="gFY-hY-7IG">
-                                                                        <rect key="frame" x="272.5" y="36.5" width="25" height="25"/>
-                                                                        <constraints>
-                                                                            <constraint firstAttribute="width" constant="25" id="MPe-nU-GqG"/>
-                                                                            <constraint firstAttribute="height" constant="25" id="oR0-wJ-gPt"/>
-                                                                        </constraints>
-                                                                    </imageView>
-                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZKQ-4h-xOT">
-                                                                        <rect key="frame" x="0.0" y="96.5" width="355" height="1.5"/>
-                                                                        <color key="backgroundColor" red="0.8980392157" green="0.8980392157" blue="0.8980392157" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                                        <constraints>
-                                                                            <constraint firstAttribute="height" constant="1.5" id="NtO-R3-kZy"/>
-                                                                        </constraints>
-                                                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                                        <nil key="textColor"/>
-                                                                        <nil key="highlightedColor"/>
-                                                                    </label>
-                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Hosted by" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mlL-WV-yJx">
-                                                                        <rect key="frame" x="57" y="38" width="80.5" height="22.5"/>
-                                                                        <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="16"/>
-                                                                        <nil key="textColor"/>
-                                                                        <nil key="highlightedColor"/>
-                                                                    </label>
-                                                                </subviews>
-                                                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                                                <constraints>
-                                                                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="gFY-hY-7IG" secondAttribute="trailing" constant="10" id="7bc-B5-SAq"/>
-                                                                    <constraint firstItem="qEo-dr-IWZ" firstAttribute="leading" secondItem="mlL-WV-yJx" secondAttribute="trailing" constant="10" id="82i-aS-bdo"/>
-                                                                    <constraint firstItem="mlL-WV-yJx" firstAttribute="centerY" secondItem="mkI-Sd-xgJ" secondAttribute="centerY" id="Dgt-9O-N4g"/>
-                                                                    <constraint firstAttribute="height" constant="98" id="II1-fP-Eh1"/>
-                                                                    <constraint firstAttribute="bottom" secondItem="ZKQ-4h-xOT" secondAttribute="bottom" id="Jnt-m7-aeX"/>
-                                                                    <constraint firstItem="qEo-dr-IWZ" firstAttribute="centerX" secondItem="jlU-vq-OgY" secondAttribute="centerX" id="N6H-UP-bb3"/>
-                                                                    <constraint firstItem="ZKQ-4h-xOT" firstAttribute="leading" secondItem="jlU-vq-OgY" secondAttribute="leading" id="Ygm-Xa-dPI"/>
-                                                                    <constraint firstItem="qEo-dr-IWZ" firstAttribute="centerY" secondItem="jlU-vq-OgY" secondAttribute="centerY" id="n3x-c6-diY"/>
-                                                                    <constraint firstItem="gFY-hY-7IG" firstAttribute="leading" secondItem="W38-rn-AmR" secondAttribute="trailing" constant="10" id="qOk-xr-vDF"/>
-                                                                    <constraint firstItem="gFY-hY-7IG" firstAttribute="centerY" secondItem="W38-rn-AmR" secondAttribute="centerY" id="qXG-w5-s9H"/>
-                                                                    <constraint firstAttribute="trailing" secondItem="ZKQ-4h-xOT" secondAttribute="trailing" id="sey-8b-atJ"/>
-                                                                    <constraint firstItem="W38-rn-AmR" firstAttribute="leading" secondItem="qEo-dr-IWZ" secondAttribute="trailing" constant="10" id="stD-xt-Tk3"/>
-                                                                    <constraint firstItem="W38-rn-AmR" firstAttribute="centerY" secondItem="qEo-dr-IWZ" secondAttribute="centerY" id="tCM-i6-wPN"/>
-                                                                </constraints>
-                                                            </view>
-                                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yb6-ys-unF">
-                                                                <rect key="frame" x="0.0" y="108" width="355" height="64"/>
-                                                                <subviews>
-                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HlY-l0-AdM">
-                                                                        <rect key="frame" x="0.0" y="5" width="355" height="54"/>
-                                                                        <subviews>
-                                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Respond within 1 hr" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Rbw-3Z-vSd">
-                                                                                <rect key="frame" x="101.5" y="12" width="152" height="20"/>
-                                                                                <constraints>
-                                                                                    <constraint firstAttribute="height" constant="20" id="a3k-6b-pCD"/>
-                                                                                </constraints>
+                                                                            </view>
+                                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Mia J." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="W38-rn-AmR">
+                                                                                <rect key="frame" x="62" y="50.5" width="45" height="22.5"/>
                                                                                 <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="16"/>
                                                                                 <nil key="textColor"/>
                                                                                 <nil key="highlightedColor"/>
                                                                             </label>
-                                                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Group 2" translatesAutoresizingMaskIntoConstraints="NO" id="iM5-x8-1JH">
-                                                                                <rect key="frame" x="46.5" y="-18" width="80" height="80"/>
+                                                                            <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Starssicon" translatesAutoresizingMaskIntoConstraints="NO" id="gFY-hY-7IG">
+                                                                                <rect key="frame" x="111" y="49" width="25" height="25"/>
                                                                                 <constraints>
-                                                                                    <constraint firstAttribute="height" constant="80" id="3qF-Cs-0Vk"/>
-                                                                                    <constraint firstAttribute="width" constant="80" id="RAn-QT-ZMj"/>
+                                                                                    <constraint firstAttribute="width" constant="25" id="MPe-nU-GqG"/>
+                                                                                    <constraint firstAttribute="height" constant="25" id="oR0-wJ-gPt"/>
                                                                                 </constraints>
                                                                             </imageView>
+                                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZKQ-4h-xOT">
+                                                                                <rect key="frame" x="147.5" y="10" width="1.5" height="78"/>
+                                                                                <color key="backgroundColor" red="0.8980392157" green="0.8980392157" blue="0.8980392157" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                                                <constraints>
+                                                                                    <constraint firstAttribute="width" constant="1.5" id="NtO-R3-kZy"/>
+                                                                                </constraints>
+                                                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                                                <nil key="textColor"/>
+                                                                                <nil key="highlightedColor"/>
+                                                                            </label>
+                                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Hosted by" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mlL-WV-yJx">
+                                                                                <rect key="frame" x="12" y="12" width="80.5" height="22.5"/>
+                                                                                <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="16"/>
+                                                                                <nil key="textColor"/>
+                                                                                <nil key="highlightedColor"/>
+                                                                            </label>
                                                                         </subviews>
                                                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                                         <constraints>
-                                                                            <constraint firstItem="Rbw-3Z-vSd" firstAttribute="centerY" secondItem="iM5-x8-1JH" secondAttribute="centerY" id="178-3H-PXX"/>
-                                                                            <constraint firstItem="Rbw-3Z-vSd" firstAttribute="top" secondItem="HlY-l0-AdM" secondAttribute="top" constant="2" id="OfS-eb-I7h"/>
-                                                                            <constraint firstItem="Rbw-3Z-vSd" firstAttribute="leading" secondItem="iM5-x8-1JH" secondAttribute="trailing" constant="-25" id="Urf-zf-Nik"/>
-                                                                            <constraint firstItem="Rbw-3Z-vSd" firstAttribute="centerY" secondItem="HlY-l0-AdM" secondAttribute="centerY" id="irW-L8-9Eg"/>
-                                                                            <constraint firstItem="Rbw-3Z-vSd" firstAttribute="centerX" secondItem="HlY-l0-AdM" secondAttribute="centerX" id="mDW-Ap-i9Y"/>
-                                                                            <constraint firstItem="iM5-x8-1JH" firstAttribute="centerY" secondItem="Rbw-3Z-vSd" secondAttribute="centerY" id="mzb-2w-vmT"/>
+                                                                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="gFY-hY-7IG" secondAttribute="trailing" constant="8" id="7bc-B5-SAq"/>
+                                                                            <constraint firstItem="qEo-dr-IWZ" firstAttribute="leading" secondItem="jlU-vq-OgY" secondAttribute="leading" constant="12" id="82i-aS-bdo"/>
+                                                                            <constraint firstItem="mlL-WV-yJx" firstAttribute="top" secondItem="jlU-vq-OgY" secondAttribute="top" constant="12" id="Dgt-9O-N4g"/>
+                                                                            <constraint firstAttribute="height" constant="98" id="II1-fP-Eh1"/>
+                                                                            <constraint firstAttribute="bottom" secondItem="ZKQ-4h-xOT" secondAttribute="bottom" constant="10" id="Jnt-m7-aeX"/>
+                                                                            <constraint firstAttribute="trailing" secondItem="ZKQ-4h-xOT" secondAttribute="trailing" id="N6H-UP-bb3"/>
+                                                                            <constraint firstItem="ZKQ-4h-xOT" firstAttribute="top" secondItem="jlU-vq-OgY" secondAttribute="top" constant="10" id="Ygm-Xa-dPI"/>
+                                                                            <constraint firstItem="qEo-dr-IWZ" firstAttribute="top" secondItem="mlL-WV-yJx" secondAttribute="bottom" constant="5" id="n3x-c6-diY"/>
+                                                                            <constraint firstItem="gFY-hY-7IG" firstAttribute="leading" secondItem="W38-rn-AmR" secondAttribute="trailing" constant="4" id="qOk-xr-vDF"/>
+                                                                            <constraint firstItem="gFY-hY-7IG" firstAttribute="centerY" secondItem="W38-rn-AmR" secondAttribute="centerY" id="qXG-w5-s9H"/>
+                                                                            <constraint firstItem="mlL-WV-yJx" firstAttribute="leading" secondItem="jlU-vq-OgY" secondAttribute="leading" constant="12" id="sey-8b-atJ"/>
+                                                                            <constraint firstItem="W38-rn-AmR" firstAttribute="leading" secondItem="qEo-dr-IWZ" secondAttribute="trailing" constant="6" id="stD-xt-Tk3"/>
+                                                                            <constraint firstItem="W38-rn-AmR" firstAttribute="centerY" secondItem="qEo-dr-IWZ" secondAttribute="centerY" id="tCM-i6-wPN"/>
                                                                         </constraints>
                                                                     </view>
-                                                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillProportionally" translatesAutoresizingMaskIntoConstraints="NO" id="9fM-c0-Q37">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="355" height="64"/>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yb6-ys-unF">
+                                                                        <rect key="frame" x="149" y="0.0" width="206" height="98"/>
                                                                         <subviews>
-                                                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5Ee-3E-Q35">
-                                                                                <rect key="frame" x="0.0" y="0.0" width="345" height="0.0"/>
+                                                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HlY-l0-AdM">
+                                                                                <rect key="frame" x="0.0" y="0.0" width="206" height="24"/>
                                                                                 <subviews>
-                                                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zqo-1L-QI6">
-                                                                                        <rect key="frame" x="30" y="-20" width="285" height="40"/>
+                                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Respond within 1 hr" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Rbw-3Z-vSd">
+                                                                                        <rect key="frame" x="34" y="2" width="128" height="20"/>
                                                                                         <constraints>
-                                                                                            <constraint firstAttribute="height" constant="40" id="tjH-e9-EEV"/>
+                                                                                            <constraint firstAttribute="height" constant="20" id="a3k-6b-pCD"/>
                                                                                         </constraints>
-                                                                                        <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="16.700000762939453"/>
-                                                                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                                                                        <state key="normal" title="Message the host">
-                                                                                            <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                                                                        </state>
-                                                                                        <connections>
-                                                                                            <action selector="btnShowMessageHost_Tap:" destination="ziH-Pf-Pa6" eventType="touchUpInside" id="tUX-EA-6KM"/>
-                                                                                        </connections>
-                                                                                    </button>
+                                                                                        <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="13.5"/>
+                                                                                        <nil key="textColor"/>
+                                                                                        <nil key="highlightedColor"/>
+                                                                                    </label>
+                                                                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Group 2" translatesAutoresizingMaskIntoConstraints="NO" id="iM5-x8-1JH">
+                                                                                        <rect key="frame" x="8" y="1" width="22" height="22"/>
+                                                                                        <constraints>
+                                                                                            <constraint firstAttribute="height" constant="22" id="3qF-Cs-0Vk"/>
+                                                                                            <constraint firstAttribute="width" constant="22" id="RAn-QT-ZMj"/>
+                                                                                        </constraints>
+                                                                                    </imageView>
                                                                                 </subviews>
                                                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                                                 <constraints>
-                                                                                    <constraint firstAttribute="trailing" secondItem="zqo-1L-QI6" secondAttribute="trailing" constant="30" id="3ni-jB-Wjx"/>
-                                                                                    <constraint firstItem="zqo-1L-QI6" firstAttribute="centerY" secondItem="5Ee-3E-Q35" secondAttribute="centerY" id="LDa-l2-NXR"/>
-                                                                                    <constraint firstItem="zqo-1L-QI6" firstAttribute="centerX" secondItem="5Ee-3E-Q35" secondAttribute="centerX" id="Qod-fc-6H8"/>
-                                                                                    <constraint firstItem="zqo-1L-QI6" firstAttribute="leading" secondItem="5Ee-3E-Q35" secondAttribute="leading" constant="30" id="SIe-V9-SBl"/>
+                                                                                    <constraint firstItem="Rbw-3Z-vSd" firstAttribute="centerY" secondItem="iM5-x8-1JH" secondAttribute="centerY" id="178-3H-PXX"/>
+                                                                                    <constraint firstItem="Rbw-3Z-vSd" firstAttribute="top" secondItem="HlY-l0-AdM" secondAttribute="top" constant="2" id="OfS-eb-I7h"/>
+                                                                                    <constraint firstItem="Rbw-3Z-vSd" firstAttribute="leading" secondItem="iM5-x8-1JH" secondAttribute="trailing" constant="4" id="Urf-zf-Nik"/>
+                                                                                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="Rbw-3Z-vSd" secondAttribute="trailing" constant="4" id="checkout-response-trailing"/>
+                                                                                    <constraint firstItem="Rbw-3Z-vSd" firstAttribute="centerY" secondItem="HlY-l0-AdM" secondAttribute="centerY" id="irW-L8-9Eg"/>
+                                                                                    <constraint firstItem="iM5-x8-1JH" firstAttribute="leading" secondItem="HlY-l0-AdM" secondAttribute="leading" constant="8" id="mDW-Ap-i9Y"/>
+                                                                                    <constraint firstItem="iM5-x8-1JH" firstAttribute="centerY" secondItem="Rbw-3Z-vSd" secondAttribute="centerY" id="mzb-2w-vmT"/>
                                                                                 </constraints>
                                                                             </view>
+                                                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillProportionally" translatesAutoresizingMaskIntoConstraints="NO" id="9fM-c0-Q37">
+                                                                                <rect key="frame" x="0.0" y="24" width="206" height="74"/>
+                                                                                <subviews>
+                                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5Ee-3E-Q35">
+                                                                                        <rect key="frame" x="0.0" y="0.0" width="206" height="74"/>
+                                                                                        <subviews>
+                                                                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zqo-1L-QI6">
+                                                                                                <rect key="frame" x="10" y="17" width="186" height="40"/>
+                                                                                                <constraints>
+                                                                                                    <constraint firstAttribute="height" constant="40" id="tjH-e9-EEV"/>
+                                                                                                </constraints>
+                                                                                                <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="16.700000762939453"/>
+                                                                                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                                                                <state key="normal" title="Message the host">
+                                                                                                    <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                                                                </state>
+                                                                                                <connections>
+                                                                                                    <action selector="btnShowMessageHost_Tap:" destination="ziH-Pf-Pa6" eventType="touchUpInside" id="tUX-EA-6KM"/>
+                                                                                                </connections>
+                                                                                            </button>
+                                                                                        </subviews>
+                                                                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                                                                        <constraints>
+                                                                                            <constraint firstAttribute="trailing" secondItem="zqo-1L-QI6" secondAttribute="trailing" constant="10" id="3ni-jB-Wjx"/>
+                                                                                            <constraint firstItem="zqo-1L-QI6" firstAttribute="centerY" secondItem="5Ee-3E-Q35" secondAttribute="centerY" id="LDa-l2-NXR"/>
+                                                                                            <constraint firstItem="zqo-1L-QI6" firstAttribute="centerX" secondItem="5Ee-3E-Q35" secondAttribute="centerX" id="Qod-fc-6H8"/>
+                                                                                            <constraint firstItem="zqo-1L-QI6" firstAttribute="leading" secondItem="5Ee-3E-Q35" secondAttribute="leading" constant="10" id="SIe-V9-SBl"/>
+                                                                                        </constraints>
+                                                                                    </view>
+                                                                                </subviews>
+                                                                            </stackView>
                                                                         </subviews>
-                                                                    </stackView>
+                                                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                                                        <constraints>
+                                                                            <constraint firstAttribute="bottom" secondItem="9fM-c0-Q37" secondAttribute="bottom" id="3wB-mf-7xY"/>
+                                                                            <constraint firstItem="9fM-c0-Q37" firstAttribute="leading" secondItem="yb6-ys-unF" secondAttribute="leading" id="8JF-Qc-eKc"/>
+                                                                            <constraint firstItem="HlY-l0-AdM" firstAttribute="leading" secondItem="yb6-ys-unF" secondAttribute="leading" id="NYj-rn-JP5"/>
+                                                                            <constraint firstItem="9fM-c0-Q37" firstAttribute="top" secondItem="HlY-l0-AdM" secondAttribute="bottom" id="VQb-d3-0Nk"/>
+                                                                            <constraint firstItem="HlY-l0-AdM" firstAttribute="height" constant="24" id="checkout-response-height"/>
+                                                                            <constraint firstAttribute="trailing" secondItem="HlY-l0-AdM" secondAttribute="trailing" id="uBp-hz-CU9"/>
+                                                                            <constraint firstItem="HlY-l0-AdM" firstAttribute="top" secondItem="yb6-ys-unF" secondAttribute="top" id="vnY-by-uuj"/>
+                                                                            <constraint firstAttribute="trailing" secondItem="9fM-c0-Q37" secondAttribute="trailing" id="yPi-AV-KpM"/>
+                                                                        </constraints>
+                                                                    </view>
                                                                 </subviews>
-                                                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                                 <constraints>
-                                                                    <constraint firstAttribute="bottom" secondItem="9fM-c0-Q37" secondAttribute="bottom" id="3wB-mf-7xY"/>
-                                                                    <constraint firstItem="9fM-c0-Q37" firstAttribute="leading" secondItem="yb6-ys-unF" secondAttribute="leading" id="8JF-Qc-eKc"/>
-                                                                    <constraint firstItem="HlY-l0-AdM" firstAttribute="leading" secondItem="yb6-ys-unF" secondAttribute="leading" id="NYj-rn-JP5"/>
-                                                                    <constraint firstItem="9fM-c0-Q37" firstAttribute="top" secondItem="HlY-l0-AdM" secondAttribute="bottom" id="VQb-d3-0Nk"/>
-                                                                    <constraint firstAttribute="trailing" secondItem="HlY-l0-AdM" secondAttribute="trailing" id="uBp-hz-CU9"/>
-                                                                    <constraint firstItem="HlY-l0-AdM" firstAttribute="top" secondItem="yb6-ys-unF" secondAttribute="top" id="vnY-by-uuj"/>
-                                                                    <constraint firstItem="HlY-l0-AdM" firstAttribute="height" constant="24" id="checkout-response-height"/>
-                                                                    <constraint firstAttribute="trailing" secondItem="9fM-c0-Q37" secondAttribute="trailing" id="yPi-AV-KpM"/>
+                                                                    <constraint firstItem="jlU-vq-OgY" firstAttribute="width" secondItem="checkout-host-row" secondAttribute="width" multiplier="0.42" id="checkout-host-column-width"/>
                                                                 </constraints>
-                                                            </view>
+                                                            </stackView>
                                                             <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NLO-2c-MlM">
-                                                                <rect key="frame" x="0.0" y="172" width="355" height="430"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="355" height="430"/>
                                                                 <subviews>
                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kVp-pa-OYc">
                                                                         <rect key="frame" x="10" y="0.0" width="335" height="420"/>
@@ -18079,7 +18088,7 @@ Available at checkout. </string>
                                                 </constraints>
                                             </view>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="n0D-AI-Zjb">
-                                                <rect key="frame" x="0.0" y="247" width="375" height="395"/>
+                                                <rect key="frame" x="0.0" y="173" width="375" height="395"/>
                                                 <subviews>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rWV-Cs-2TP">
                                                         <rect key="frame" x="10" y="5" width="355" height="380"/>
@@ -18431,7 +18440,7 @@ Available at checkout. </string>
                                                 </constraints>
                                             </view>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RWa-jz-SqW">
-                                                <rect key="frame" x="0.0" y="642" width="375" height="20"/>
+                                                <rect key="frame" x="0.0" y="568" width="375" height="20"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wTL-uK-14x">
                                                         <rect key="frame" x="20" y="9.5" width="335" height="1.5"/>
@@ -18454,7 +18463,7 @@ Available at checkout. </string>
                                                 </constraints>
                                             </view>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RfD-yW-Bfz">
-                                                <rect key="frame" x="0.0" y="662" width="375" height="52.5"/>
+                                                <rect key="frame" x="0.0" y="588" width="375" height="52.5"/>
                                                 <subviews>
                                                     <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ck8-SM-QEQ">
                                                         <rect key="frame" x="10" y="51" width="355" height="1.5"/>
@@ -18484,7 +18493,7 @@ Available at checkout. </string>
                                                 </constraints>
                                             </view>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="32b-EI-yyS">
-                                                <rect key="frame" x="0.0" y="714.5" width="375" height="60"/>
+                                                <rect key="frame" x="0.0" y="640.5" width="375" height="60"/>
                                                 <subviews>
                                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="eBD-34-rea">
                                                         <rect key="frame" x="10" y="7.5" width="305" height="45"/>
@@ -18590,7 +18599,7 @@ Available at checkout. </string>
                                                 </constraints>
                                             </view>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="w2K-rK-gmZ">
-                                                <rect key="frame" x="0.0" y="774.5" width="375" height="370"/>
+                                                <rect key="frame" x="0.0" y="700.5" width="375" height="370"/>
                                                 <subviews>
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="hXa-7E-Rhe">
                                                         <rect key="frame" x="0.0" y="5" width="375" height="360"/>
@@ -19267,7 +19276,7 @@ Available at checkout. </string>
                                                 </constraints>
                                             </view>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JG2-EK-YVu">
-                                                <rect key="frame" x="0.0" y="1144.5" width="375" height="476.5"/>
+                                                <rect key="frame" x="0.0" y="1070.5" width="375" height="476.5"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ybi-f0-28L">
                                                         <rect key="frame" x="10" y="475" width="355" height="1.5"/>
@@ -19386,7 +19395,7 @@ Available at checkout. </string>
                                                 </constraints>
                                             </view>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9YF-bM-zWF">
-                                                <rect key="frame" x="0.0" y="1621" width="375" height="440"/>
+                                                <rect key="frame" x="0.0" y="1547" width="375" height="440"/>
                                                 <subviews>
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="9T3-LC-ttr">
                                                         <rect key="frame" x="15" y="10" width="345" height="420"/>
@@ -19642,7 +19651,7 @@ Available at checkout. </string>
                                                 </constraints>
                                             </view>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HCl-Vp-naO">
-                                                <rect key="frame" x="0.0" y="2061" width="375" height="454"/>
+                                                <rect key="frame" x="0.0" y="1987" width="375" height="454"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Pgz-wn-4QQ">
                                                         <rect key="frame" x="10" y="452.5" width="355" height="1.5"/>
@@ -19716,7 +19725,7 @@ Where a listing has a host-specific cancellation policy, that policy controls un
                                                 </constraints>
                                             </view>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nXM-4V-t94">
-                                                <rect key="frame" x="0.0" y="2515" width="375" height="1121"/>
+                                                <rect key="frame" x="0.0" y="2441" width="375" height="1121"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aV0-aW-oBw">
                                                         <rect key="frame" x="10" y="1119.5" width="355" height="1.5"/>
@@ -19902,7 +19911,7 @@ Where a listing has a host-specific cancellation policy, that policy controls un
                                                 </constraints>
                                             </view>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QXn-72-f9r">
-                                                <rect key="frame" x="0.0" y="3636" width="375" height="80"/>
+                                                <rect key="frame" x="0.0" y="3562" width="375" height="80"/>
                                                 <subviews>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iwe-W3-bxK">
                                                         <rect key="frame" x="20" y="20" width="140" height="40"/>
@@ -19979,6 +19988,7 @@ Where a listing has a host-specific cancellation policy, that policy controls un
                         <outlet property="collVH" destination="deR-D9-5O0" id="BOB-KE-ENq"/>
                         <outlet property="collecV_Host" destination="lE0-Pt-Hu0" id="1a2-jX-hdb"/>
                         <outlet property="deletePopUpBtn" destination="84i-Wh-6WX" id="Zwy-pk-r6I"/>
+                        <outlet property="hostMessageTextView" destination="tCK-CR-FKH" id="checkout-host-message-text"/>
                         <outlet property="imgDownArrowDebitCard" destination="C8G-BT-NNu" id="2GD-yi-wEg"/>
                         <outlet property="imgHostStar" destination="gFY-hY-7IG" id="hyx-G6-wmz"/>
                         <outlet property="imgProfile" destination="mkI-Sd-xgJ" id="3Ly-Fz-cDk"/>
@@ -20029,8 +20039,8 @@ Where a listing has a host-specific cancellation policy, that policy controls un
                         <outlet property="view_CreditDebitCard" destination="WFY-SC-FSS" id="bsL-WH-9Yi"/>
                         <outlet property="view_Details" destination="rWV-Cs-2TP" id="ghH-bY-L1y"/>
                         <outlet property="view_Discount" destination="7sX-cG-SRC" id="vR2-NW-LdO"/>
-                        <outlet property="view_HostDesc" destination="Voj-xC-hKX" id="OVE-Z9-FH2"/>
                         <outlet property="view_HostContactCard" destination="IjW-Oh-4eZ" id="checkout-host-contact-card"/>
+                        <outlet property="view_HostDesc" destination="Voj-xC-hKX" id="OVE-Z9-FH2"/>
                         <outlet property="view_HostRules" destination="flD-Nc-djr" id="AgW-T5-DQc"/>
                         <outlet property="view_Hours" destination="OFO-Zl-97r" id="Ta8-6f-Wvb"/>
                         <outlet property="view_IhaveDoubt" destination="Znw-3s-EIO" id="A5S-4m-CLf"/>
@@ -20665,7 +20675,7 @@ Where a listing has a host-specific cancellation policy, that policy controls un
                                 <rect key="frame" x="0.0" y="90" width="375" height="577"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="yVZ-8l-U7S">
-                                        <rect key="frame" x="0.0" y="30" width="375" height="4133"/>
+                                        <rect key="frame" x="0.0" y="30" width="375" height="4206"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uvJ-pw-N4g">
                                                 <rect key="frame" x="0.0" y="0.0" width="375" height="107.5"/>
@@ -22200,16 +22210,16 @@ Where a listing has a host-specific cancellation policy, that policy controls un
                                                 </constraints>
                                             </view>
                                             <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Vcj-5y-lcZ">
-                                                <rect key="frame" x="0.0" y="1527.5" width="375" height="50"/>
+                                                <rect key="frame" x="0.0" y="1527.5" width="375" height="123"/>
                                                 <subviews>
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="YDI-Ou-cXK">
-                                                        <rect key="frame" x="10" y="10" width="355" height="25"/>
+                                                        <rect key="frame" x="10" y="10" width="355" height="98"/>
                                                         <subviews>
                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wrC-1x-aE1">
-                                                                <rect key="frame" x="0.0" y="0.0" width="345" height="98"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="355" height="98"/>
                                                                 <subviews>
                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wbj-2Y-MOr">
-                                                                        <rect key="frame" x="142.5" y="19" width="60" height="60"/>
+                                                                        <rect key="frame" x="147.5" y="19" width="60" height="60"/>
                                                                         <subviews>
                                                                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Border" translatesAutoresizingMaskIntoConstraints="NO" id="PwE-jk-pua">
                                                                                 <rect key="frame" x="0.0" y="0.0" width="60" height="60"/>
@@ -22235,20 +22245,20 @@ Where a listing has a host-specific cancellation policy, that policy controls un
                                                                         </constraints>
                                                                     </view>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Mia J." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xoM-ah-TtN">
-                                                                        <rect key="frame" x="212.5" y="37" width="49.5" height="24"/>
+                                                                        <rect key="frame" x="217.5" y="37" width="49.5" height="24"/>
                                                                         <fontDescription key="fontDescription" name="Poppins-Medium" family="Poppins" pointSize="17"/>
                                                                         <nil key="textColor"/>
                                                                         <nil key="highlightedColor"/>
                                                                     </label>
                                                                     <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Starssicon" translatesAutoresizingMaskIntoConstraints="NO" id="ZzW-Qd-nyB">
-                                                                        <rect key="frame" x="272" y="36.5" width="25" height="25"/>
+                                                                        <rect key="frame" x="277" y="36.5" width="25" height="25"/>
                                                                         <constraints>
                                                                             <constraint firstAttribute="width" constant="25" id="1dj-Zj-nrT"/>
                                                                             <constraint firstAttribute="height" constant="25" id="BvL-wR-an5"/>
                                                                         </constraints>
                                                                     </imageView>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sSI-68-Bu1">
-                                                                        <rect key="frame" x="0.0" y="96.5" width="345" height="1.5"/>
+                                                                        <rect key="frame" x="0.0" y="96.5" width="355" height="1.5"/>
                                                                         <color key="backgroundColor" red="0.8980392157" green="0.8980392157" blue="0.8980392157" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                         <constraints>
                                                                             <constraint firstAttribute="height" constant="1.5" id="hWE-iO-BtM"/>
@@ -22258,7 +22268,7 @@ Where a listing has a host-specific cancellation policy, that policy controls un
                                                                         <nil key="highlightedColor"/>
                                                                     </label>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Hosted by" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Vyk-WM-eRZ">
-                                                                        <rect key="frame" x="47.5" y="37" width="85" height="24"/>
+                                                                        <rect key="frame" x="52.5" y="37" width="85" height="24"/>
                                                                         <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="16.899999618530273"/>
                                                                         <nil key="textColor"/>
                                                                         <nil key="highlightedColor"/>
@@ -22283,16 +22293,16 @@ Where a listing has a host-specific cancellation policy, that policy controls un
                                                                 </constraints>
                                                             </view>
                                                             <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yr2-vx-yH3">
-                                                                <rect key="frame" x="0.0" y="0.0" width="345" height="54"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="355" height="98"/>
                                                                 <subviews>
                                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="aiX-Hy-gaX">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="345" height="44"/>
+                                                                        <rect key="frame" x="0.0" y="0.0" width="355" height="88"/>
                                                                         <subviews>
                                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="V4H-ET-0Mb">
-                                                                                <rect key="frame" x="0.0" y="0.0" width="345" height="44"/>
+                                                                                <rect key="frame" x="0.0" y="0.0" width="355" height="44"/>
                                                                                 <subviews>
                                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Typically respond within 1 hr" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0de-Gv-dQj">
-                                                                                        <rect key="frame" x="94.5" y="12" width="156.5" height="20"/>
+                                                                                        <rect key="frame" x="63" y="12" width="229" height="20"/>
                                                                                         <constraints>
                                                                                             <constraint firstAttribute="height" constant="20" id="VrC-zp-oeE"/>
                                                                                         </constraints>
@@ -22301,7 +22311,7 @@ Where a listing has a host-specific cancellation policy, that policy controls un
                                                                                         <nil key="highlightedColor"/>
                                                                                     </label>
                                                                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Group 2" translatesAutoresizingMaskIntoConstraints="NO" id="BsI-Mr-qre">
-                                                                                        <rect key="frame" x="19.5" y="-28" width="100" height="100"/>
+                                                                                        <rect key="frame" x="-12" y="-28" width="100" height="100"/>
                                                                                         <constraints>
                                                                                             <constraint firstAttribute="width" constant="100" id="M1h-6A-xvf"/>
                                                                                             <constraint firstAttribute="height" constant="100" id="MH3-zp-Asf"/>
@@ -22319,10 +22329,10 @@ Where a listing has a host-specific cancellation policy, that policy controls un
                                                                                 </constraints>
                                                                             </view>
                                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Vyd-M9-Gkh">
-                                                                                <rect key="frame" x="0.0" y="0.0" width="345" height="0.0"/>
+                                                                                <rect key="frame" x="0.0" y="44" width="355" height="44"/>
                                                                                 <subviews>
                                                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yXv-k1-OFQ">
-                                                                                        <rect key="frame" x="30" y="-22.5" width="285" height="45"/>
+                                                                                        <rect key="frame" x="30" y="-0.5" width="295" height="45"/>
                                                                                         <constraints>
                                                                                             <constraint firstAttribute="height" constant="45" id="RuE-Dv-vXr"/>
                                                                                         </constraints>
@@ -22364,19 +22374,19 @@ Where a listing has a host-specific cancellation policy, that policy controls un
                                                                 </constraints>
                                                             </view>
                                                             <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kHl-Mc-ahb">
-                                                                <rect key="frame" x="0.0" y="0.0" width="345" height="415"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="355" height="415"/>
                                                                 <subviews>
                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9Eb-se-OdX">
-                                                                        <rect key="frame" x="10" y="0.0" width="325" height="405"/>
+                                                                        <rect key="frame" x="10" y="0.0" width="335" height="405"/>
                                                                         <subviews>
                                                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="R13-IL-jll">
-                                                                                <rect key="frame" x="10" y="0.0" width="305" height="390"/>
+                                                                                <rect key="frame" x="10" y="0.0" width="315" height="390"/>
                                                                                 <subviews>
                                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4f2-fS-QAq">
-                                                                                        <rect key="frame" x="0.0" y="0.0" width="305" height="50"/>
+                                                                                        <rect key="frame" x="0.0" y="0.0" width="315" height="50"/>
                                                                                         <subviews>
                                                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="I have a doubt" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UrE-BM-RKM">
-                                                                                                <rect key="frame" x="96.5" y="15" width="112.5" height="20"/>
+                                                                                                <rect key="frame" x="101.5" y="15" width="112.5" height="20"/>
                                                                                                 <constraints>
                                                                                                     <constraint firstAttribute="height" constant="20" id="aHV-4T-Jam"/>
                                                                                                 </constraints>
@@ -22385,7 +22395,7 @@ Where a listing has a host-specific cancellation policy, that policy controls un
                                                                                                 <nil key="highlightedColor"/>
                                                                                             </label>
                                                                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DIs-yN-Xqr">
-                                                                                                <rect key="frame" x="0.0" y="0.0" width="305" height="50"/>
+                                                                                                <rect key="frame" x="0.0" y="0.0" width="315" height="50"/>
                                                                                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                                                                 <connections>
                                                                                                     <action selector="btnIhaveDoubt_Tap:" destination="ePe-Dh-eqr" eventType="touchUpInside" id="6uZ-FS-dj9"/>
@@ -22404,10 +22414,10 @@ Where a listing has a host-specific cancellation policy, that policy controls un
                                                                                         </constraints>
                                                                                     </view>
                                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zxM-vI-pNT">
-                                                                                        <rect key="frame" x="0.0" y="60" width="305" height="50"/>
+                                                                                        <rect key="frame" x="0.0" y="60" width="315" height="50"/>
                                                                                         <subviews>
                                                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Available days" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OCg-c6-Lkj">
-                                                                                                <rect key="frame" x="95" y="15" width="115.5" height="20"/>
+                                                                                                <rect key="frame" x="100" y="15" width="115.5" height="20"/>
                                                                                                 <constraints>
                                                                                                     <constraint firstAttribute="height" constant="20" id="aAn-81-PIA"/>
                                                                                                 </constraints>
@@ -22416,7 +22426,7 @@ Where a listing has a host-specific cancellation policy, that policy controls un
                                                                                                 <nil key="highlightedColor"/>
                                                                                             </label>
                                                                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="85c-YV-wlb">
-                                                                                                <rect key="frame" x="0.0" y="0.0" width="305" height="50"/>
+                                                                                                <rect key="frame" x="0.0" y="0.0" width="315" height="50"/>
                                                                                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                                                                 <connections>
                                                                                                     <action selector="btnAvailableDays_Tap:" destination="ePe-Dh-eqr" eventType="touchUpInside" id="Axt-4u-zIv"/>
@@ -22435,10 +22445,10 @@ Where a listing has a host-specific cancellation policy, that policy controls un
                                                                                         </constraints>
                                                                                     </view>
                                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IiR-GB-iPf">
-                                                                                        <rect key="frame" x="0.0" y="120" width="305" height="50"/>
+                                                                                        <rect key="frame" x="0.0" y="120" width="315" height="50"/>
                                                                                         <subviews>
                                                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Other reason" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dzY-Wn-2AF">
-                                                                                                <rect key="frame" x="101.5" y="15" width="102" height="20"/>
+                                                                                                <rect key="frame" x="106.5" y="15" width="102" height="20"/>
                                                                                                 <constraints>
                                                                                                     <constraint firstAttribute="height" constant="20" id="dyu-Lj-inx"/>
                                                                                                 </constraints>
@@ -22447,7 +22457,7 @@ Where a listing has a host-specific cancellation policy, that policy controls un
                                                                                                 <nil key="highlightedColor"/>
                                                                                             </label>
                                                                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kaQ-SR-nnD">
-                                                                                                <rect key="frame" x="0.0" y="0.0" width="305" height="50"/>
+                                                                                                <rect key="frame" x="0.0" y="0.0" width="315" height="50"/>
                                                                                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                                                                 <connections>
                                                                                                     <action selector="btnOtherReason_Tap:" destination="ePe-Dh-eqr" eventType="touchUpInside" id="yIe-1O-VHR"/>
@@ -22466,10 +22476,10 @@ Where a listing has a host-specific cancellation policy, that policy controls un
                                                                                         </constraints>
                                                                                     </view>
                                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="d0V-be-PNs">
-                                                                                        <rect key="frame" x="0.0" y="180" width="305" height="150"/>
+                                                                                        <rect key="frame" x="0.0" y="180" width="315" height="150"/>
                                                                                         <subviews>
                                                                                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="Share a message" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="KUn-WT-BJZ">
-                                                                                                <rect key="frame" x="10" y="10" width="285" height="130"/>
+                                                                                                <rect key="frame" x="10" y="10" width="295" height="130"/>
                                                                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                                                                 <color key="textColor" systemColor="labelColor"/>
                                                                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -22486,10 +22496,10 @@ Where a listing has a host-specific cancellation policy, that policy controls un
                                                                                         </constraints>
                                                                                     </view>
                                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LLa-QB-KZo">
-                                                                                        <rect key="frame" x="0.0" y="340" width="305" height="50"/>
+                                                                                        <rect key="frame" x="0.0" y="340" width="315" height="50"/>
                                                                                         <subviews>
                                                                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YoU-4D-1zR">
-                                                                                                <rect key="frame" x="10" y="0.0" width="285" height="45"/>
+                                                                                                <rect key="frame" x="10" y="0.0" width="295" height="45"/>
                                                                                                 <color key="backgroundColor" red="0.2274509804" green="0.29411764709999999" blue="0.29803921570000003" alpha="1" colorSpace="calibratedRGB"/>
                                                                                                 <constraints>
                                                                                                     <constraint firstAttribute="height" constant="45" id="mrE-vG-rlw"/>
@@ -22549,7 +22559,7 @@ Where a listing has a host-specific cancellation policy, that policy controls un
                                                 </constraints>
                                             </view>
                                             <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="J1w-IE-KLV">
-                                                <rect key="frame" x="0.0" y="1577.5" width="375" height="243.5"/>
+                                                <rect key="frame" x="0.0" y="1650.5" width="375" height="243.5"/>
                                                 <subviews>
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="uCF-0N-n6O">
                                                         <rect key="frame" x="10" y="10" width="355" height="222"/>
@@ -22650,7 +22660,7 @@ Where a listing has a host-specific cancellation policy, that policy controls un
                                                 </constraints>
                                             </view>
                                             <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0D1-zY-tNm">
-                                                <rect key="frame" x="0.0" y="1821" width="375" height="149.5"/>
+                                                <rect key="frame" x="0.0" y="1894" width="375" height="149.5"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="N8i-RA-WM9">
                                                         <rect key="frame" x="10" y="148" width="355" height="1.5"/>
@@ -22700,7 +22710,7 @@ Where a listing has a host-specific cancellation policy, that policy controls un
                                                 </constraints>
                                             </view>
                                             <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="KVc-KN-jh2">
-                                                <rect key="frame" x="0.0" y="1970.5" width="375" height="1117"/>
+                                                <rect key="frame" x="0.0" y="2043.5" width="375" height="1117"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8Kt-2M-MiB">
                                                         <rect key="frame" x="10" y="1115.5" width="355" height="1.5"/>
@@ -22886,7 +22896,7 @@ Where a listing has a host-specific cancellation policy, that policy controls un
                                                 </constraints>
                                             </view>
                                             <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3bj-ub-TAd">
-                                                <rect key="frame" x="0.0" y="3087.5" width="375" height="344.5"/>
+                                                <rect key="frame" x="0.0" y="3160.5" width="375" height="344.5"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Liv-Aq-GS3">
                                                         <rect key="frame" x="15" y="343" width="345" height="1.5"/>
@@ -22994,7 +23004,7 @@ Available at checkout. </string>
                                                 </constraints>
                                             </view>
                                             <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="KC5-mM-WEX">
-                                                <rect key="frame" x="0.0" y="3432" width="375" height="138"/>
+                                                <rect key="frame" x="0.0" y="3505" width="375" height="138"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Address &amp; Location" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="t4F-dP-yoa">
                                                         <rect key="frame" x="15" y="20" width="174.5" height="28"/>
@@ -23028,7 +23038,7 @@ Available at checkout. </string>
                                                 </constraints>
                                             </view>
                                             <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="90f-fA-Eee">
-                                                <rect key="frame" x="0.0" y="3570" width="375" height="300"/>
+                                                <rect key="frame" x="0.0" y="3643" width="375" height="300"/>
                                                 <subviews>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SKT-J2-xdW" customClass="GMSMapView">
                                                         <rect key="frame" x="12" y="0.0" width="351" height="300"/>
@@ -23055,7 +23065,7 @@ Available at checkout. </string>
                                                 </userDefinedRuntimeAttributes>
                                             </view>
                                             <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zuN-t5-Nqc">
-                                                <rect key="frame" x="0.0" y="3870" width="375" height="183"/>
+                                                <rect key="frame" x="0.0" y="3943" width="375" height="183"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Reviews (30)" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oIl-yu-GkL">
                                                         <rect key="frame" x="12" y="20" width="118" height="28"/>
@@ -23164,7 +23174,7 @@ Available at checkout. </string>
                                                 </constraints>
                                             </view>
                                             <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="DLK-70-Ytp">
-                                                <rect key="frame" x="0.0" y="4053" width="375" height="80"/>
+                                                <rect key="frame" x="0.0" y="4126" width="375" height="80"/>
                                                 <subviews>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vyi-oe-aMi">
                                                         <rect key="frame" x="107.5" y="20" width="160" height="40"/>
@@ -23323,6 +23333,7 @@ Available at checkout. </string>
                         <outlet property="collecV_Host" destination="O7e-Cs-H7O" id="oAd-RR-OhH"/>
                         <outlet property="collecV_IncludedServices" destination="lkC-SX-2HI" id="PvR-cO-bp3"/>
                         <outlet property="collectionViewHeightConstraint" destination="Esv-82-Vz2" id="que-np-xSH"/>
+                        <outlet property="hostMessageTextView" destination="KUn-WT-BJZ" id="Loc-Msg-Text"/>
                         <outlet property="img1" destination="NN7-xE-Qdb" id="QiB-Ba-JPL"/>
                         <outlet property="img2" destination="Mv3-l7-rnP" id="uOk-XL-zZD"/>
                         <outlet property="img3" destination="1Ik-mq-sqk" id="gCH-Kf-oTO"/>
@@ -23377,14 +23388,13 @@ Available at checkout. </string>
                         <outlet property="view_Calendar" destination="FsR-s2-ebN" id="Ihy-8k-Ff7"/>
                         <outlet property="view_CircularTime" destination="Gsz-zQ-Ol2" id="dcw-SX-0Ed"/>
                         <outlet property="view_HeaderContainer" destination="uvJ-pw-N4g" id="A8k-HeadCont-Conn"/>
-                        <outlet property="view_HostDesc" destination="2ga-FV-RHj" id="FM6-9L-L7m"/>
                         <outlet property="view_HostContactHeader" destination="wrC-1x-aE1" id="Loc-Host-Header-Conn"/>
+                        <outlet property="view_HostDesc" destination="2ga-FV-RHj" id="FM6-9L-L7m"/>
                         <outlet property="view_HostRules" destination="9dT-as-mOr" id="U0M-SG-v3f"/>
                         <outlet property="view_Hour" destination="YKn-gH-jfk" id="T75-4Y-Erv"/>
                         <outlet property="view_IhaveDoubt" destination="4f2-fS-QAq" id="9DB-MM-O4i"/>
                         <outlet property="view_MainAddOns" destination="3bj-ub-TAd" id="lbM-dU-fnP"/>
                         <outlet property="view_MessageHostEntry" destination="yr2-vx-yH3" id="A8k-MsgHost-Conn"/>
-                        <outlet property="hostMessageTextView" destination="KUn-WT-BJZ" id="Loc-Msg-Text"/>
                         <outlet property="view_ParkingDesc" destination="KBG-Zk-EIc" id="1xj-7m-k7h"/>
                         <outlet property="view_Price" destination="yYU-u8-4fb" id="ApR-rI-Pcg"/>
                         <outlet property="view_RulesParking" destination="sWh-bw-FE7" id="NmM-1N-faC"/>
@@ -31221,13 +31231,13 @@ and get you to the right place. </string>
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemGrayColor">
-            <color red="0.5568627451" green="0.5568627451" blue="0.57647058819999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.55686274509803924" green="0.55686274509803924" blue="0.57647058823529407" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemOrangeColor">
-            <color red="1" green="0.58431372550000005" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="1" green="0.55294117647058827" blue="0.15686274509803921" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemPurpleColor">
-            <color red="0.68627450980000004" green="0.32156862749999998" blue="0.87058823529999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.79607843137254897" green="0.18823529411764706" blue="0.8784313725490196" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="viewFlipsideBackgroundColor">
             <color red="0.12156862745098039" green="0.12941176470588237" blue="0.14117647058823529" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

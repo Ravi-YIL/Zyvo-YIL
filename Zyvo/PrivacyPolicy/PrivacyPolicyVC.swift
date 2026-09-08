@@ -24,6 +24,9 @@ class PrivacyPolicyVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        lbl_PrivacyContent.font = UIFont(name: "Poppins-Regular", size: 15)
+            ?? UIFont.systemFont(ofSize: 15)
         
         bindVC()
         print(comingFrom,"comingFrom")
@@ -265,29 +268,13 @@ extension PrivacyPolicyVC {
                 length: mutable.length
             )
 
-            mutable.enumerateAttribute(
+            let contentFont = UIFont(name: "Poppins-Regular", size: 15)
+                ?? UIFont.systemFont(ofSize: 15)
+            mutable.addAttribute(
                 .font,
-                in: fullRange,
-                options: []
-            ) { value, range, _ in
-
-                guard let oldFont = value as? UIFont else {
-                    return
-                }
-
-                // Keep existing font size,
-                // but use system font so HTML fonts
-                // like Lato/Inter don't cause display issues.
-                let newFont = UIFont.systemFont(
-                    ofSize: oldFont.pointSize
-                )
-
-                mutable.addAttribute(
-                    .font,
-                    value: newFont,
-                    range: range
-                )
-            }
+                value: contentFont,
+                range: fullRange
+            )
 
             return mutable
 
@@ -299,7 +286,11 @@ extension PrivacyPolicyVC {
             // Fallback:
             // Strip basic HTML rather than crashing.
             return NSAttributedString(
-                string: stripHTMLTags(html)
+                string: stripHTMLTags(html),
+                attributes: [
+                    .font: UIFont(name: "Poppins-Regular", size: 15)
+                        ?? UIFont.systemFont(ofSize: 15)
+                ]
             )
         }
     }

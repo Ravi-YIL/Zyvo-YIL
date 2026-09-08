@@ -211,22 +211,9 @@ class LocationVC: UIViewController, FSCalendarDataSource, FSCalendarDelegate, Ci
         scrollV.delaysContentTouches = false
         scrollV.canCancelContentTouches = true
         
-        let styleJSON = """
-        [
-          {
-            "elementType": "labels",
-            "stylers": [
-              { "visibility": "off" }
-            ]
-          }
-        ]
-        """
-
-        do {
-            mapv1.mapStyle = try GMSMapStyle(jsonString: styleJSON)
-        } catch {
-            print(error)
-        }
+        // Keep the standard Google map styling on Property Details so road
+        // names, street labels, and nearby place labels remain visible.
+        mapv1.mapStyle = nil
         
         self.view_MainAddOns.isHidden = true
 

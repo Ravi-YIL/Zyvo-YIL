@@ -520,7 +520,7 @@ class CreateProfileVC: UIViewController,UITextViewDelegate, GMSAutocompleteFetch
     
     @IBAction func btnskipProfile_Tap(_ sender: UIButton) {
         if lbl_UserName.text == "Hey Guest!" {
-            self.showAlert(for: "Kindly update at least your name.")
+            self.showAlert(for: "Kindly enter you name.")
         }else if profileIMGURL.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || profileIMGURL == AppURL.imageURL {
             self.showAlert(for: "Please upload your profile image")
         }  else if self.phone_verify == 0{

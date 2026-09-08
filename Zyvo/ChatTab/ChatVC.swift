@@ -208,8 +208,12 @@ class ChatVC: UIViewController, UITextViewDelegate {
 
              print("🔥 Conversation Ready")
 
-             if self.Message != "" {
-                 self.sendMessage(inputMessage: self.Message)
+             let pendingMessage = self.Message.trimmingCharacters(in: .whitespacesAndNewlines)
+             if !pendingMessage.isEmpty {
+                 // Consume the initial message once. The ready callback can fire
+                 // again while the conversation client reconnects.
+                 self.Message = ""
+                 self.sendMessage(inputMessage: pendingMessage)
              }
          }
         

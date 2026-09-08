@@ -41,6 +41,7 @@ class CheckoutVC: UIViewController {
     @IBOutlet weak var tblVH_Const: NSLayoutConstraint!
     @IBOutlet weak var stackV_MessageHost: UIStackView!
     @IBOutlet weak var view_MessageHostDesc: UIView!
+    @IBOutlet weak var hostMessageTextView: UITextView!
     @IBOutlet weak var view_otherReason: UIView!
     @IBOutlet weak var view_availableDays: UIView!
     @IBOutlet weak var view_IhaveDoubt: UIView!
@@ -184,6 +185,7 @@ class CheckoutVC: UIViewController {
     private var viewModel1 = BookingDetailsViewModel()
     
     var getJoinChannelDetails : JoinChanelModel?
+    private var selectedHostMessage = "I have a doubt"
     
     var bookingResult : BookingModel?
     
@@ -363,9 +365,13 @@ Where a listing has a host-specific cancellation policy, that policy controls un
         }
         
         viewHold_MessageHost.isHidden = true
-        view_HostContactCard.layer.cornerRadius = 15
-        view_HostContactCard.layer.borderWidth = 1.5
-        view_HostContactCard.layer.borderColor = UIColor(red: 228/255, green: 228/255, blue: 228/255, alpha: 1).cgColor
+        view_MessageHostDesc.isHidden = true
+        hostMessageTextView.text = ""
+        // StackAbove draws the visible card border. The outer container must
+        // remain borderless to avoid a second nested outline.
+        view_HostContactCard.layer.cornerRadius = 0
+        view_HostContactCard.layer.borderWidth = 0
+        view_HostContactCard.layer.borderColor = UIColor.clear.cgColor
         view_MessageHost.layer.cornerRadius = 20
         view_MessageHost.layer.borderWidth = 1.5
         view_MessageHost.layer.borderColor = UIColor.init(red: 228/255, green: 228/255, blue: 228/255, alpha: 1).cgColor
@@ -559,13 +565,16 @@ Where a listing has a host-specific cancellation policy, that policy controls un
         }
     }
     @IBAction func btnIhaveDoubt_Tap(_ sender: UIButton) {
+        selectedHostMessage = "I have a doubt"
+        view_MessageHostDesc.isHidden = true
         view_IhaveDoubt.backgroundColor = UIColor.init(red: 154/255, green: 154/255, blue: 154/255, alpha: 0.25)
         view_availableDays.backgroundColor = UIColor.white
         view_otherReason.backgroundColor = UIColor.clear
     }
     
     @IBAction func btnAvailableDays_Tap(_ sender: UIButton) {
-        
+        selectedHostMessage = "Available days"
+        view_MessageHostDesc.isHidden = true
         view_IhaveDoubt.backgroundColor = UIColor.clear
         view_availableDays.backgroundColor =  UIColor.init(red: 154/255, green: 154/255, blue: 154/255, alpha: 0.25)
         view_otherReason.backgroundColor = UIColor.clear
@@ -573,6 +582,8 @@ Where a listing has a host-specific cancellation policy, that policy controls un
     }
     
     @IBAction func btnOtherReason_Tap(_ sender: UIButton) {
+        selectedHostMessage = "Others"
+        view_MessageHostDesc.isHidden = false
         view_IhaveDoubt.backgroundColor = UIColor.clear
         view_availableDays.backgroundColor = UIColor.clear
         view_otherReason.backgroundColor = UIColor.init(red: 154/255, green: 154/255, blue: 154/255, alpha: 0.25)
@@ -581,6 +592,11 @@ Where a listing has a host-specific cancellation policy, that policy controls un
     @IBAction func btnSendMessageHost_Tap(_ sender: UIButton) {
         let senderID = UserDetail.shared.getUserId().trimmingCharacters(in: .whitespacesAndNewlines)
         guard !senderID.isEmpty, hostID > 0, senderID != "\(hostID)" else { return }
+        if selectedHostMessage == "Others",
+           hostMessageTextView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            showAlert(for: "Please enter your message")
+            return
+        }
         view.endEditing(true)
         channelName = ChatChannelName.make(guestId: senderID, hostId: "\(hostID)")
         viewModel1.apiForJoinChannel(senderId: senderID, receiverId: "\(hostID)", groupChannel: channelName, userType: "guest")
@@ -1363,6 +1379,10 @@ extension CheckoutVC {
                     let stryB = UIStoryboard(name: "Chat", bundle: nil)
                     if let vc = stryB.instantiateViewController(withIdentifier: "ChatVC") as? ChatVC {
                         vc.uniqueConversationName = self.channelName
+                        vc.Message = self.selectedHostMessage == "Others"
+                            ? self.hostMessageTextView.text.trimmingCharacters(in: .whitespacesAndNewlines)
+                            : self.selectedHostMessage
+                        self.viewHold_MessageHost.isHidden = true
                         vc.friend_id = "\(receiverID)"
                         vc.SenderID = senderID
                         vc.guestName = self.getJoinChannelDetails?.senderName ?? ""
