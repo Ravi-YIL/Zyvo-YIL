@@ -26,6 +26,7 @@ class CheckoutVC: UIViewController {
     @IBOutlet weak var imgProfile: UIImageView!
     @IBOutlet weak var view_ParkingDesc: UIView!
     @IBOutlet weak var viewHold_MessageHost: UIView!
+    @IBOutlet weak var view_HostContactCard: UIView!
     @IBOutlet weak var view_MessageHost: UIView!
     @IBOutlet weak var view_HostDesc: UIView!
     @IBOutlet weak var view_Discount: UIView!
@@ -362,6 +363,9 @@ Where a listing has a host-specific cancellation policy, that policy controls un
         }
         
         viewHold_MessageHost.isHidden = true
+        view_HostContactCard.layer.cornerRadius = 15
+        view_HostContactCard.layer.borderWidth = 1.5
+        view_HostContactCard.layer.borderColor = UIColor(red: 228/255, green: 228/255, blue: 228/255, alpha: 1).cgColor
         view_MessageHost.layer.cornerRadius = 20
         view_MessageHost.layer.borderWidth = 1.5
         view_MessageHost.layer.borderColor = UIColor.init(red: 228/255, green: 228/255, blue: 228/255, alpha: 1).cgColor
@@ -524,7 +528,18 @@ Where a listing has a host-specific cancellation policy, that policy controls un
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         self.tabBarController?.tabBar.isHidden = true
+        updateMessageHostVisibility()
+    }
+
+    private func updateMessageHostVisibility() {
+        let currentUserID = UserDetail.shared.getUserId().trimmingCharacters(in: .whitespacesAndNewlines)
+        let canMessageHost = !currentUserID.isEmpty && hostID > 0 && currentUserID != "\(hostID)"
+        view_HostContactCard.isHidden = !canMessageHost
+        if !canMessageHost {
+            viewHold_MessageHost.isHidden = true
+        }
     }
     
     override func viewDidLayoutSubviews() {
@@ -564,7 +579,11 @@ Where a listing has a host-specific cancellation policy, that policy controls un
     }
     
     @IBAction func btnSendMessageHost_Tap(_ sender: UIButton) {
-        viewHold_MessageHost.isHidden = true
+        let senderID = UserDetail.shared.getUserId().trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !senderID.isEmpty, hostID > 0, senderID != "\(hostID)" else { return }
+        view.endEditing(true)
+        channelName = ChatChannelName.make(guestId: senderID, hostId: "\(hostID)")
+        viewModel1.apiForJoinChannel(senderId: senderID, receiverId: "\(hostID)", groupChannel: channelName, userType: "guest")
     }
     
     @IBAction func btnParking_Tap(_ sender: UIButton) {
@@ -794,8 +813,10 @@ Where a listing has a host-specific cancellation policy, that policy controls un
         }
     }
     @IBAction func btnShowMessageHost_Tap(_ sender: UIButton) {
-        let senderID = UserDetail.shared.getUserId()
-        viewModel1.apiForJoinChannel(senderId: senderID, receiverId: "\(self.hostID )", groupChannel: self.channelName, userType: "guest")
+        let senderID = UserDetail.shared.getUserId().trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !senderID.isEmpty, hostID > 0, senderID != "\(hostID)" else { return }
+        viewHold_MessageHost.isHidden.toggle()
+        view.endEditing(true)
     }
     
     @IBAction func btnHours_Tap(_ sender: UIButton) {
@@ -1345,6 +1366,7 @@ extension CheckoutVC {
                         vc.friend_id = "\(receiverID)"
                         vc.SenderID = senderID
                         vc.guestName = self.getJoinChannelDetails?.senderName ?? ""
+                        vc.hostName = (self.getJoinChannelDetails?.receiverName ?? self.hostName).abbreviatedHostName
                         vc.hostProfileImg = self.hostProfileImg
                         vc.guesttProfileImg =  self.guestProfileImg
                         self.tabBarController?.tabBar.isHidden = true

@@ -17842,17 +17842,17 @@ Available at checkout. </string>
                                                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                                         <constraints>
                                                                             <constraint firstItem="Rbw-3Z-vSd" firstAttribute="centerY" secondItem="iM5-x8-1JH" secondAttribute="centerY" id="178-3H-PXX"/>
-                                                                            <constraint firstItem="Rbw-3Z-vSd" firstAttribute="top" secondItem="HlY-l0-AdM" secondAttribute="top" constant="12" id="OfS-eb-I7h"/>
+                                                                            <constraint firstItem="Rbw-3Z-vSd" firstAttribute="top" secondItem="HlY-l0-AdM" secondAttribute="top" constant="2" id="OfS-eb-I7h"/>
                                                                             <constraint firstItem="Rbw-3Z-vSd" firstAttribute="leading" secondItem="iM5-x8-1JH" secondAttribute="trailing" constant="-25" id="Urf-zf-Nik"/>
-                                                                            <constraint firstItem="Rbw-3Z-vSd" firstAttribute="centerY" secondItem="HlY-l0-AdM" secondAttribute="centerY" constant="-5" id="irW-L8-9Eg"/>
+                                                                            <constraint firstItem="Rbw-3Z-vSd" firstAttribute="centerY" secondItem="HlY-l0-AdM" secondAttribute="centerY" id="irW-L8-9Eg"/>
                                                                             <constraint firstItem="Rbw-3Z-vSd" firstAttribute="centerX" secondItem="HlY-l0-AdM" secondAttribute="centerX" id="mDW-Ap-i9Y"/>
                                                                             <constraint firstItem="iM5-x8-1JH" firstAttribute="centerY" secondItem="Rbw-3Z-vSd" secondAttribute="centerY" id="mzb-2w-vmT"/>
                                                                         </constraints>
                                                                     </view>
-                                                                    <stackView hidden="YES" opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillProportionally" translatesAutoresizingMaskIntoConstraints="NO" id="9fM-c0-Q37">
+                                                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillProportionally" translatesAutoresizingMaskIntoConstraints="NO" id="9fM-c0-Q37">
                                                                         <rect key="frame" x="0.0" y="0.0" width="355" height="64"/>
                                                                         <subviews>
-                                                                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5Ee-3E-Q35">
+                                                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5Ee-3E-Q35">
                                                                                 <rect key="frame" x="0.0" y="0.0" width="345" height="0.0"/>
                                                                                 <subviews>
                                                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zqo-1L-QI6">
@@ -17884,12 +17884,12 @@ Available at checkout. </string>
                                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                                 <constraints>
                                                                     <constraint firstAttribute="bottom" secondItem="9fM-c0-Q37" secondAttribute="bottom" id="3wB-mf-7xY"/>
-                                                                    <constraint firstAttribute="bottom" secondItem="HlY-l0-AdM" secondAttribute="bottom" constant="5" id="69I-fp-BMW"/>
                                                                     <constraint firstItem="9fM-c0-Q37" firstAttribute="leading" secondItem="yb6-ys-unF" secondAttribute="leading" id="8JF-Qc-eKc"/>
                                                                     <constraint firstItem="HlY-l0-AdM" firstAttribute="leading" secondItem="yb6-ys-unF" secondAttribute="leading" id="NYj-rn-JP5"/>
-                                                                    <constraint firstItem="9fM-c0-Q37" firstAttribute="top" secondItem="yb6-ys-unF" secondAttribute="top" id="VQb-d3-0Nk"/>
+                                                                    <constraint firstItem="9fM-c0-Q37" firstAttribute="top" secondItem="HlY-l0-AdM" secondAttribute="bottom" id="VQb-d3-0Nk"/>
                                                                     <constraint firstAttribute="trailing" secondItem="HlY-l0-AdM" secondAttribute="trailing" id="uBp-hz-CU9"/>
-                                                                    <constraint firstItem="HlY-l0-AdM" firstAttribute="top" secondItem="yb6-ys-unF" secondAttribute="top" constant="5" id="vnY-by-uuj"/>
+                                                                    <constraint firstItem="HlY-l0-AdM" firstAttribute="top" secondItem="yb6-ys-unF" secondAttribute="top" id="vnY-by-uuj"/>
+                                                                    <constraint firstItem="HlY-l0-AdM" firstAttribute="height" constant="24" id="checkout-response-height"/>
                                                                     <constraint firstAttribute="trailing" secondItem="9fM-c0-Q37" secondAttribute="trailing" id="yPi-AV-KpM"/>
                                                                 </constraints>
                                                             </view>
@@ -20030,6 +20030,7 @@ Where a listing has a host-specific cancellation policy, that policy controls un
                         <outlet property="view_Details" destination="rWV-Cs-2TP" id="ghH-bY-L1y"/>
                         <outlet property="view_Discount" destination="7sX-cG-SRC" id="vR2-NW-LdO"/>
                         <outlet property="view_HostDesc" destination="Voj-xC-hKX" id="OVE-Z9-FH2"/>
+                        <outlet property="view_HostContactCard" destination="IjW-Oh-4eZ" id="checkout-host-contact-card"/>
                         <outlet property="view_HostRules" destination="flD-Nc-djr" id="AgW-T5-DQc"/>
                         <outlet property="view_Hours" destination="OFO-Zl-97r" id="Ta8-6f-Wvb"/>
                         <outlet property="view_IhaveDoubt" destination="Znw-3s-EIO" id="A5S-4m-CLf"/>
