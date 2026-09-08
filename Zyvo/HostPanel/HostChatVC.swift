@@ -94,6 +94,7 @@ class HostChatVC: UIViewController, UITextViewDelegate {
     
     var backAction:(_ str : String,_ favStatus : String,_ muteStatus : String, _ archiveStatus : String ) -> () = { str,favStatus,muteStatus,archiveStatus  in }
     var onlineStatusTimer: Timer?
+    private var mediaUrlCache: [String: URL] = [:]
     private let placeholderText = "Type a message..."
   
     let blockedWords: [String] = [
@@ -199,13 +200,17 @@ class HostChatVC: UIViewController, UITextViewDelegate {
     "zoophile"
     ]
 
-    
+    deinit {
+        onlineStatusTimer?.invalidate()
+        conversationsManager.leaveActiveChat()
+        NotificationCenter.default.removeObserver(self)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         if !user_id.isEmpty, !friend_id.isEmpty {
-            uniqueConversationName = ChatChannelName.make(userId1: user_id, userId2: friend_id)
+            uniqueConversationName = ChatChannelName.make(guestId: friend_id, hostId: user_id)
         }
         
         bindVC()
@@ -263,7 +268,7 @@ class HostChatVC: UIViewController, UITextViewDelegate {
         
         //self.tabBarController?.setTabBarHidden(true, animated: true)
         friend_identity = friend_id
-        uniqueConversationName = ChatChannelName.make(userId1: user_id, userId2: friend_identity)
+        uniqueConversationName = ChatChannelName.make(guestId: friend_identity, hostId: user_id)
         
         print(friend_identity,"friendidentity")
         self.conversationsManager.delegate = self
@@ -332,6 +337,7 @@ class HostChatVC: UIViewController, UITextViewDelegate {
         // Invalidate timer when user leaves chat
         onlineStatusTimer?.invalidate()
         onlineStatusTimer = nil
+        conversationsManager.leaveActiveChat()
     }
     
   
@@ -339,11 +345,10 @@ class HostChatVC: UIViewController, UITextViewDelegate {
     func getChat() {
         self.conversationsManager.loadChat(uniqueConversationName: uniqueConversationName, friendIdentity: friend_identity)
        
-        
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             
             if let conversation = self.conversationsManager.conversation {
-                
+
                 print("✅ Conversation Found:", conversation.uniqueName ?? "")
                 
                 if let lastIndex = conversation.lastMessageIndex {
@@ -418,12 +423,10 @@ class HostChatVC: UIViewController, UITextViewDelegate {
         super.viewWillAppear(animated)
         
         self.navigationController?.setNavigationBarHidden(true, animated: false)
-        
-     //   checkFriendOnlineStatus(friendIdentity: friend_id)
-        
-//        conversationsManager.checkTwilioUserStatus(userId: friend_id) { str in
-//            print(str, "yahu hai")
-//        }
+        self.conversationsManager.delegate = self
+        if conversationsManager.conversation == nil {
+            getChat()
+        }
     }
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
@@ -545,8 +548,13 @@ class HostChatVC: UIViewController, UITextViewDelegate {
             if item == "Delete chat" {
                 
                 print("DeleteChatAPI")
-                
-                self.viewModel.apiForDeleteChat(userType: "guest", groupChannel: self.uniqueConversationName)
+
+                let channelName = self.uniqueConversationName
+                self.conversationsManager.markChatDeletedForCurrentUser(channelName: channelName) { _ in
+                    DispatchQueue.main.async {
+                        self.viewModel.apiForDeleteChat(userType: "host", groupChannel: channelName)
+                    }
+                }
             
             }
 
@@ -628,21 +636,8 @@ class HostChatVC: UIViewController, UITextViewDelegate {
     
     func sendImage(data:Data) {
         
-        let val = uploadingArray.count
-        var cell: ImgChatCell?
-        
         let imgName = Date.getCurrentDateForName()
         let messageOptions = TCHMessage()
-        // Save image to a temporary file
-        let tempDirectory = FileManager.default.temporaryDirectory
-        let fileURL = tempDirectory.appendingPathComponent("\(imgName).jpg")
-
-        do {
-            try data.write(to: fileURL)
-        } catch {
-            print("Failed to write image data to file: \(error.localizedDescription)")
-            return
-        }
 
         self.conversationsManager.sendMediaMessage(data: data, contentType: "image/jpeg", fileName: "\(imgName).jpg") { (result, _)  in
             DispatchQueue.main.async {
@@ -1018,10 +1013,10 @@ extension HostChatVC : UITableViewDelegate,UITableViewDataSource {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "ImgChatCell", for:indexPath as IndexPath) as! ImgChatCell
         
-                if let da = message.img {
-                    cell.img11.image = UIImage(data: da)
-                }
-        return UITableViewCell()
+        if let da = message.img {
+            cell.img11.image = UIImage(data: da)
+        }
+        return cell
     }
     
      func getChatCellForTableView(tableView: UITableView, forIndexPath indexPath:IndexPath, message: TCHMessage) -> UITableViewCell {
@@ -1034,30 +1029,37 @@ extension HostChatVC : UITableViewDelegate,UITableViewDataSource {
          
          if !message.attachedMedia.isEmpty {
              let cell = tableView.dequeueReusableCell(withIdentifier: "ImgChatCell", for: indexPath) as! ImgChatCell
-         
-             if let media = message.attachedMedia.first {
-                 media.getTemporaryContentUrl { result, url in
-                            if result.isSuccessful, let urlString = url {
-                                DispatchQueue.global().async {
-                                  //  if let data = try? Data(contentsOf: urlString) {
-                                        DispatchQueue.main.async {
-                                            cell.img11.loadImage(from: urlString)
-                                            cell.lbl_Time.text = self.updateLastMsgTime(message.dateUpdated ?? "")
-                                            if ms == "\(self.user_id)"{
-                                                cell.imgUser.loadImage(from:self.hostProfileImg,placeholder: UIImage(named: "user"))
-                                                cell.lbl_name.text = self.guestName
-                                            }else{
-                                                cell.imgUser.loadImage(from:self.guesttProfileImg,placeholder: UIImage(named: "user"))
-                                                cell.lbl_name.text = self.hostName
-                                            }
-                                            
-                                        }
-                                    //}
-                                }
-                            } else {
-                                print("Failed to get media URL: \(result.error?.localizedDescription ?? "Unknown error")")
-                            }
-                        }
+             let messageSid = message.sid ?? ""
+             cell.lbl_Time.text = self.updateLastMsgTime(message.dateUpdated ?? "")
+             if ms == "\(self.user_id)" {
+                 cell.imgUser.loadImage(from: self.hostProfileImg, placeholder: UIImage(named: "user"))
+                 cell.lbl_name.text = self.guestName
+             } else {
+                 cell.imgUser.loadImage(from: self.guesttProfileImg, placeholder: UIImage(named: "user"))
+                 cell.lbl_name.text = self.hostName
+             }
+
+             if let cachedURL = mediaUrlCache[messageSid] {
+                 cell.img11.sd_setImage(with: cachedURL,
+                                        placeholderImage: UIImage(named: "NoIMg"),
+                                        options: [.highPriority, .retryFailed, .scaleDownLargeImages])
+             } else if let media = message.attachedMedia.first {
+                 cell.img11.image = nil
+                 media.getTemporaryContentUrl { [weak self, weak tableView] result, url in
+                     guard let self = self else { return }
+                     if result.isSuccessful, let url = url {
+                         self.mediaUrlCache[messageSid] = url
+                         DispatchQueue.main.async {
+                             guard let row = self.sortedMessages.firstIndex(where: { $0.sid == messageSid }),
+                                   let visibleCell = tableView?.cellForRow(at: IndexPath(row: row, section: indexPath.section)) as? ImgChatCell else { return }
+                             visibleCell.img11.sd_setImage(with: url,
+                                                          placeholderImage: UIImage(named: "NoIMg"),
+                                                          options: [.highPriority, .retryFailed, .scaleDownLargeImages])
+                         }
+                     } else {
+                         print("Failed to get media URL: \(result.error?.localizedDescription ?? "Unknown error")")
+                     }
+                 }
              }
              return cell
          }
@@ -1122,13 +1124,15 @@ extension HostChatVC : UITableViewDelegate,UITableViewDataSource {
 extension HostChatVC:  UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let selectedImage = info[.originalImage] as? UIImage {
-            selectedImage.resizeByByte(maxMB: 1) { (data) in
-                DispatchQueue.main.async {
-                    guard let imageData = data else {
-                        self.showAlert(for: "Image could not be processed. Please select a smaller image.")
-                        return
+            DispatchQueue.global(qos: .userInitiated).async {
+                selectedImage.resizeByByte(maxMB: 1) { (data) in
+                    DispatchQueue.main.async {
+                        guard let imageData = data else {
+                            self.showAlert(for: "Image could not be processed. Please select a smaller image.")
+                            return
+                        }
+                        self.sendImage(data: imageData)
                     }
-                    self.sendImage(data: imageData)
                 }
             }
         }

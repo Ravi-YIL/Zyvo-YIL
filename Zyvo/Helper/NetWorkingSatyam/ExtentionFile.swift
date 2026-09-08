@@ -875,6 +875,16 @@ extension UITextView {
     }
 }
 extension String {
+
+    /// Guest-facing host name, e.g. "Mia Johnson" becomes "Mia J.".
+    var abbreviatedHostName: String {
+        let parts = trimmingCharacters(in: .whitespacesAndNewlines)
+            .split(whereSeparator: { $0.isWhitespace })
+            .map(String.init)
+        guard let firstName = parts.first else { return "" }
+        guard parts.count > 1, let initial = parts.last?.first else { return firstName }
+        return "\(firstName) \(initial)."
+    }
     
     func widthOfString(usingFont font: UIFont) -> CGFloat {
         let fontAttributes = [NSAttributedString.Key.font: font]

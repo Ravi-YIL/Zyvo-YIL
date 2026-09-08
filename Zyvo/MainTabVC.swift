@@ -62,6 +62,11 @@ class MainTabVC: UITabBarController, UITabBarControllerDelegate {
 
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        fetchUnreadMessageCounts()
+    }
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
@@ -87,9 +92,7 @@ class MainTabVC: UITabBarController, UITabBarControllerDelegate {
         }
     
     @objc func handleUnreadBadge() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            self.fetchUnreadMessageCounts()
-        }
+        self.fetchUnreadMessageCounts()
     }
     
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
@@ -272,7 +275,7 @@ extension MainTabVC {
                     
                     print(self.chatDataArr,"Main Tab Chat Data")
                     self.reloadAllData()
-                    
+                    self.fetchUnreadMessageCounts()
                 })
             }.store(in: &cancellables)
     }
@@ -280,54 +283,56 @@ extension MainTabVC {
     
     func fetchUnreadMessageCounts() {
         
-        unreadDebouncer.debounce(0.5) { [weak self] in
+        unreadDebouncer.debounce(0.3) { [weak self] in
             guard let self = self else { return }
+            
+            guard let allConversations = self.conversationsManager.client?.myConversations() else {
+                print("⚠️ Conversations not ready")
+                return
+            }
+            let userId = UserDetail.shared.getUserId()
+            let conversations = allConversations.filter {
+                ChatChannelName.isGuestChannel($0.uniqueName, userId: userId)
+            }
+            
+            if conversations.isEmpty {
+                self.updateBadgeCount(0)
+                return
+            }
             
             let group = DispatchGroup()
             let lock = NSLock()
             var totalUnread = 0
             
-            guard let conversations = self.conversationsManager.client?.myConversations(),
-                  !conversations.isEmpty else {
-                print("⚠️ Conversations not ready")
-                return
-            }
-            
             print("\n📊 ====== DEBUG UNREAD START ======")
             
             // ✅ API group names
             let validNames = Set(self.chatDataArr.compactMap { $0.groupName })
+            let hasValidNames = !validNames.isEmpty
             print("📦 API Group Names (\(validNames.count)):", validNames)
             
             for conversation in conversations {
-                
                 guard let name = conversation.uniqueName else {
                     print("Conversation found without name")
                     continue
                 }
                 
-                // Print all Twilio conversations
-                print("💬 Twilio Conversation:", name)
+                print("💬 Conversation:", name)
                 
-                // Check if it exists in API
-                let isValid = validNames.contains(name)
-                print("Exists in API:", isValid ? "✅ YES" : "❌ NO")
-                
-                // Skip if not valid
-                guard isValid else { continue }
+                // If API group names have loaded, only count conversations matching validNames
+                if hasValidNames && !validNames.contains(name) {
+                    print("Skipping conversation not in API: \(name)")
+                    continue
+                }
                 
                 group.enter()
                 
                 conversation.getUnreadMessagesCount { _, count in
-                    
                     let value = count?.intValue ?? 0
-                    
                     lock.lock()
                     totalUnread += value
                     lock.unlock()
-                    
                     print("🔢 Unread Count for [\(name)] = \(value)")
-                    
                     group.leave()
                 }
             }
@@ -353,6 +358,7 @@ extension MainTabVC {
             } else {
                 messageTab.badgeValue = nil
             }
+            UIApplication.shared.applicationIconBadgeNumber = count
         }
     }
 }
@@ -396,7 +402,8 @@ extension MainTabVC: QuickstartConversationsManagerDelegate {
     func getClient(client: TwilioConversationsClient?) {
         if let client = client, let list = client.myConversations() {
             DispatchQueue.main.async {
-                self.listOfChannel = list
+                let userId = UserDetail.shared.getUserId()
+                self.listOfChannel = list.filter { ChatChannelName.isGuestChannel($0.uniqueName, userId: userId) }
                 self.listOfChannel_bal = true
                 self.reloadAllData()
             }
@@ -413,9 +420,11 @@ extension MainTabVC: QuickstartConversationsManagerDelegate {
     func receivedNewMessage(message: TCHMessage) {
         if let client = conversationsManager.client, let list = client.myConversations() {
             DispatchQueue.main.async {
-                self.listOfChannel = list
+                let userId = UserDetail.shared.getUserId()
+                self.listOfChannel = list.filter { ChatChannelName.isGuestChannel($0.uniqueName, userId: userId) }
                 self.listOfChannel_bal = true
                 self.reloadAllData()
+                self.fetchUnreadMessageCounts()
             }
         }
     }

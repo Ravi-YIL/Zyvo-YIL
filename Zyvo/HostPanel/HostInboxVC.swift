@@ -565,12 +565,14 @@ extension HostInboxVC : UITableViewDelegate,UITableViewDataSource {
                 viewModel.apiForSetArchiveUnarchive(senderId: chatDataArr[sender.tag].senderID ?? "", group_channel: chatDataArr[sender.tag].groupName ?? "")
             }
             if item == "Delete chat" {
-                leaveConversation(groupName: chatDataArr[sender.tag].groupName ?? "") { success, errorMessage in
+                let channelName = chatDataArr[sender.tag].groupName ?? ""
+                leaveConversation(groupName: channelName) { success, errorMessage in
                     if success {
                         print("TESTING: Chat deleted successfully.")
-                        // Find the index of the chat to delete
-                        if self.chatDataArr.firstIndex(where: { $0.groupName == self.chatDataArr[sender.tag].groupName }) != nil {
-                            self.viewModel.apiForDeleteChat(userType: "host", groupChannel: self.chatDataArr[sender.tag].groupName ?? "")
+                        self.conversationsManager.markChatDeletedForCurrentUser(channelName: channelName) { _ in
+                            DispatchQueue.main.async {
+                                self.viewModel.apiForDeleteChat(userType: "host", groupChannel: channelName)
+                            }
                         }
                     } else {
                         print("TESTING: Failed to delete chat. Error: \(errorMessage ?? "Unknown error")")
@@ -753,7 +755,8 @@ extension HostInboxVC: QuickstartConversationsManagerDelegate {
     func getClient(client: TwilioConversationsClient?) {
         if let client = client, let list = client.myConversations() {
             DispatchQueue.main.async {
-                self.listOfChannel = list
+                let userId = UserDetail.shared.getUserId()
+                self.listOfChannel = list.filter { ChatChannelName.isHostChannel($0.uniqueName, userId: userId) }
                 self.listOfChannel_bal = true
                 self.reloadAllData()
             }
@@ -770,7 +773,8 @@ extension HostInboxVC: QuickstartConversationsManagerDelegate {
     func receivedNewMessage(message: TCHMessage) {
         if let client = conversationsManager.client, let list = client.myConversations() {
             DispatchQueue.main.async {
-                self.listOfChannel = list
+                let userId = UserDetail.shared.getUserId()
+                self.listOfChannel = list.filter { ChatChannelName.isHostChannel($0.uniqueName, userId: userId) }
                 self.listOfChannel_bal = true
                 //  self.fetchUnreadMessageCounts()
                 self.reloadAllData()

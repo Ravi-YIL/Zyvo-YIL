@@ -22204,7 +22204,7 @@ Where a listing has a host-specific cancellation policy, that policy controls un
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="YDI-Ou-cXK">
                                                         <rect key="frame" x="10" y="10" width="355" height="25"/>
                                                         <subviews>
-                                                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wrC-1x-aE1">
+                                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wrC-1x-aE1">
                                                                 <rect key="frame" x="0.0" y="0.0" width="345" height="98"/>
                                                                 <subviews>
                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wbj-2Y-MOr">
@@ -22290,7 +22290,7 @@ Where a listing has a host-specific cancellation policy, that policy controls un
                                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="V4H-ET-0Mb">
                                                                                 <rect key="frame" x="0.0" y="0.0" width="345" height="44"/>
                                                                                 <subviews>
-                                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Respond within 1 hr" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0de-Gv-dQj">
+                                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Typically respond within 1 hr" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0de-Gv-dQj">
                                                                                         <rect key="frame" x="94.5" y="12" width="156.5" height="20"/>
                                                                                         <constraints>
                                                                                             <constraint firstAttribute="height" constant="20" id="VrC-zp-oeE"/>
@@ -23377,6 +23377,7 @@ Available at checkout. </string>
                         <outlet property="view_CircularTime" destination="Gsz-zQ-Ol2" id="dcw-SX-0Ed"/>
                         <outlet property="view_HeaderContainer" destination="uvJ-pw-N4g" id="A8k-HeadCont-Conn"/>
                         <outlet property="view_HostDesc" destination="2ga-FV-RHj" id="FM6-9L-L7m"/>
+                        <outlet property="view_HostContactHeader" destination="wrC-1x-aE1" id="Loc-Host-Header-Conn"/>
                         <outlet property="view_HostRules" destination="9dT-as-mOr" id="U0M-SG-v3f"/>
                         <outlet property="view_Hour" destination="YKn-gH-jfk" id="T75-4Y-Erv"/>
                         <outlet property="view_IhaveDoubt" destination="4f2-fS-QAq" id="9DB-MM-O4i"/>

@@ -954,8 +954,8 @@ extension ReviewVC {
                         
                     }
                     self.channelName = ChatChannelName.make(
-                        userId1: "\(guestID)",
-                        userId2: "\(hostID)"
+                        guestId: "\(guestID)",
+                        hostId: "\(hostID)"
                     )
                     print(self.channelName,"self.channelName")
                     print(guestID, hostID, self.propertyID, "ASDFASDF")
@@ -1058,7 +1058,7 @@ extension ReviewVC {
                         self.lbl_hostRulesDesc.text = hostRules[0] }
                     
                     print(self.chargeArr?.hourlyRate ?? "")
-                    self.lbl_HostName.text = self.getBookingDetails?.hostName ?? ""
+                    self.lbl_HostName.text = (self.getBookingDetails?.hostName ?? "").abbreviatedHostName
                     let image = self.getBookingDetails?.hostProfileImage ?? ""
                     let imgURL = AppURL.imageURL + image
                     
@@ -1243,9 +1243,9 @@ extension ReviewVC {
                         
                         vc.hostProfileImg = self.guestProfileImg
                         vc.guesttProfileImg = self.hostProfileImg
-                        vc.hostName = self.getJoinChannelDetails?.receiverName ?? ""
+                        vc.hostName = (self.getJoinChannelDetails?.receiverName ?? "").abbreviatedHostName
                         vc.guestName = self.getJoinChannelDetails?.senderName ?? ""
-                        vc.hostName = self.getJoinChannelDetails?.receiverName ?? ""
+                        vc.hostName = (self.getJoinChannelDetails?.receiverName ?? "").abbreviatedHostName
                         self.tabBarController?.tabBar.isHidden = true
                         vc.hidesBottomBarWhenPushed = true
                         self.navigationController?.pushViewController(vc, animated: true)

@@ -106,7 +106,7 @@ extension EditWishListVC :UICollectionViewDelegate,UICollectionViewDataSource {
        
         cell.imgArr = data?.images ?? []
         print(data?.hostName)
-        cell.lbl_NameHostedBy.text = "Hosted by \(data?.hostName ?? "")"
+        cell.lbl_NameHostedBy.text = "Hosted by \((data?.hostName ?? "").abbreviatedHostName)"
         cell.lbl_AddressHostedby.text = data?.hostAddress ?? ""
         cell.btnImgDistance.isHidden = true
         //cell.lbl_Distance.isHidden = true
@@ -224,4 +224,3 @@ extension EditWishListVC:UICollectionViewDelegateFlowLayout {
                 }.store(in: &cancellables)
         }
     }
-

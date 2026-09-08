@@ -6,16 +6,26 @@
 //
 
 import UIKit
+import SDWebImage
 
 class ImgChatCell: UITableViewCell {
 
     @IBOutlet weak var lbl_Time: UILabel!
     @IBOutlet weak var lbl_name: UILabel!
     @IBOutlet weak var imgUser: UIImageView!
-    @IBOutlet weak var img11: UIImageView!
+    @IBOutlet weak var img11: ImageViewWithPreview!
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
+        selectionStyle = .none
+        img11.isUserInteractionEnabled = true
+        img11.previewType = 1
+        img11.gestureType = .tap
+    }
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        img11.sd_cancelCurrentImageLoad()
+        img11.image = nil
     }
     
     func setUser(user:String!,imgArr:Media?,messageBody:TCHMessage,user_id:String) {

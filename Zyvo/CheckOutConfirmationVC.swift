@@ -310,8 +310,8 @@ Where a listing has a host-specific cancellation policy, that policy controls un
         let hostID = self.hostID
         
         self.channelName = ChatChannelName.make(
-            userId1: "\(guestID ?? 0)",
-            userId2: "\(hostID)"
+            guestId: "\(guestID ?? 0)",
+            hostId: "\(hostID)"
         )
         print(self.channelName,"self.channelName")
         print(guestID ?? 0, hostID, self.bookingID, "Details")
@@ -350,7 +350,7 @@ Where a listing has a host-specific cancellation policy, that policy controls un
         
         self.lbl_FinalPrice.text = "$\(totalAmount)"
         
-        self.lbl_hostName.text = self.hostName
+        self.lbl_hostName.text = self.hostName.abbreviatedHostName
         
         self.total_amount = totalAmount
         
@@ -1190,9 +1190,9 @@ extension CheckOutConfirmationVC {
                         vc.SenderID = senderID
                         vc.hostProfileImg = self.guestProfileImg
                         vc.guesttProfileImg = self.hostProfileImg
-                        vc.hostName = self.getJoinChannelDetails?.receiverName ?? ""
+                        vc.hostName = (self.getJoinChannelDetails?.receiverName ?? "").abbreviatedHostName
                         vc.guestName = self.getJoinChannelDetails?.senderName ?? ""
-                        vc.hostName = self.getJoinChannelDetails?.receiverName ?? ""
+                        vc.hostName = (self.getJoinChannelDetails?.receiverName ?? "").abbreviatedHostName
                         self.tabBarController?.tabBar.isHidden = true
                         vc.hidesBottomBarWhenPushed = true
                         vc.Message = self.Message

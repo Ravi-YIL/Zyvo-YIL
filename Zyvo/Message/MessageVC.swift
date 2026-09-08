@@ -324,7 +324,12 @@ class MessageVC: UIViewController {
                 self.viewModel.apiForSetArchiveUnarchive(senderId: chatData.senderID ?? "", group_channel: chatData.groupName ?? "")
             }
             if item == "Delete chat" {
-                self.viewModel.apiForDeleteChat(userType: "guest", groupChannel: chatData.groupName ?? "")
+                let channelName = chatData.groupName ?? ""
+                self.conversationsManager.markChatDeletedForCurrentUser(channelName: channelName) { _ in
+                    DispatchQueue.main.async {
+                        self.viewModel.apiForDeleteChat(userType: "guest", groupChannel: channelName)
+                    }
+                }
             }
         }
         
@@ -451,7 +456,7 @@ extension MessageVC: UITableViewDelegate, UITableViewDataSource {
         
         let data = chatDataArr[indexPath.row]
         
-        cell.userName.text = data.receiverName ?? ""
+        cell.userName.text = (data.receiverName ?? "").abbreviatedHostName
         let propertyTitle = data.propertyTitle?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         cell.lbl_PropertyTitle.text = propertyTitle.isEmpty ? "" : "(\(propertyTitle))"
         cell.lbl_PropertyTitle.isHidden = propertyTitle.isEmpty
@@ -540,7 +545,7 @@ extension MessageVC: UITableViewDelegate, UITableViewDataSource {
         let guestImage = data.receiverImage ?? ""
         vc.hostProfileImg = AppURL.imageURL + hostImage
         vc.guesttProfileImg = AppURL.imageURL + guestImage
-        vc.hostName = data.receiverName ?? ""
+        vc.hostName = (data.receiverName ?? "").abbreviatedHostName
         vc.guestName = data.senderName ?? ""
         
         self.tabBarController?.tabBar.isHidden = true
@@ -707,7 +712,8 @@ extension MessageVC: QuickstartConversationsManagerDelegate {
             
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }
-                self.listOfChannel = list
+                let userId = UserDetail.shared.getUserId()
+                self.listOfChannel = list.filter { ChatChannelName.isGuestChannel($0.uniqueName, userId: userId) }
                 self.listOfChannel_bal = true
                 
                 if !self.chatDataArr.isEmpty {
@@ -728,7 +734,8 @@ extension MessageVC: QuickstartConversationsManagerDelegate {
         if let client = conversationsManager.client, let list = client.myConversations() {
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }
-                self.listOfChannel = list
+                let userId = UserDetail.shared.getUserId()
+                self.listOfChannel = list.filter { ChatChannelName.isGuestChannel($0.uniqueName, userId: userId) }
                 self.listOfChannel_bal = true
                 self.reloadAllData()
                 NotificationCenter.default.post(
@@ -861,7 +868,7 @@ extension MessageVC {
                     
                     guard let groupName = self.selectedGroupName,
                           let activeIndex = self.chatDataArr.firstIndex(where: { $0.groupName == groupName }) else { return }
-                    
+
                     self.chatDataArr.remove(at: activeIndex)
                     DispatchQueue.main.async {
                         self.tblV.reloadData()

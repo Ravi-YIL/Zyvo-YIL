@@ -1,6 +1,6 @@
 //
 //  ImageViewWithPreview.swift
-//  Jhaiho
+//  Zyvo
 //
 //  Created by Bhavneet Singh on 05/01/18.
 //  Copyright © 2018 Bhavneet Singh. All rights reserved.
@@ -8,12 +8,14 @@
 
 import UIKit
 
-protocol ImageViewWithPreviewDelegate: NSObjectProtocol {
-    func imageViewWithPreview(willPreview imageView: ImageViewWithPreview)
-    func imageViewWithPreview(didPreview imageView: ImageViewWithPreview)
+@objc protocol ImageViewWithPreviewDelegate: AnyObject {
+    @objc optional func imageViewWithPreview(willPreview imageView: ImageViewWithPreview)
+    @objc optional func imageViewWithPreview(didPreview imageView: ImageViewWithPreview)
+    @objc optional func imageViewWithPreview(willDismiss imageView: ImageViewWithPreview)
+    @objc optional func imageViewWithPreview(didDismiss imageView: ImageViewWithPreview)
 }
 
-class ImageViewWithPreview: UIImageView {
+class ImageViewWithPreview: UIImageView, UIGestureRecognizerDelegate {
 
     @objc enum ImageType: Int {
         case Circle = 0, Rectangle = 1, Square = 2
@@ -24,188 +26,356 @@ class ImageViewWithPreview: UIImageView {
     }
     
     @objc enum GestureType: Int {
-        case tap = 0, longPress = 1
+        case tap = 0, longPress = 1, both = 2
         
         static func initialize(with: Int) -> GestureType {
-            return with == 0 ? GestureType.tap : GestureType.longPress
+            switch with {
+            case 0: return .tap
+            case 1: return .longPress
+            case 2: return .both
+            default: return .tap
+            }
         }
     }
 
-    private var imageType: ImageType = .Rectangle
-    private var gestureType: GestureType = .longPress
+    var imageType: ImageType = .Rectangle
+    var gestureType: GestureType = .tap
     
-    @IBInspectable var previewType: Int = 0 {
-        didSet{
+    @IBInspectable var previewType: Int = 1 {
+        didSet {
             self.imageType = ImageType.initialize(with: previewType)
         }
     }
+
+    @IBInspectable var gestureTypeRaw: Int = 0 {
+        didSet {
+            self.gestureType = GestureType.initialize(with: gestureTypeRaw)
+            setupGestures()
+        }
+    }
     
-    // var delegate: ImageViewWithPreviewDelegate?
+    weak var delegate: ImageViewWithPreviewDelegate?
     
-    private var imageGesture: UIGestureRecognizer!
-    private var backViewTapGesture: UITapGestureRecognizer!
-    var previewViewController: UIViewController!
-    var backDarkView: UIView!
-    var transitionImageView: UIImageView!
+    private var tapGesture: UITapGestureRecognizer?
+    private var longPressGesture: UILongPressGestureRecognizer?
     
+    private var backDarkView: UIView?
+    private var previewScrollView: UIScrollView?
+    private var transitionImageView: UIImageView?
+    private var closeButton: UIButton?
+    private var isDismissing: Bool = false
+    private var targetOriginFrame: CGRect = .zero
+
+    private var targetWindow: UIWindow? {
+        if let windowScene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene {
+            if let keyWindow = windowScene.windows.first(where: { $0.isKeyWindow }) {
+                return keyWindow
+            }
+            if let firstWindow = windowScene.windows.first {
+                return firstWindow
+            }
+        }
+        for scene in UIApplication.shared.connectedScenes {
+            if let windowScene = scene as? UIWindowScene {
+                if let keyWindow = windowScene.windows.first(where: { $0.isKeyWindow }) {
+                    return keyWindow
+                }
+                if let firstWindow = windowScene.windows.first {
+                    return firstWindow
+                }
+            }
+        }
+        return UIApplication.shared.windows.first(where: { $0.isKeyWindow }) ??
+               UIApplication.shared.windows.first ??
+               (UIApplication.shared.delegate as? AppDelegate)?.window
+    }
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        
-        self.initialSetup()
+        initialSetup()
     }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
-        self.initialSetup()
+        initialSetup()
     }
     
     override init(image: UIImage?) {
         super.init(image: image)
-        
-        self.initialSetup()
+        initialSetup()
     }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        
-        self.initialSetup()
-    }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        self.setupFrames()
+        initialSetup()
     }
     
     private func initialSetup() {
+        isUserInteractionEnabled = true
+        setupGestures()
+    }
     
-        if self.gestureType == .tap {
-            self.isUserInteractionEnabled = true
-            self.imageGesture = UITapGestureRecognizer(target: self, action: #selector(ImageViewWithPreview.showImage))
-            self.addGestureRecognizer(self.imageGesture)
-        } else if self.gestureType == .longPress {
-            self.isUserInteractionEnabled = true
-            self.imageGesture = UILongPressGestureRecognizer(target: self, action: #selector(self.longPressAction(_:)))
-            self.addGestureRecognizer(self.imageGesture)
+    func setupGestures() {
+        if let tap = tapGesture {
+            removeGestureRecognizer(tap)
+            tapGesture = nil
+        }
+        if let longPress = longPressGesture {
+            removeGestureRecognizer(longPress)
+            longPressGesture = nil
         }
         
+        switch gestureType {
+        case .tap:
+            let tap = UITapGestureRecognizer(target: self, action: #selector(showImage))
+            addGestureRecognizer(tap)
+            tapGesture = tap
+        case .longPress:
+            let longPress = UILongPressGestureRecognizer(target: self, action: #selector(longPressAction(_:)))
+            addGestureRecognizer(longPress)
+            longPressGesture = longPress
+        case .both:
+            let tap = UITapGestureRecognizer(target: self, action: #selector(showImage))
+            let longPress = UILongPressGestureRecognizer(target: self, action: #selector(longPressAction(_:)))
+            addGestureRecognizer(tap)
+            addGestureRecognizer(longPress)
+            tapGesture = tap
+            longPressGesture = longPress
+        }
     }
     
-    private func setupFrames() {
-        
-        
-    }
-    
-    private func replicate(image: UIImage) -> UIImageView {
-        let replicateImage = UIImageView(image: self.image)
-        replicateImage.clipsToBounds = self.clipsToBounds
-        replicateImage.frame = self.superview?.convert(self.frame, to: nil) ?? self.frame
+    private func replicate(image: UIImage, in window: UIWindow) -> UIImageView {
+        let replicateImage = UIImageView(image: image)
+        replicateImage.clipsToBounds = true
+        replicateImage.frame = self.superview?.convert(self.frame, to: window) ?? self.frame
         replicateImage.layer.cornerRadius = self.layer.cornerRadius
-        replicateImage.contentMode = self.contentMode
+        replicateImage.contentMode = .scaleAspectFill
         replicateImage.isUserInteractionEnabled = true
         return replicateImage
     }
-}
-
-extension ImageViewWithPreview {
     
     @objc private func longPressAction(_ gesture: UILongPressGestureRecognizer) {
-        
-        switch gesture.state {
-        case .began:
-            self.showImage()
-        case .ended:
-            self.hideImage()
-        default: break
+        if gesture.state == .began {
+            showImage()
         }
     }
     
-    @objc private func showImage() {
+    @objc func showImage() {
+        guard !isDismissing, backDarkView == nil else { return }
+        guard let currentImage = self.image, let window = targetWindow else { return }
         
-        //self.delegate?.imageViewWithPreview(willPreview: self)
-
-        guard let _ = self.image, let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+        delegate?.imageViewWithPreview?(willPreview: self)
         
-        self.transitionImageView = self.replicate(image: self.image!)
-        self.backDarkView = UIView(frame: UIScreen.main.bounds)
-        self.backViewTapGesture = UITapGestureRecognizer(target: self, action: #selector(self.hideImage))
-        appDelegate.window?.addSubview(self.backDarkView)
-        appDelegate.window?.addSubview(self.transitionImageView)
-        self.backDarkView.addGestureRecognizer(self.backViewTapGesture)
-        self.backDarkView.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0.6)
-        self.backDarkView.alpha = 0
-        self.transitionImageView.alpha = 0
-        let fullScreenWidth = UIScreen.main.bounds.width-50
-        let fullScreenHeight = UIScreen.main.bounds.height-50
-        let fullScreenSize: CGSize!
+        let startFrame = self.superview?.convert(self.frame, to: window) ?? self.frame
+        self.targetOriginFrame = startFrame
+        
+        // 1. Dim background
+        let darkView = UIView(frame: window.bounds)
+        darkView.backgroundColor = UIColor(white: 0, alpha: 0.92)
+        darkView.alpha = 0
+        window.addSubview(darkView)
+        self.backDarkView = darkView
+        
+        // 2. ScrollView for pinch/zoom
+        let scrollView = UIScrollView(frame: window.bounds)
+        scrollView.minimumZoomScale = 1.0
+        scrollView.maximumZoomScale = 3.5
+        scrollView.showsHorizontalScrollIndicator = false
+        scrollView.showsVerticalScrollIndicator = false
+        scrollView.bouncesZoom = true
+        scrollView.delegate = self
+        darkView.addSubview(scrollView)
+        self.previewScrollView = scrollView
+        
+        // 3. Transition image view
+        let transImageView = replicate(image: currentImage, in: window)
+        scrollView.addSubview(transImageView)
+        self.transitionImageView = transImageView
+        
+        // 4. Close button
+        let safeArea = window.safeAreaInsets
+        let btnSize: CGFloat = 36
+        let closeBtn = UIButton(type: .custom)
+        closeBtn.frame = CGRect(
+            x: window.bounds.width - btnSize - 16,
+            y: max(safeArea.top + 10, 24),
+            width: btnSize,
+            height: btnSize
+        )
+        closeBtn.backgroundColor = UIColor(white: 0.2, alpha: 0.7)
+        closeBtn.layer.cornerRadius = btnSize / 2
+        closeBtn.clipsToBounds = true
+        
+        if #available(iOS 13.0, *), let xmark = UIImage(systemName: "xmark", withConfiguration: UIImage.SymbolConfiguration(pointSize: 15, weight: .bold)) {
+            closeBtn.setImage(xmark.withRenderingMode(.alwaysTemplate), for: .normal)
+            closeBtn.tintColor = .white
+        } else {
+            closeBtn.setTitle("✕", for: .normal)
+            closeBtn.setTitleColor(.white, for: .normal)
+            closeBtn.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+        }
+        closeBtn.alpha = 0
+        closeBtn.addTarget(self, action: #selector(hideImage), for: .touchUpInside)
+        darkView.addSubview(closeBtn)
+        self.closeButton = closeBtn
+        
+        // 5. Gestures for dismiss & zoom
+        let doubleTap = UITapGestureRecognizer(target: self, action: #selector(handleDoubleTap(_:)))
+        doubleTap.numberOfTapsRequired = 2
+        darkView.addGestureRecognizer(doubleTap)
+        
+        let singleTap = UITapGestureRecognizer(target: self, action: #selector(handleSingleTap(_:)))
+        singleTap.numberOfTapsRequired = 1
+        singleTap.require(toFail: doubleTap)
+        darkView.addGestureRecognizer(singleTap)
+        
+        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
+        panGesture.delegate = self
+        darkView.addGestureRecognizer(panGesture)
+        
+        // 6. Calculate target layout
+        let maxWidth = window.bounds.width - 24
+        let maxHeight = window.bounds.height - safeArea.top - safeArea.bottom - 48
+        var targetSize: CGSize
         
         switch self.imageType {
         case .Circle:
-            fullScreenSize = CGSize(width: fullScreenWidth, height: fullScreenWidth)
-            self.transitionImageView.layer.cornerRadius = self.transitionImageView.frame.height/2
-            break
-        case .Rectangle:
-            if let imgSize = self.image?.size {
-                let ratio = imgSize.width/imgSize.height
-                let height = (fullScreenWidth)/ratio
-                
-                if height > fullScreenHeight {
-                    ////////////
-                } else {
-                    ////////////
-                }
-                fullScreenSize = CGSize(width: fullScreenWidth, height: height)
-                
-            } else {
-                fullScreenSize = CGSize(width: fullScreenWidth, height: fullScreenWidth)
-            }
-            self.transitionImageView.layer.cornerRadius = 10
-            break
+            let dim = min(maxWidth, maxHeight)
+            targetSize = CGSize(width: dim, height: dim)
         case .Square:
-            fullScreenSize = CGSize(width: fullScreenWidth, height: fullScreenWidth)
-            self.transitionImageView.layer.cornerRadius = 10
-            break
+            let dim = min(maxWidth, maxHeight)
+            targetSize = CGSize(width: dim, height: dim)
+        case .Rectangle:
+            if currentImage.size.height > 0 && currentImage.size.width > 0 {
+                let ratio = currentImage.size.width / currentImage.size.height
+                var width = maxWidth
+                var height = width / ratio
+                if height > maxHeight {
+                    height = maxHeight
+                    width = height * ratio
+                }
+                targetSize = CGSize(width: width, height: height)
+            } else {
+                targetSize = CGSize(width: maxWidth, height: maxWidth)
+            }
         }
         
-        UIView.animate(withDuration: 0.2, animations: {
-            self.transitionImageView.frame.size = fullScreenSize
-            self.transitionImageView.center = appDelegate.window!.center
-            self.transitionImageView.layer.cornerRadius = self.imageType == .Circle ? fullScreenWidth/2 : 10
-            self.backDarkView.alpha = 1
-            self.transitionImageView.alpha = 1
-        }) { (finished) in
-            
+        let targetCenter = CGPoint(x: window.bounds.width / 2, y: window.bounds.height / 2)
+        
+        UIView.animate(withDuration: 0.28, delay: 0, usingSpringWithDamping: 0.86, initialSpringVelocity: 0.5, options: [.curveEaseInOut], animations: {
+            darkView.alpha = 1.0
+            closeBtn.alpha = 1.0
+            transImageView.frame.size = targetSize
+            transImageView.center = targetCenter
+            transImageView.layer.cornerRadius = (self.imageType == .Circle) ? (targetSize.width / 2) : 12
+        }) { _ in
+            self.delegate?.imageViewWithPreview?(didPreview: self)
         }
     }
     
-    @objc private func hideImage() {
+    @objc func hideImage() {
+        guard !isDismissing, let darkView = backDarkView, let transImageView = transitionImageView else { return }
+        isDismissing = true
+        delegate?.imageViewWithPreview?(willDismiss: self)
         
-        UIView.animate(withDuration: 0.2, animations: {
-            if let gframe = self.superview?.convert(self.frame, to: nil) {
-                self.transitionImageView.frame.size = gframe.size
-                self.transitionImageView.frame.origin = CGPoint(x: gframe.origin.x, y: gframe.origin.y+20)
-            } else {
-                self.transitionImageView.frame.size = self.frame.size
-                self.transitionImageView.frame.origin = CGPoint(x: self.frame.origin.x, y: self.frame.origin.y+20)
-            }
-            self.backDarkView.alpha = 0
-        }) { (finished) in
-            
+        previewScrollView?.setZoomScale(1.0, animated: false)
+        
+        let endFrame: CGRect
+        if let window = targetWindow, let currentSuperview = self.superview {
+            endFrame = currentSuperview.convert(self.frame, to: window)
+        } else {
+            endFrame = targetOriginFrame
         }
         
-        UIView.animate(withDuration: 0.2, animations: {
-            self.transitionImageView.alpha = 0
-        }, completion: { (finished) in
-            self.backDarkView.removeFromSuperview()
-            self.transitionImageView.removeFromSuperview()
+        UIView.animate(withDuration: 0.24, delay: 0, options: [.curveEaseIn], animations: {
+            transImageView.transform = .identity
+            transImageView.frame = endFrame
+            transImageView.layer.cornerRadius = self.layer.cornerRadius
+            darkView.alpha = 0
+            self.closeButton?.alpha = 0
+        }) { _ in
+            darkView.removeFromSuperview()
             self.backDarkView = nil
+            self.previewScrollView = nil
             self.transitionImageView = nil
-            self.backViewTapGesture = nil
-            
-            //self.delegate?.imageViewWithPreview(didPreview: self)
-        })
+            self.closeButton = nil
+            self.isDismissing = false
+            self.delegate?.imageViewWithPreview?(didDismiss: self)
+        }
+    }
+    
+    @objc private func handleSingleTap(_ gesture: UITapGestureRecognizer) {
+        if (previewScrollView?.zoomScale ?? 1.0) <= 1.05 {
+            hideImage()
+        }
+    }
+    
+    @objc private func handleDoubleTap(_ gesture: UITapGestureRecognizer) {
+        guard let scrollView = previewScrollView, let transImageView = transitionImageView else { return }
+        if scrollView.zoomScale > 1.05 {
+            scrollView.setZoomScale(1.0, animated: true)
+        } else {
+            let pointInView = gesture.location(in: transImageView)
+            let newScale: CGFloat = 2.5
+            let width = scrollView.bounds.width / newScale
+            let height = scrollView.bounds.height / newScale
+            let originX = pointInView.x - (width / 2.0)
+            let originY = pointInView.y - (height / 2.0)
+            let zoomRect = CGRect(x: originX, y: originY, width: width, height: height)
+            scrollView.zoom(to: zoomRect, animated: true)
+        }
+    }
+    
+    @objc private func handlePan(_ gesture: UIPanGestureRecognizer) {
+        guard let scrollView = previewScrollView, scrollView.zoomScale <= 1.05,
+              let transImageView = transitionImageView, let darkView = backDarkView else { return }
+        
+        let translation = gesture.translation(in: darkView)
+        let velocity = gesture.velocity(in: darkView)
+        
+        switch gesture.state {
+        case .changed:
+            if translation.y > 0 {
+                transImageView.transform = CGAffineTransform(translationX: translation.x * 0.4, y: translation.y)
+                let progress = min(1.0, translation.y / 280.0)
+                darkView.alpha = max(0.2, 1.0 - (progress * 0.7))
+                closeButton?.alpha = 1.0 - progress
+            }
+        case .ended, .cancelled:
+            if translation.y > 100 || velocity.y > 600 {
+                hideImage()
+            } else {
+                UIView.animate(withDuration: 0.22, delay: 0, options: [.curveEaseOut], animations: {
+                    transImageView.transform = .identity
+                    darkView.alpha = 1.0
+                    self.closeButton?.alpha = 1.0
+                })
+            }
+        default:
+            break
+        }
+    }
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        if gestureRecognizer is UIPanGestureRecognizer, (previewScrollView?.zoomScale ?? 1.0) <= 1.05 {
+            return false
+        }
+        return true
+    }
+}
 
+extension ImageViewWithPreview: UIScrollViewDelegate {
+    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        return transitionImageView
+    }
+    
+    func scrollViewDidZoom(_ scrollView: UIScrollView) {
+        guard let transImageView = transitionImageView else { return }
+        let offsetX = max((scrollView.bounds.size.width - scrollView.contentSize.width) * 0.5, 0.0)
+        let offsetY = max((scrollView.bounds.size.height - scrollView.contentSize.height) * 0.5, 0.0)
+        transImageView.center = CGPoint(
+            x: scrollView.contentSize.width * 0.5 + offsetX,
+            y: scrollView.contentSize.height * 0.5 + offsetY
+        )
     }
 }

@@ -814,8 +814,8 @@ extension HostBookingAVC{
                     let guestID = self.bookingDetailArr?.guestID ?? 0
                     let hostID = self.bookingDetailArr?.hostID ?? 0
                     self.channelName = ChatChannelName.make(
-                        userId1: "\(guestID)",
-                        userId2: "\(hostID)"
+                        guestId: "\(guestID)",
+                        hostId: "\(hostID)"
                     )
                     print(self.channelName,"self.channelName")
                     print(guestID, hostID, self.propertyID, "ASDFASDF")

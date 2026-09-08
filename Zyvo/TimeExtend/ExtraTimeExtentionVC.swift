@@ -301,8 +301,8 @@ Where a listing has a host-specific cancellation policy, that policy controls un
         let hostID = self.hostID
         
         self.channelName = ChatChannelName.make(
-            userId1: "\(guestID ?? 0)",
-            userId2: "\(hostID)"
+            guestId: "\(guestID ?? 0)",
+            hostId: "\(hostID)"
         )
         print(self.channelName,"self.channelName")
         print(guestID ?? 0, hostID, self.propertyID, "ASDFASDF")
@@ -509,7 +509,7 @@ Where a listing has a host-specific cancellation policy, that policy controls un
         let totalAmount = (AddTotalAmount -  (self.DiscountAmount ?? 0.0)).rounded(toPlaces: 2)
         let totalFee = "\(totalAmount)"
         self.lbl_FinalPrice.text = "$\(totalFee.formattedPriceString())"
-        self.lbl_hostName.text = self.hostName
+        self.lbl_hostName.text = self.hostName.abbreviatedHostName
         self.total_amount = totalAmount
         self.imgProfileHost.layer.cornerRadius = self.imgProfileHost.layer.frame.height / 2
         self.imgProfileHost.contentMode = .scaleAspectFill
@@ -1152,7 +1152,7 @@ extension ExtraTimeExtentionVC {
                           vc.SenderID = senderID
                           vc.friend_id = "\(receiverID)"
                           vc.guestName = self.getJoinChannelDetails?.senderName ?? ""
-                              vc.hostName = self.getJoinChannelDetails?.receiverName ?? ""
+                              vc.hostName = (self.getJoinChannelDetails?.receiverName ?? "").abbreviatedHostName
                           vc.hostProfileImg = self.hostProfileImg
                           vc.guesttProfileImg =  self.guestProfileImg
                           self.tabBarController?.tabBar.isHidden = true

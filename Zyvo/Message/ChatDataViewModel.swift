@@ -41,6 +41,34 @@ class ChatDataViewModel: NSObject {
 
 // MARK: - API Calls
 extension ChatDataViewModel {
+
+    func apiForJoinChannel(senderId: String,
+                           receiverId: String,
+                           groupChannel: String,
+                           userType: String,
+                           loader: Bool = false) {
+        var parameters = [String: Any]()
+        parameters[APIKeys.senderId] = senderId
+        parameters[APIKeys.receiverId] = receiverId
+        parameters[APIKeys.groupChannel] = groupChannel
+        parameters[APIKeys.user_Type] = userType
+
+        APIServices<JoinChanelModel>().post(endpoint: .joinchannel,
+                                            parameters: parameters,
+                                            loader: loader)
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                if case .failure(let error) = completion {
+                    print("Failed to register chat channel: \(error.localizedDescription)")
+                }
+            } receiveValue: { response in
+                if response.success != true {
+                    let message = response.message ?? "Unknown error"
+                    print("Failed to register chat channel: \(message)")
+                }
+            }
+            .store(in: &cancellables)
+    }
     
     func apiForGetChatData(userType: String) {
         var para = [String: Any]()
@@ -57,11 +85,7 @@ extension ChatDataViewModel {
                     self.getChatDataResult = .failure(error)
                 }
             } receiveValue: { response in
-                if response.success ?? false {
-                    self.getChatDataResult = .success(response)
-                } else {
-                    self.getChatDataResult = .success(response)
-                }
+                self.getChatDataResult = .success(self.deduplicatedChatResponse(response, userType: userType))
             }.store(in: &cancellables)
     }
     
@@ -80,12 +104,42 @@ extension ChatDataViewModel {
                     self.getChatDataResult = .failure(error)
                 }
             } receiveValue: { response in
-                if response.success ?? false {
-                    self.getChatDataResult = .success(response)
-                } else {
-                    self.getChatDataResult = .success(response)
-                }
+                self.getChatDataResult = .success(self.deduplicatedChatResponse(response, userType: userType))
             }.store(in: &cancellables)
+    }
+
+    private func deduplicatedChatResponse(
+        _ response: BaseResponse<[ChatDataModel]>,
+        userType: String
+    ) -> BaseResponse<[ChatDataModel]> {
+        var seenChannels = Set<String>()
+        let currentUserId = UserDetail.shared.getUserId()
+        let roleChats = (response.data ?? []).filter { chat in
+            guard let channelName = chat.groupName,
+                  channelName.hasPrefix("Zyvoo_guest_") else {
+                return true // Keep legacy channels during the migration period.
+            }
+            if userType.lowercased() == "host" {
+                return ChatChannelName.isHostChannel(channelName, userId: currentUserId)
+            }
+            return ChatChannelName.isGuestChannel(channelName, userId: currentUserId)
+        }
+        let uniqueChats = roleChats.filter { chat in
+            let channelName = (chat.groupName ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+            let key = channelName.isEmpty
+                ? "\(chat.senderID ?? "")_\(chat.receiverID ?? "")"
+                : channelName
+            return seenChannels.insert(key).inserted
+        }
+        return BaseResponse(
+            success: response.success,
+            code: response.code,
+            message: response.message,
+            error: response.error,
+            data: uniqueChats,
+            pagination: response.pagination,
+            hasPaymentMethod: response.hasPaymentMethod
+        )
     }
     
     func apiForCheckBlockUser(IDSS: String, group_channel: String) {
@@ -308,4 +362,3 @@ extension ChatDataViewModel {
         }
     }
 }
-

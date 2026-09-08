@@ -185,6 +185,7 @@ class ChatVC: UIViewController, UITextViewDelegate {
     
     deinit {
         onlineStatusTimer?.invalidate()
+        conversationsManager.leaveActiveChat()
         NotificationCenter.default.removeObserver(self)
     }
     
@@ -192,7 +193,7 @@ class ChatVC: UIViewController, UITextViewDelegate {
         super.viewDidLoad()
 
         if !user_id.isEmpty, !friend_id.isEmpty {
-            uniqueConversationName = ChatChannelName.make(userId1: user_id, userId2: friend_id)
+            uniqueConversationName = ChatChannelName.make(guestId: user_id, hostId: friend_id)
         }
         
         bindVC()
@@ -216,7 +217,7 @@ class ChatVC: UIViewController, UITextViewDelegate {
         print(self.hostName,"self.hostName")
         print(self.guestName,"self.guestName")
         
-        self.lbl_User.text = self.hostName
+        self.lbl_User.text = self.hostName.abbreviatedHostName
         
         IQKeyboardManager.shared.enable = false
         
@@ -256,7 +257,7 @@ class ChatVC: UIViewController, UITextViewDelegate {
         viewBlock.layer.cornerRadius = viewBlock.layer.frame.height / 2
 
         friend_identity = friend_id
-        uniqueConversationName = ChatChannelName.make(userId1: user_id, userId2: friend_identity)
+        uniqueConversationName = ChatChannelName.make(guestId: user_id, hostId: friend_identity)
         
         print(friend_identity,"friendidentity")
         self.conversationsManager.delegate = self
@@ -299,6 +300,10 @@ class ChatVC: UIViewController, UITextViewDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.tabBarController?.tabBar.isHidden = true
+        self.conversationsManager.delegate = self
+        if conversationsManager.conversation == nil {
+            getChat()
+        }
     }
     
     override func viewDidLayoutSubviews() {
@@ -327,16 +332,16 @@ class ChatVC: UIViewController, UITextViewDelegate {
         // Invalidate timer when user leaves chat
         onlineStatusTimer?.invalidate()
         onlineStatusTimer = nil
+        conversationsManager.leaveActiveChat()
     }
     
     func getChat() {
         self.conversationsManager.loadChat(uniqueConversationName: uniqueConversationName, friendIdentity: friend_identity)
        
-        
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             
             if let conversation = self.conversationsManager.conversation {
-                
+
                 print("✅ Conversation Found:", conversation.uniqueName ?? "")
                 
                 if let lastIndex = conversation.lastMessageIndex {
@@ -531,8 +536,13 @@ class ChatVC: UIViewController, UITextViewDelegate {
             if item == "Delete chat" {
                 
                 print("DeleteChatAPI")
-                
-                self.viewModel.apiForDeleteChat(userType: "guest", groupChannel: self.uniqueConversationName)
+
+                let channelName = self.uniqueConversationName
+                self.conversationsManager.markChatDeletedForCurrentUser(channelName: channelName) { _ in
+                    DispatchQueue.main.async {
+                        self.viewModel.apiForDeleteChat(userType: "guest", groupChannel: channelName)
+                    }
+                }
             
             }
             
@@ -961,12 +971,14 @@ extension ChatVC : UITableViewDelegate,UITableViewDataSource {
                 cell.lbl_name.text = self.guestName
             } else {
                 cell.imgUser.loadImage(from: self.guesttProfileImg, placeholder: UIImage(named: "user"))
-                cell.lbl_name.text = self.hostName
+                cell.lbl_name.text = self.hostName.abbreviatedHostName
             }
             cell.lbl_Time.text = self.updateLastMsgTime(message.dateUpdated ?? "")
             
             if let cachedUrl = self.mediaUrlCache[messageSid] {
-                cell.img11.loadImage(from: cachedUrl.absoluteString)
+                cell.img11.sd_setImage(with: cachedUrl,
+                                       placeholderImage: UIImage(named: "NoIMg"),
+                                       options: [.highPriority, .retryFailed, .scaleDownLargeImages])
             } else if let media = message.attachedMedia.first {
                 cell.img11.image = nil
                 
@@ -979,7 +991,9 @@ extension ChatVC : UITableViewDelegate,UITableViewDataSource {
                             if let index = self.sortedMessages.firstIndex(where: { $0.sid == messageSid }) {
                                 let targetPath = IndexPath(row: index, section: indexPath.section)
                                 if let visibleCell = tableView?.cellForRow(at: targetPath) as? ImgChatCell {
-                                    visibleCell.img11.loadImage(from: url.absoluteString)
+                                    visibleCell.img11.sd_setImage(with: url,
+                                                                placeholderImage: UIImage(named: "NoIMg"),
+                                                                options: [.highPriority, .retryFailed, .scaleDownLargeImages])
                                 }
                             }
                         }
@@ -999,7 +1013,7 @@ extension ChatVC : UITableViewDelegate,UITableViewDataSource {
             } else {
                 
                 cell.img.loadImage(from:self.guesttProfileImg,placeholder: UIImage(named: "user"))
-                cell.lbl_name.text = self.hostName
+                cell.lbl_name.text = self.hostName.abbreviatedHostName
                 
                 cell.setUser(user: message.author ?? "[Unknown author]", imgArr: Media(image:user_imgV, data: nil, url: nil), messageBody: message,user_id:user_id)
                 return cell
@@ -1062,17 +1076,17 @@ extension ChatVC:  UIImagePickerControllerDelegate, UINavigationControllerDelega
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let selectedImage = info[.originalImage] as? UIImage {
-
-            selectedImage.resizeByByte(maxMB: 1) { (data) in
-                DispatchQueue.main.async {
-                    guard let imageData = data else {
-                        self.showAlert(for: "Image could not be processed. Please select a smaller image.")
-                        return
+            DispatchQueue.global(qos: .userInitiated).async {
+                selectedImage.resizeByByte(maxMB: 1) { (data) in
+                    DispatchQueue.main.async {
+                        guard let imageData = data else {
+                            self.showAlert(for: "Image could not be processed. Please select a smaller image.")
+                            return
+                        }
+                        self.sendImage(data: imageData)
                     }
-                    self.sendImage(data: imageData)
                 }
             }
-            
         }
         dismiss(animated: true, completion: nil)
     }
@@ -1254,6 +1268,3 @@ struct Media{
     var fileName:String?
     var ext:String?
 }
-
-
-

@@ -9,13 +9,21 @@
 import Foundation
 import FirebaseFirestore
 import UIKit
+import Alamofire
 
 enum ChatChannelName {
-    static func make(userId1: String, userId2: String) -> String {
-        let first = userId1.trimmingCharacters(in: .whitespacesAndNewlines)
-        let second = userId2.trimmingCharacters(in: .whitespacesAndNewlines)
-        let sortedIds = first < second ? "\(first)_\(second)" : "\(second)_\(first)"
-        return "Zyvoo_\(sortedIds)"
+    static func make(guestId: String, hostId: String) -> String {
+        let guest = guestId.trimmingCharacters(in: .whitespacesAndNewlines)
+        let host = hostId.trimmingCharacters(in: .whitespacesAndNewlines)
+        return "Zyvoo_guest_\(guest)_host_\(host)"
+    }
+
+    static func isGuestChannel(_ channelName: String?, userId: String) -> Bool {
+        channelName?.hasPrefix("Zyvoo_guest_\(userId)_host_") == true
+    }
+
+    static func isHostChannel(_ channelName: String?, userId: String) -> Bool {
+        channelName?.hasSuffix("_host_\(userId)") == true
     }
 }
 
@@ -210,6 +218,8 @@ final class FirebaseChatManager: NSObject {
     private var presenceTimer: Timer?
     private var initialMessagesDelivered = false
     private var partnerWasTyping = false
+    private var deletionBoundaries: [String: Date] = [:]
+    private var messageObservationID = UUID()
 
     private override init() {
         super.init()
@@ -249,6 +259,47 @@ final class FirebaseChatManager: NSObject {
     @available(*, deprecated, message: "Use cleanupFirebase().")
     func cleanupTwilio() { cleanupFirebase() }
 
+    func leaveActiveChat() {
+        messageObservationID = UUID()
+        messageListener?.remove()
+        messageListener = nil
+        typingListener?.remove()
+        typingListener = nil
+        typingEndWorkItem?.cancel()
+        typingEndWorkItem = nil
+        partnerWasTyping = false
+        conversation = nil
+        messages = []
+        initialMessagesDelivered = false
+        NotificationCenter.default.post(name: NSNotification.Name("UpdateUnreadBadge"), object: nil)
+    }
+
+    /// Records a private history boundary without removing shared messages.
+    func markChatDeletedForCurrentUser(channelName: String,
+                                       completion: ((FirebaseChatResult) -> Void)? = nil) {
+        let userId = UserDetail.shared.getUserId()
+        guard !userId.isEmpty, !channelName.isEmpty else {
+            completion?(.failure(FirebaseChatError(message: "Unable to save the deleted chat state.")))
+            return
+        }
+        let firestoreChannelName = canonicalChannelName(from: channelName)
+        let boundary = Date()
+        memberReference(channelName: firestoreChannelName, userId: userId).setData([
+            "user_id": userId,
+            "deleted_before": Timestamp(date: boundary),
+            "is_deleted": true,
+            "unread_count": 0
+        ], merge: true) { [weak self] error in
+            if let error = error {
+                completion?(.failure(error))
+                return
+            }
+            self?.deletionBoundaries[firestoreChannelName] = boundary
+            completion?(.success)
+            NotificationCenter.default.post(name: NSNotification.Name("UpdateUnreadBadge"), object: nil)
+        }
+    }
+
     func loadChat(uniqueConversationName: String, friendIdentity: String) {
         let userId = UserDetail.shared.getUserId()
         guard !userId.isEmpty, !friendIdentity.isEmpty else {
@@ -256,7 +307,11 @@ final class FirebaseChatManager: NSObject {
             return
         }
         connect()
-        let canonicalName = ChatChannelName.make(userId1: userId, userId2: friendIdentity)
+        let canonicalName = uniqueConversationName.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !canonicalName.isEmpty else {
+            delegate?.displayErrorMessage("Unable to open chat because its channel name is missing.")
+            return
+        }
         let participants = [userId, friendIdentity].sorted()
         let channelReference = database.collection(channelsCollection).document(canonicalName)
         channelReference.setData([
@@ -269,7 +324,12 @@ final class FirebaseChatManager: NSObject {
             self.ensureMemberDocuments(channelReference: channelReference, participantIds: participants)
             let selected = self.allConversations.first(where: { $0.uniqueName == canonicalName })
                 ?? FirebaseChatConversation(name: canonicalName, participantIds: participants, manager: self)
+            // Never render cached channel summaries while the per-user deletion
+            // boundary is being resolved.
+            self.messages = []
+            selected.cachedMessages = []
             self.conversation = selected
+            DispatchQueue.main.async { self.delegate?.reloadMessages() }
             self.observeMessages(in: selected)
             self.observeTyping(in: selected, friendIdentity: friendIdentity)
         }
@@ -282,11 +342,7 @@ final class FirebaseChatManager: NSObject {
 
     func sendMediaMessage(data: Data, contentType: String, fileName: String,
                           completion: @escaping (FirebaseChatResult?, FirebaseChatMessage?) -> Void) {
-        guard let uploader = backendMediaUploader else {
-            let error = FirebaseChatError(message: "Configure FirebaseChatManager.backendMediaUploader with the backend media API.")
-            completion(.failure(error), nil)
-            return
-        }
+        let uploader = backendMediaUploader ?? uploadChatMedia
         uploader(data, contentType, fileName) { [weak self] result in
             switch result {
             case .success(let url):
@@ -294,6 +350,49 @@ final class FirebaseChatManager: NSObject {
             case .failure(let error): completion(.failure(error), nil)
             }
         }
+    }
+
+    /// Uploads the binary to the app backend. Firestore receives only the URL,
+    /// keeping message documents small and realtime listeners fast.
+    private func uploadChatMedia(data: Data, contentType: String, fileName: String,
+                                 completion: @escaping (Result<URL, Error>) -> Void) {
+        let headers: HTTPHeaders = [
+            "Authorization": "Bearer \(UserDetail.shared.getTokenWith())",
+            "Accept": "application/json",
+            "Timezone": TimeZone.current.identifier
+        ]
+
+        AF.upload(multipartFormData: { formData in
+            formData.append(data, withName: "file", fileName: fileName, mimeType: contentType)
+        }, to: AppURL.baseURL + "upload_chat_media", headers: headers)
+        .validate(statusCode: 200..<300)
+        .responseData(queue: DispatchQueue.global(qos: .userInitiated)) { response in
+            switch response.result {
+            case .success(let responseData):
+                do {
+                    guard let json = try JSONSerialization.jsonObject(with: responseData) as? [String: Any],
+                          (json["success"] as? Bool) == true,
+                          let payload = json["data"] as? [String: Any],
+                          let mediaPath = payload["media_path"] as? String,
+                          let mediaURL = Self.absoluteMediaURL(from: mediaPath) else {
+                        throw FirebaseChatError(message: "The media upload response did not contain a valid URL.")
+                    }
+                    completion(.success(mediaURL))
+                } catch {
+                    completion(.failure(error))
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+
+    static func absoluteMediaURL(from mediaPath: String) -> URL? {
+        let cleanedPath = mediaPath.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !cleanedPath.isEmpty else { return nil }
+        if let url = URL(string: cleanedPath), url.scheme != nil { return url }
+        let relativePath = cleanedPath.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+        return URL(string: AppURL.imageURL + relativePath)
     }
 
     func sendMediaMessage(mediaURL: URL, contentType: String, fileName: String,
@@ -324,6 +423,10 @@ final class FirebaseChatManager: NSObject {
                                  completion: @escaping (FirebaseChatResult, NSNumber?) -> Void) {
         guard let name = conversation.uniqueName else {
             completion(.failure(FirebaseChatError(message: "Missing channel name.")), nil); return
+        }
+        if self.conversation?.uniqueName == name {
+            completion(.success, 0)
+            return
         }
         let userId = UserDetail.shared.getUserId()
         memberReference(channelName: name, userId: userId).getDocument { snapshot, error in
@@ -374,6 +477,9 @@ final class FirebaseChatManager: NSObject {
         }
         var query: Query = database.collection(channelsCollection).document(name).collection(messagesCollection)
             .order(by: "created_at", descending: true).limit(to: max(1, min(count, 100)))
+        if let deletedBefore = deletionBoundaries[name] {
+            query = query.whereField("created_at", isGreaterThan: Timestamp(date: deletedBefore))
+        }
         if let oldest = conversation.cachedMessages.first?.createdAt {
             query = query.start(after: [Timestamp(date: oldest)])
         }
@@ -431,7 +537,7 @@ final class FirebaseChatManager: NSObject {
                             body: data["last_message"] as? String,
                             author: data["last_sender_id"] as? String,
                             createdAt: lastDate,
-                            mediaURL: (data["last_media_url"] as? String).flatMap(URL.init(string:))
+                            mediaURL: (data["last_media_url"] as? String).flatMap(Self.absoluteMediaURL(from:))
                         )]
                     }
                     return item
@@ -447,18 +553,52 @@ final class FirebaseChatManager: NSObject {
                         self.myMsg?(message)
                         self.delegate?.receivedNewMessage(message: message)
                     }
+                    NotificationCenter.default.post(name: NSNotification.Name("UpdateUnreadBadge"), object: nil)
                 }
             }
     }
 
     private func observeMessages(in conversation: FirebaseChatConversation) {
         guard let name = conversation.uniqueName else { return }
+        let observationID = UUID()
+        messageObservationID = observationID
         messageListener?.remove()
         initialMessagesDelivered = false
-        messageListener = database.collection(channelsCollection).document(name).collection(messagesCollection)
-            .order(by: "created_at", descending: false).limit(toLast: 50)
+        let userId = UserDetail.shared.getUserId()
+        memberReference(channelName: name, userId: userId).getDocument { [weak self, weak conversation] snapshot, error in
+            guard let self = self, let conversation = conversation,
+                  self.messageObservationID == observationID,
+                  self.conversation?.uniqueName == name else { return }
+            if let error = error {
+                self.delegate?.displayErrorMessage(error.localizedDescription)
+                return
+            }
+            let boundary = (snapshot?.data()?["deleted_before"] as? Timestamp)?.dateValue()
+            if let boundary = boundary {
+                self.deletionBoundaries[name] = boundary
+            } else {
+                self.deletionBoundaries.removeValue(forKey: name)
+            }
+            self.startObservingMessages(in: conversation,
+                                        deletedBefore: boundary,
+                                        observationID: observationID)
+        }
+    }
+
+    private func startObservingMessages(in conversation: FirebaseChatConversation,
+                                        deletedBefore: Date?,
+                                        observationID: UUID) {
+        guard let name = conversation.uniqueName else { return }
+        var query: Query = database.collection(channelsCollection).document(name).collection(messagesCollection)
+            .order(by: "created_at", descending: false)
+        if let deletedBefore = deletedBefore {
+            query = query.whereField("created_at", isGreaterThan: Timestamp(date: deletedBefore))
+        }
+        messageListener = query.limit(toLast: 50)
             .addSnapshotListener { [weak self] snapshot, error in
                 guard let self = self else { return }
+                guard self.messageObservationID == observationID,
+                      self.conversation?.uniqueName == name else { return }
                 if let error = error { self.delegate?.displayErrorMessage(error.localizedDescription); return }
                 let loaded = snapshot?.documents.compactMap(self.message(from:)) ?? []
                 let oldIds = Set(self.messages.compactMap(\.sid))
@@ -477,7 +617,7 @@ final class FirebaseChatManager: NSObject {
                     let hasNewIncomingMessage = loaded.contains {
                         !oldIds.contains($0.sid ?? "") && $0.author != currentUserId
                     }
-                    if hasNewIncomingMessage {
+                    if hasNewIncomingMessage && self.conversation?.uniqueName == conversation.uniqueName {
                         self.markRead(conversation: conversation) { _ in }
                     }
                     for message in loaded where !oldIds.contains(message.sid ?? "") {
@@ -559,6 +699,10 @@ final class FirebaseChatManager: NSObject {
             batch.setData(["user_id": receiverId, "unread_count": FieldValue.increment(Int64(1))],
                           forDocument: memberReference(channelName: name, userId: receiverId), merge: true)
         }
+        // Re-show the conversation for the sender while retaining deleted_before,
+        // which keeps their previous history hidden.
+        batch.setData(["user_id": senderId, "is_deleted": false],
+                      forDocument: memberReference(channelName: name, userId: senderId), merge: true)
         batch.commit { error in
             if let error = error { completion(.failure(error), nil) }
             else { completion(.success, localMessage) }
@@ -589,7 +733,7 @@ final class FirebaseChatManager: NSObject {
             body: data["text"] as? String,
             author: data["sender_id"] as? String,
             createdAt: (data["created_at"] as? Timestamp)?.dateValue() ?? Date(),
-            mediaURL: (data["media_url"] as? String).flatMap(URL.init(string:))
+            mediaURL: (data["media_url"] as? String).flatMap(Self.absoluteMediaURL(from:))
         )
     }
 
@@ -598,6 +742,15 @@ final class FirebaseChatManager: NSObject {
             .replacingOccurrences(of: "/", with: "_")
             .replacingOccurrences(of: "+", with: "-")
             .replacingOccurrences(of: "=", with: "")
+    }
+
+    private func canonicalChannelName(from value: String) -> String {
+        let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
+        if trimmed.hasPrefix("Zyvoo_guest_") { return trimmed }
+        let idsText = trimmed.hasPrefix("Zyvoo_") ? String(trimmed.dropFirst("Zyvoo_".count)) : trimmed
+        let ids = idsText.split(whereSeparator: { $0 == "_" || $0 == "*" }).map(String.init)
+        guard ids.count == 2 else { return trimmed.replacingOccurrences(of: "*", with: "_") }
+        return "Zyvoo_\([ids[0], ids[1]].sorted().joined(separator: "_"))"
     }
 
     private func startPresenceHeartbeat() {

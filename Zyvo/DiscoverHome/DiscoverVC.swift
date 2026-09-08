@@ -502,7 +502,7 @@ class DiscoverVC: UIViewController,LocationPickerDelegate {
             self.DiscountPercentage = Double(self.getUserBookingPropertyArr?.first?.bulkDiscountRate ?? "")
             self.taxPercentage = Double(self.getUserBookingPropertyArr?.first?.tax ?? "")
             self.bookingID = ("\(self.getBookingArr?.first?.bookingID ?? 0)")
-            self.hostName = self.getUserBookingPropertyArr?.first?.hostedBy ?? ""
+            self.hostName = (self.getUserBookingPropertyArr?.first?.hostedBy ?? "").abbreviatedHostName
             self.propertyName = self.getUserBookingPropertyArr?.first?.propertyTitle ?? ""
             
             self.propertyRating = self.getUserBookingPropertyArr?.first?.reviewsTotalRating ?? ""
@@ -829,7 +829,7 @@ extension DiscoverVC :UICollectionViewDelegate,UICollectionViewDataSource {
         } else {
             cell.view_Instant.isHidden = false
         }
-        cell.lbl_NameHostedBy.text = data?.hostName ?? ""
+        cell.lbl_NameHostedBy.text = (data?.hostName ?? "").abbreviatedHostName
         cell.lbl_AddressHostedby.text = data?.hostAddress ?? ""
         let hostProfileImgUrl = data?.hostProfileImageUrl ?? ""
        

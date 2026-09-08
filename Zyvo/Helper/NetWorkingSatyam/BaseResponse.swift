@@ -20,6 +20,17 @@ struct BaseResponse<T: Decodable>: Decodable {
         case success, code, message, error, data, pagination
         case hasPaymentMethod = "has_payment_method"
     }
+
+    init(success: Bool?, code: Int?, message: String?, error: String?, data: T?,
+         pagination: Pagination?, hasPaymentMethod: Bool?) {
+        self.success = success
+        self.code = code
+        self.message = message
+        self.error = error
+        self.data = data
+        self.pagination = pagination
+        self.hasPaymentMethod = hasPaymentMethod
+    }
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -41,6 +52,5 @@ struct BaseResponse<T: Decodable>: Decodable {
         }
     }
 }
-
 
 

@@ -513,7 +513,7 @@ extension HomeVCWithoutLoginVC :UICollectionViewDelegate,UICollectionViewDataSou
         cell.view_Instant.isHidden = true
         cell.btnCross.isHidden = true
         
-        cell.lbl_NameHostedBy.text = data?.hostName ?? ""
+        cell.lbl_NameHostedBy.text = (data?.hostName ?? "").abbreviatedHostName
         cell.lbl_AddressHostedby.text = data?.hostAddress ?? ""
         let hostProfileImgUrl = data?.hostProfileImageUrl ?? ""
        

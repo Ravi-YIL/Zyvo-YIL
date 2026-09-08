@@ -87,6 +87,7 @@ class LocationVC: UIViewController, FSCalendarDataSource, FSCalendarDelegate, Ci
     @IBOutlet weak var view_HostDesc: UIView!
     @IBOutlet weak var view_ParkingDesc: UIView!
     @IBOutlet weak var view_MessageHostEntry: UIView!
+    @IBOutlet weak var view_HostContactHeader: UIView!
     @IBOutlet weak var hostMessageTextView: UITextView!
     private var selectedHostMessage = "I have a doubt"
     @IBOutlet weak var viewHold_MessageHost: UIView!
@@ -304,6 +305,7 @@ class LocationVC: UIViewController, FSCalendarDataSource, FSCalendarDelegate, Ci
         StackV_Above.layer.cornerRadius = 18
         StackV_Above.layer.borderWidth = 1.5
         StackV_Above.layer.borderColor = UIColor.init(red: 228/255, green: 228/255, blue: 228/255, alpha: 1).cgColor
+        StackV_Above.clipsToBounds = true
         
         view_HostDesc.isHidden = true
         view_HostDesc.layer.cornerRadius = 10
@@ -418,6 +420,8 @@ class LocationVC: UIViewController, FSCalendarDataSource, FSCalendarDelegate, Ci
     private func updateMessageHostVisibility() {
         let currentUserId = UserDetail.shared.getUserId().trimmingCharacters(in: .whitespacesAndNewlines)
         let canMessageHost = !currentUserId.isEmpty && hostID > 0 && currentUserId != "\(hostID)"
+        view_msgV.isHidden = !canMessageHost
+        view_HostContactHeader.isHidden = !canMessageHost
         view_MessageHostEntry.isHidden = !canMessageHost
         if !canMessageHost { viewHold_MessageHost.isHidden = true }
     }
@@ -709,7 +713,7 @@ private func updateAddOnsCollectionViewHeight() {
             return
         }
         view.endEditing(true)
-        channelName = ChatChannelName.make(userId1: senderID, userId2: "\(hostID)")
+        channelName = ChatChannelName.make(guestId: senderID, hostId: "\(hostID)")
         viewModel1.apiForJoinChannel(senderId: senderID, receiverId: "\(self.hostID )", groupChannel: self.channelName, userType: "guest")
     }
     
@@ -1584,8 +1588,8 @@ extension LocationVC {
                     let guestID = UserDetail.shared.getUserId()
                     
                     self.channelName = ChatChannelName.make(
-                        userId1: guestID,
-                        userId2: "\(self.hostID)"
+                        guestId: guestID,
+                        hostId: "\(self.hostID)"
                     )
                     self.updateMessageHostVisibility()
                     print(self.channelName,"self.channelName")
@@ -1757,7 +1761,7 @@ extension LocationVC {
                     
                     self.updateUI()
                     
-                    self.lbl_hostBy.text = self.getPropertyDetails?.hostedBy ?? ""
+                    self.lbl_hostBy.text = (self.getPropertyDetails?.hostedBy ?? "").abbreviatedHostName
                     // self.lbl_sortType.text = self.getPropertyDetails.s
                     self.lbl_HostRules.text = self.getPropertyDetails?.hostRules ?? ""
                     
@@ -1930,7 +1934,7 @@ extension LocationVC {
                         vc.friend_id = "\(receiverID)"
                         vc.SenderID = senderID
                         vc.guestName = self.getJoinChannelDetails?.senderName ?? ""
-                        vc.hostName = self.getJoinChannelDetails?.receiverName ?? ""
+                        vc.hostName = (self.getJoinChannelDetails?.receiverName ?? "").abbreviatedHostName
                         vc.hostProfileImg = self.hostProfileImg
                         vc.guesttProfileImg =  self.guestProfileImg
                         self.tabBarController?.tabBar.isHidden = true
@@ -2016,7 +2020,7 @@ extension LocationVC {
                         }
                         vc.hostID = self.getPropertyDetails?.hostID ?? 0
                         
-                        vc.hostName = self.getPropertyDetails?.hostedBy ?? ""
+                        vc.hostName = (self.getPropertyDetails?.hostedBy ?? "").abbreviatedHostName
                         vc.propertyDistanceInMiles = self.propertyDistanceInMiles
                         vc.propertyName = self.lbl_title.text ?? ""
                         vc.propertyRating = self.lbl_rating.text ?? ""

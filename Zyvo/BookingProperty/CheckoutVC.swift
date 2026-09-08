@@ -243,8 +243,8 @@ Where a listing has a host-specific cancellation policy, that policy controls un
         let hostID = self.hostID
         
         self.channelName = ChatChannelName.make(
-            userId1: "\(guestID ?? 0)",
-            userId2: "\(hostID)"
+            guestId: "\(guestID ?? 0)",
+            hostId: "\(hostID)"
         )
         print(self.channelName,"self.channelName")
         print(guestID ?? 0, hostID, self.propertyID, "ASDFASDF")
@@ -282,7 +282,7 @@ Where a listing has a host-specific cancellation policy, that policy controls un
         let finalPrice = "\(totalAmount)"
         self.lbl_finalPrice.text = "$\(finalPrice.formattedPriceString())"
         
-        self.lbl_name.text = self.hostName
+        self.lbl_name.text = self.hostName.abbreviatedHostName
         
         self.lbl_timeFromTo.text = "From \(self.startTime) to \(self.endTime)"
         
