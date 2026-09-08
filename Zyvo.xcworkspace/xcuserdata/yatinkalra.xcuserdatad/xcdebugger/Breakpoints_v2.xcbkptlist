@@ -242,6 +242,36 @@
             endingLineNumber = "140"
             landmarkName = "share_BtnClicked(_:)"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "978FC342-682B-4E94-80B1-3B2A8D6E4202 - 773afa898d140e2"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.String) -&gt; () in Zyvo.AllGuidesOpenVC.share_BtnClicked(__C.UIButton) -&gt; ()"
+                  moduleName = "Zyvo.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yatinkalra/Desktop/Zyvo-YIL/Zyvo/AllGuideAtricleOpen/AllGuidesOpenVC.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "141"
+                  endingLineNumber = "141">
+               </Location>
+               <Location
+                  uuid = "978FC342-682B-4E94-80B1-3B2A8D6E4202 - 773afa898d140e2"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.String) -&gt; () in Zyvo.AllGuidesOpenVC.share_BtnClicked(__C.UIButton) -&gt; ()"
+                  moduleName = "Zyvo.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yatinkalra/Desktop/Zyvo-YIL/Zyvo/AllGuideAtricleOpen/AllGuidesOpenVC.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "141"
+                  endingLineNumber = "141">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -482,6 +512,36 @@
             endingLineNumber = "323"
             landmarkName = "bindVC()"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "BC78A9DF-FADF-42DF-890E-5DA46A23A9DA - 4a803d1c37f394ca"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #7 (Swift.Optional&lt;Swift.Result&lt;Zyvo.BaseResponse&lt;Zyvo.EmptyModel&gt;, Swift.Error&gt;&gt;) -&gt; () in Zyvo.CodeVerifierVC.bindVC() -&gt; ()"
+                  moduleName = "Zyvo.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yatinkalra/Desktop/Zyvo-YIL/Zyvo/Profile/CodeVerifierVC.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "323"
+                  endingLineNumber = "323">
+               </Location>
+               <Location
+                  uuid = "BC78A9DF-FADF-42DF-890E-5DA46A23A9DA - 9044b9bd66e7dfc"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Zyvo.BaseResponse&lt;Zyvo.EmptyModel&gt;) -&gt; () in closure #7 (Swift.Optional&lt;Swift.Result&lt;Zyvo.BaseResponse&lt;Zyvo.EmptyModel&gt;, Swift.Error&gt;&gt;) -&gt; () in Zyvo.CodeVerifierVC.bindVC() -&gt; ()"
+                  moduleName = "Zyvo.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yatinkalra/Desktop/Zyvo-YIL/Zyvo/Profile/CodeVerifierVC.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "323"
+                  endingLineNumber = "323">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -626,6 +686,36 @@
             endingLineNumber = "183"
             landmarkName = "btnFitler_Tap(_:)"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "FF99D6D0-38B1-4A19-94EF-B5F7E5C92734 - e95d2a779d244dd3"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Zyvo.HostPaymentVC.btnSelectDateRange_Tap(Any) -&gt; ()"
+                  moduleName = "Zyvo.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yatinkalra/Desktop/Zyvo-YIL/Zyvo/HostPanel/HostPaymentVC.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "183"
+                  endingLineNumber = "183">
+               </Location>
+               <Location
+                  uuid = "FF99D6D0-38B1-4A19-94EF-B5F7E5C92734 - 798b938e885d3b68"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Optional&lt;Fastis.FastisRange&gt;) -&gt; () in Zyvo.HostPaymentVC.btnSelectDateRange_Tap(Any) -&gt; ()"
+                  moduleName = "Zyvo.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yatinkalra/Desktop/Zyvo-YIL/Zyvo/HostPanel/HostPaymentVC.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "183"
+                  endingLineNumber = "183">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1478,6 +1568,36 @@
             endingLineNumber = "139"
             landmarkName = "application(_:open:options:)"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "97030D3A-42EB-4D8C-BE6D-C710638E681C - 9ccce90f074f9747"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "default argument 2 of Zyvo.AppDelegate.application(_: __C.UIApplication, open: Foundation.URL, options: Swift.Dictionary&lt;__C.UIApplicationOpenURLOptionsKey, Any&gt;) -&gt; Swift.Bool"
+                  moduleName = "Zyvo.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yatinkalra/Desktop/Zyvo-YIL/Zyvo/AppDelegate.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "139"
+                  endingLineNumber = "139">
+               </Location>
+               <Location
+                  uuid = "97030D3A-42EB-4D8C-BE6D-C710638E681C - 95af14561d34fc33"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Zyvo.AppDelegate.application(_: __C.UIApplication, open: Foundation.URL, options: Swift.Dictionary&lt;__C.UIApplicationOpenURLOptionsKey, Any&gt;) -&gt; Swift.Bool"
+                  moduleName = "Zyvo.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yatinkalra/Desktop/Zyvo-YIL/Zyvo/AppDelegate.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "139"
+                  endingLineNumber = "139">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
