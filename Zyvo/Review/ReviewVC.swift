@@ -1432,9 +1432,9 @@ extension ReviewVC {
     private func formattedExtensionAmount(_ value: String?) -> String {
         guard let rawValue = value?.trimmingCharacters(in: .whitespacesAndNewlines),
               let amount = Double(rawValue) else {
-            return "$0.00"
+            return "0"
         }
-        return String(format: "$%.2f", amount)
+        return String(format: "%.2f", amount)
     }
 
     private func parseExtensionDate(_ value: String?) -> Date? {
