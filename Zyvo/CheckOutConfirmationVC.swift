@@ -311,7 +311,8 @@ Where a listing has a host-specific cancellation policy, that policy controls un
         
         self.channelName = ChatChannelName.make(
             guestId: "\(guestID ?? 0)",
-            hostId: "\(hostID)"
+            hostId: "\(hostID)",
+            propertyId: propertyID
         )
         print(self.channelName,"self.channelName")
         print(guestID ?? 0, hostID, self.bookingID, "Details")
@@ -350,7 +351,7 @@ Where a listing has a host-specific cancellation policy, that policy controls un
         
         self.lbl_FinalPrice.text = "$\(totalAmount)"
         
-        self.lbl_hostName.text = self.hostName.abbreviatedHostName
+        self.lbl_hostName.text = self.hostName
         
         self.total_amount = totalAmount
         
@@ -544,7 +545,10 @@ Where a listing has a host-specific cancellation policy, that policy controls un
         btnShowMessageHost.layer.borderWidth = 1
         btnShowMessageHost.layer.borderColor = UIColor.black.cgColor
         
-        self.Message = "I have a doubt"
+        view_IhaveDoubt.isHidden = false
+        view_IhaveDoubt.backgroundColor = .clear
+        view_availableDays.backgroundColor = .clear
+        view_otherReason.backgroundColor = .clear
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -562,13 +566,27 @@ Where a listing has a host-specific cancellation policy, that policy controls un
     }
     
     // MARK: - Check Bad Words
-         func containsBlockedWord(_ text: String) -> Bool {
-             let lowerText = text.lowercased()
-             
-             return blockedWords.contains { word in
-                 lowerText.contains(word.lowercased())
-             }
-         }
+    func containsBlockedWord(_ text: String) -> Bool {
+        let normalizedText = text.folding(options: [.caseInsensitive, .diacriticInsensitive], locale: .current)
+
+        return blockedWords.contains { blockedWord in
+            let word = blockedWord.folding(options: [.caseInsensitive, .diacriticInsensitive], locale: .current)
+            guard !word.isEmpty else { return false }
+
+            var searchStart = normalizedText.startIndex
+            while searchStart < normalizedText.endIndex,
+                  let range = normalizedText.range(of: word, range: searchStart..<normalizedText.endIndex) {
+                let startsOnBoundary = range.lowerBound == normalizedText.startIndex ||
+                    !normalizedText[normalizedText.index(before: range.lowerBound)].isLetter &&
+                    !normalizedText[normalizedText.index(before: range.lowerBound)].isNumber
+                let endsOnBoundary = range.upperBound == normalizedText.endIndex ||
+                    !normalizedText[range.upperBound].isLetter && !normalizedText[range.upperBound].isNumber
+                if startsOnBoundary && endsOnBoundary { return true }
+                searchStart = normalizedText.index(after: range.lowerBound)
+            }
+            return false
+        }
+    }
     // Remove placeholder on edit
     func textViewDidBeginEditing(_ textView: UITextView) {
         if msgTxtV.text == placeholderText {
@@ -740,6 +758,8 @@ Where a listing has a host-specific cancellation policy, that policy controls un
     
     @IBAction func btnIhaveDoubt_Tap(_ sender: UIButton) {
         self.Message = "I have a doubt"
+        view_MessageHostDesc.isHidden = true
+        msgTxtV.resignFirstResponder()
         view_IhaveDoubt.backgroundColor = UIColor.init(red: 154/255, green: 154/255, blue: 154/255, alpha: 0.25)
         view_availableDays.backgroundColor = UIColor.white
         view_otherReason.backgroundColor = UIColor.clear
@@ -747,6 +767,8 @@ Where a listing has a host-specific cancellation policy, that policy controls un
     
     @IBAction func btnAvailableDays_Tap(_ sender: UIButton) {
         self.Message = "Available days"
+        view_MessageHostDesc.isHidden = true
+        msgTxtV.resignFirstResponder()
         view_IhaveDoubt.backgroundColor = UIColor.clear
         view_availableDays.backgroundColor =  UIColor.init(red: 154/255, green: 154/255, blue: 154/255, alpha: 0.25)
         view_otherReason.backgroundColor = UIColor.clear
@@ -951,6 +973,15 @@ Where a listing has a host-specific cancellation policy, that policy controls un
           }
           
           let senderID = UserDetail.shared.getUserId()
+          guard !propertyID.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+              showAlert(for: "Unable to start chat for this property")
+              return
+          }
+          channelName = ChatChannelName.make(
+              guestId: senderID,
+              hostId: "\(hostID)",
+              propertyId: propertyID
+          )
         
         // ✅ Hide view AFTER validation
         self.viewHold_MessageHost.isHidden = true
@@ -959,7 +990,9 @@ Where a listing has a host-specific cancellation policy, that policy controls un
               senderId: senderID,
               receiverId: "\(self.hostID)",
               groupChannel: self.channelName,
-              userType: "guest"
+              userType: "guest",
+              propertyId: self.propertyID,
+              propertyTitle: self.lbl_PropertyTitle.text
           )
 
     }
@@ -1027,6 +1060,11 @@ Where a listing has a host-specific cancellation policy, that policy controls un
     @IBAction func btnShowMessageHost_Tap(_ sender: UIButton) {
        
         if sender.isSelected == false {
+            Message = ""
+            view_IhaveDoubt.backgroundColor = .clear
+            view_availableDays.backgroundColor = .clear
+            view_otherReason.backgroundColor = .clear
+            view_MessageHostDesc.isHidden = true
             sender.isSelected = true
             viewHold_MessageHost.isHidden = false
         } else {
@@ -1188,11 +1226,12 @@ extension CheckOutConfirmationVC {
                         vc.uniqueConversationName = self.channelName
                         vc.friend_id = "\(receiverID)"
                         vc.SenderID = senderID
-                        vc.hostProfileImg = self.guestProfileImg
-                        vc.guesttProfileImg = self.hostProfileImg
-                        vc.hostName = (self.getJoinChannelDetails?.receiverName ?? "").abbreviatedHostName
+                        vc.hostProfileImg = self.hostProfileImg
+                        vc.guesttProfileImg = self.guestProfileImg
+                        vc.hostName = self.getJoinChannelDetails?.receiverName ?? ""
                         vc.guestName = self.getJoinChannelDetails?.senderName ?? ""
-                        vc.hostName = (self.getJoinChannelDetails?.receiverName ?? "").abbreviatedHostName
+                        vc.hostName = self.getJoinChannelDetails?.receiverName ?? ""
+                        vc.propertyTitle = self.lbl_PropertyTitle.text ?? ""
                         self.tabBarController?.tabBar.isHidden = true
                         vc.hidesBottomBarWhenPushed = true
                         vc.Message = self.Message

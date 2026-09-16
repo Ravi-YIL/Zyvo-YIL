@@ -362,7 +362,20 @@ class WhereVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSCal
     }
 
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        guard textField == whereLocationTF else { return true }
+
         let searchText = (textField.text as NSString?)?.replacingCharacters(in: range, with: string) ?? ""
+
+        // Once the user edits the text, the previously selected Google place no
+        // longer represents the search term. Clear its coordinates so an old or
+        // device location can never be sent with the newly typed city.
+        latitude = ""
+        longitude = ""
+        viewModel.latitude = ""
+        viewModel.longitude = ""
+        WhereSaveData.shared.lat = ""
+        WhereSaveData.shared.long = ""
+
         fetcher?.sourceTextHasChanged(searchText)
         return true
     }
@@ -460,19 +473,27 @@ class WhereVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSCal
     }
     
     @IBAction func btnSearch_Tap(_ sender: UIButton) {
+        let selectedLocation = (whereLocationTF.text ?? "")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+
+        if !selectedLocation.isEmpty && (latitude.isEmpty || longitude.isEmpty) {
+            showAlert(for: "Please select a location from the suggestions.")
+            return
+        }
+
         isappliedField = true
         
         viewModel.hourss = isHourChanged ? (selectedHours ?? "") : ""
         
-//        viewModel.latitude = self.latitude
-//        viewModel.longitude = self.longitude
+        viewModel.latitude = latitude
+        viewModel.longitude = longitude
         viewModel.start_time = self.StartDatetime
         viewModel.end_time = self.EndDatetime
         
         viewModel.property_price = self.priceTextField.text ?? ""
         
         viewModel.datss =  self.datess
-        viewModel.locationss = self.whereLocationTF.text ?? ""
+        viewModel.locationss = selectedLocation
         viewModel.activity = self.ActivityType
         WhereSaveData.shared.ActivityType = self.ActivityType
         WhereSaveData.shared.WhereLocation = self.whereLocationTF.text ?? ""
@@ -929,6 +950,8 @@ extension WhereVC : UITableViewDelegate,UITableViewDataSource {
                     print("Latitude: \(latitude), Longitude: \(longitude)")
                     self.latitude = "\(latitude)"
                     self.longitude = "\(longitude)"
+                    self.viewModel.latitude = self.latitude
+                    self.viewModel.longitude = self.longitude
                     
                     self.whereLocationTF.text = prediction.attributedPrimaryText.string
                     self.view_Location.isHidden = true
@@ -979,4 +1002,3 @@ extension WhereVC {
             }.store(in: &cancellables)
     }
 }
-

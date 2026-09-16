@@ -49,7 +49,7 @@ class AddMoreTimePopUpVC: UIViewController,CircularSeekBarDelegate {
     var hoursBasedTotal: String? = "0.0"
     let dropDown = DropDown()
     var backAction:(_ str : Int,_ str2 : String ) -> () = { str, str2 in}
-    let items = ["2 hours","3 hours","4 hours","5 hours","6 hours","7 hours","8 hours","9 hours","10 hours","11 hours","12 hours"]
+    let items = ["1 hour","2 hours","3 hours","4 hours","5 hours","6 hours","7 hours","8 hours","9 hours","10 hours","11 hours","12 hours"]
     
     var getUserBooking : UserBookingModel?
     
@@ -58,7 +58,9 @@ class AddMoreTimePopUpVC: UIViewController,CircularSeekBarDelegate {
         
         view_Watch.backgroundColor = .white
         
+        view_Watch.minimumHour = 1
         view_Watch.delegate = self
+        view_Watch.setHour(1)
         
         btnSaveChange.layer.cornerRadius = 10
         view_selectHours.layer.cornerRadius = 10

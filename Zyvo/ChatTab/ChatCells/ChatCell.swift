@@ -7,6 +7,44 @@
 
 import UIKit
 
+enum ChatMessageTimestampFormatter {
+    private static let outputFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = .current
+        formatter.dateFormat = "MMM d, yyyy, h:mm a"
+        return formatter
+    }()
+
+    private static let isoFormatterWithFractionalSeconds: ISO8601DateFormatter = {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        return formatter
+    }()
+
+    private static let isoFormatter: ISO8601DateFormatter = {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime]
+        return formatter
+    }()
+
+    static func string(from value: String) -> String {
+        let date = isoFormatterWithFractionalSeconds.date(from: value)
+            ?? isoFormatter.date(from: value)
+            ?? legacyDate(from: value)
+        guard let date else { return "" }
+        return outputFormatter.string(from: date)
+    }
+
+    private static func legacyDate(from value: String) -> Date? {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+        return formatter.date(from: value)
+    }
+}
+
 class ChatCell: UITableViewCell {
 
   
@@ -16,7 +54,8 @@ class ChatCell: UITableViewCell {
     @IBOutlet weak var img: UIImageView!
     override func awakeFromNib() {
         super.awakeFromNib()
-        
+        lbl_time.adjustsFontSizeToFitWidth = true
+        lbl_time.minimumScaleFactor = 0.75
        // self.lbl_msg.font = UIFont(name: "Poppins-Regular", size: 14)
        
     }
@@ -49,40 +88,122 @@ class ChatCell: UITableViewCell {
     }
     
     func updateLastMsgTime(_ time:String) -> String{
-        print(time)
-        let dateFormatte = DateFormatter()
-        dateFormatte.timeZone = TimeZone(abbreviation: "UTC")
-        dateFormatte.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
-        
-        if let theSecondDate = dateFormatte.date(from: time) {
-            dateFormatte.timeZone = TimeZone.current
-            dateFormatte.dateFormat = "yyyy-MM-dd HH:mm:ss"
-           
-            let theFirstDate = Date()
-            
-            let theComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second ], from: theSecondDate, to: theFirstDate)
-            if let theNumbe = theComponents.year, theNumbe > 0 {
-                return "\(theNumbe)y ago"
-            }else if let theNumbe = theComponents.month, theNumbe > 0 {
-                return "\(theNumbe)month ago"
-            }else if let theNumbe = theComponents.day, theNumbe > 0 {
-                return "\(theNumbe)d ago"
-            }else if let theNumbe = theComponents.hour, theNumbe > 0 {
-                return "\(theNumbe)h ago"
-            }else if let theNumbe = theComponents.minute, theNumbe > 0 {
-               
-                if theNumbe >= 1 {
-                    return "\(theNumbe)m ago"
-                }else{
-                    return "now"
-                }
-            }
-        }
-        return  "now"
+        ChatMessageTimestampFormatter.string(from: time)
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
         // Configure the view for the selected state
+    }
+}
+
+final class ChatDocumentCell: UITableViewCell {
+    static let reuseIdentifier = "ChatDocumentCell"
+
+    private let avatarImageView = UIImageView()
+    private let nameLabel = UILabel()
+    private let timeLabel = UILabel()
+    private let fileButton = UIButton(type: .system)
+    var onFileTapped: (() -> Void)?
+
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        setupUI()
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setupUI()
+    }
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        avatarImageView.image = nil
+        nameLabel.text = nil
+        timeLabel.text = nil
+        fileButton.setAttributedTitle(nil, for: .normal)
+        onFileTapped = nil
+    }
+
+    func configure(name: String, avatarURL: String, fileName: String, time: String) {
+        nameLabel.text = name
+        timeLabel.text = time
+        avatarImageView.loadImage(from: avatarURL, placeholder: UIImage(named: "user"))
+
+        let title = NSMutableAttributedString(
+            string: "📄  \(fileName)\n",
+            attributes: [
+                .font: UIFont(name: "Poppins-Regular", size: 15) ?? UIFont.systemFont(ofSize: 15),
+                .foregroundColor: UIColor.label
+            ]
+        )
+        title.append(NSAttributedString(
+            string: "      PDF • View or download",
+            attributes: [
+                .font: UIFont(name: "Poppins-Regular", size: 11) ?? UIFont.systemFont(ofSize: 11),
+                .foregroundColor: UIColor.secondaryLabel
+            ]
+        ))
+        fileButton.setAttributedTitle(title, for: .normal)
+    }
+
+    private func setupUI() {
+        selectionStyle = .none
+        backgroundColor = .clear
+
+        avatarImageView.translatesAutoresizingMaskIntoConstraints = false
+        avatarImageView.contentMode = .scaleAspectFill
+        avatarImageView.clipsToBounds = true
+        avatarImageView.layer.cornerRadius = 16
+
+        nameLabel.translatesAutoresizingMaskIntoConstraints = false
+        nameLabel.font = UIFont(name: "Poppins-Medium", size: 16) ?? UIFont.systemFont(ofSize: 16, weight: .medium)
+        nameLabel.lineBreakMode = .byTruncatingTail
+        nameLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+
+        timeLabel.translatesAutoresizingMaskIntoConstraints = false
+        timeLabel.font = UIFont(name: "Poppins-Regular", size: 15) ?? UIFont.systemFont(ofSize: 15)
+        timeLabel.textColor = .label
+        timeLabel.adjustsFontSizeToFitWidth = true
+        timeLabel.minimumScaleFactor = 0.75
+        timeLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
+
+        fileButton.translatesAutoresizingMaskIntoConstraints = false
+        fileButton.contentHorizontalAlignment = .left
+        fileButton.titleLabel?.numberOfLines = 2
+        fileButton.titleLabel?.lineBreakMode = .byTruncatingMiddle
+        fileButton.backgroundColor = UIColor(red: 242/255, green: 245/255, blue: 246/255, alpha: 1)
+        fileButton.layer.cornerRadius = 10
+        fileButton.contentEdgeInsets = UIEdgeInsets(top: 7, left: 10, bottom: 7, right: 10)
+        fileButton.addTarget(self, action: #selector(fileTapped), for: .touchUpInside)
+
+        contentView.addSubview(avatarImageView)
+        contentView.addSubview(nameLabel)
+        contentView.addSubview(timeLabel)
+        contentView.addSubview(fileButton)
+
+        NSLayoutConstraint.activate([
+            avatarImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
+            avatarImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 15),
+            avatarImageView.widthAnchor.constraint(equalToConstant: 32),
+            avatarImageView.heightAnchor.constraint(equalToConstant: 32),
+
+            nameLabel.leadingAnchor.constraint(equalTo: avatarImageView.trailingAnchor, constant: 10),
+            nameLabel.centerYAnchor.constraint(equalTo: avatarImageView.centerYAnchor),
+            nameLabel.trailingAnchor.constraint(lessThanOrEqualTo: timeLabel.leadingAnchor, constant: -10),
+
+            timeLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
+            timeLabel.centerYAnchor.constraint(equalTo: nameLabel.centerYAnchor),
+
+            fileButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
+            fileButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
+            fileButton.topAnchor.constraint(equalTo: avatarImageView.bottomAnchor, constant: 10),
+            fileButton.heightAnchor.constraint(equalToConstant: 54),
+            fileButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -15)
+        ])
+    }
+
+    @objc private func fileTapped() {
+        onFileTapped?()
     }
 }

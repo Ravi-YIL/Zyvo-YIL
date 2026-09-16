@@ -43,7 +43,6 @@ class BrowseAllArticleVC: UIViewController {
         self.nameLbl.text = "Hi \(userName), how can we help?"
         bindVC()
         print(comesfrom,"comesfrom")
-        viewModel.apiForGetAllArticle()
         
         tblV.register(UINib(nibName: "BrowseAllArticleCell", bundle: nil), forCellReuseIdentifier: "BrowseAllArticleCell")
         tblV.delegate = self
@@ -55,7 +54,9 @@ class BrowseAllArticleVC: UIViewController {
         searchV.layer.borderWidth = 1
         searchV.layer.borderColor = UIColor.lightGray.cgColor
         
-        if UserDetail.shared.getlogintType() == "Host"{
+        let isHostContext = comesfrom.caseInsensitiveCompare("Host") == .orderedSame
+        if isHostContext {
+            viewModel.usertype = "host"
             self.NeedTxtView.isHidden = false
             self.view_ArticleHost.isHidden = false
             self.view_btnHostGuest.isHidden = false
@@ -63,6 +64,7 @@ class BrowseAllArticleVC: UIViewController {
             contactUsBtnO.isHidden = true
             self.contactUsBtnO.setTitleColor(UIColor.darkGray, for: .normal)
         }else{
+            viewModel.usertype = "guest"
            
             self.view_ArticleHost.isHidden = true
             self.view_btnHostGuest.isHidden = true
@@ -72,6 +74,7 @@ class BrowseAllArticleVC: UIViewController {
             contactUsBtnO.isHidden = false
             self.contactUsBtnO.setTitleColor(UIColor.black, for: .normal)
         }
+        viewModel.apiForGetAllArticle()
         secrchTF.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
         
     }
@@ -160,4 +163,3 @@ extension BrowseAllArticleVC {
             }.store(in: &cancellables)
     }
 }
-

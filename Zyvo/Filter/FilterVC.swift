@@ -1180,6 +1180,20 @@ class FilterVC: UIViewController, UITextFieldDelegate, GMSAutocompleteFetcherDel
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         if textField == txt_location{
             let searchText = (textField.text as NSString?)?.replacingCharacters(in: range, with: string) ?? ""
+
+            // Invalidate the previous Google place as soon as its text is
+            // edited. This prevents a new city name being paired with stale
+            // coordinates from an earlier selection.
+            locationss = ""
+            latitude = ""
+            longitude = ""
+            viewModel.locationss = ""
+            viewModel.latitude = ""
+            viewModel.longitude = ""
+            FilterSavedData.shared.locationss = ""
+            FilterSavedData.shared.latitude = ""
+            FilterSavedData.shared.longitude = ""
+
             fetcher?.sourceTextHasChanged(searchText)
             return true
         }
@@ -1399,7 +1413,14 @@ class FilterVC: UIViewController, UITextFieldDelegate, GMSAutocompleteFetcherDel
     
     
     @IBAction func btnSearch_Tap(_ sender: UIButton) {
-        
+        let selectedLocation = (txt_location.text ?? "")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+
+        if !selectedLocation.isEmpty &&
+            (viewModel.latitude.isEmpty || viewModel.longitude.isEmpty) {
+            showAlert(for: "Please select a location from the suggestions.")
+            return
+        }
         
         FilterSavedData.shared.minimumprice = self.minimumprice
         FilterSavedData.shared.maximumprice = self.maximumprice
@@ -1904,6 +1925,8 @@ extension FilterVC : UITableViewDelegate,UITableViewDataSource {
 
             // Save wherever needed
             self?.locationss = place.name ?? ""
+            self?.viewModel.locationss = self?.locationss ?? ""
+            FilterSavedData.shared.locationss = self?.locationss ?? ""
             // Example
              FilterSavedData.shared.latitude = "\(latitude)"
              FilterSavedData.shared.longitude = "\(longitude)"

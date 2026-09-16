@@ -250,7 +250,10 @@ class HostBookingAVC: UIViewController,UITextViewDelegate {
         propertyNameLbl1.font = UIFont(name: "Poppins", size: 20)!
         addressLbl.font = UIFont(name: "Poppins", size: 17)!
         
-        self.Message = "I have a doubt"
+        view_IhaveDoubt.isHidden = false
+        view_IhaveDoubt.backgroundColor = .clear
+        view_AvailableDays.backgroundColor = .clear
+        view_OtherReason.backgroundColor = .clear
         
         self.lbl_SortType.text = "Sort by: Highest Review"
         
@@ -448,22 +451,48 @@ class HostBookingAVC: UIViewController,UITextViewDelegate {
 
         // Get sender ID
         let senderID = UserDetail.shared.getUserId()
+        let chatPropertyId = self.bookingDetailArr?.propertyID.map(String.init) ?? self.propertyID
+        guard !chatPropertyId.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            self.showAlert(for: "Unable to start chat for this property")
+            return
+        }
+        self.channelName = ChatChannelName.make(
+            guestId: "\(self.bookingDetailArr?.guestID ?? 0)",
+            hostId: senderID,
+            propertyId: chatPropertyId
+        )
 
         // Call API
         viewModel.apiForJoinChannel(
             senderId: senderID,
             receiverId: "\(self.bookingDetailArr?.guestID ?? 0)",
             groupChannel: self.channelName,
-            userType: "host"
+            userType: "host",
+            propertyId: chatPropertyId,
+            propertyTitle: self.propertyNameLbl.text
         )
         
     }
     
     func containsBlockedWord(_ text: String) -> Bool {
-        let lowerText = text.lowercased()
-        
-        return blockedWords.contains { word in
-            lowerText.contains(word.lowercased())
+        let normalizedText = text.folding(options: [.caseInsensitive, .diacriticInsensitive], locale: .current)
+
+        return blockedWords.contains { blockedWord in
+            let word = blockedWord.folding(options: [.caseInsensitive, .diacriticInsensitive], locale: .current)
+            guard !word.isEmpty else { return false }
+
+            var searchStart = normalizedText.startIndex
+            while searchStart < normalizedText.endIndex,
+                  let range = normalizedText.range(of: word, range: searchStart..<normalizedText.endIndex) {
+                let startsOnBoundary = range.lowerBound == normalizedText.startIndex ||
+                    !normalizedText[normalizedText.index(before: range.lowerBound)].isLetter &&
+                    !normalizedText[normalizedText.index(before: range.lowerBound)].isNumber
+                let endsOnBoundary = range.upperBound == normalizedText.endIndex ||
+                    !normalizedText[range.upperBound].isLetter && !normalizedText[range.upperBound].isNumber
+                if startsOnBoundary && endsOnBoundary { return true }
+                searchStart = normalizedText.index(after: range.lowerBound)
+            }
+            return false
         }
     }
     
@@ -563,6 +592,11 @@ class HostBookingAVC: UIViewController,UITextViewDelegate {
             self.view_MainMessageGuest.isHidden = true
             sender.isSelected = false
         } else {
+            Message = ""
+            view_IhaveDoubt.backgroundColor = .clear
+            view_AvailableDays.backgroundColor = .clear
+            view_OtherReason.backgroundColor = .clear
+            view_MessageDesc.isHidden = true
             self.view_MainMessageGuest.isHidden = false
             sender.isSelected = true
         }
@@ -813,9 +847,11 @@ extension HostBookingAVC{
                     // self.reviewsArr = self.getBookingDetails?.reviews
                     let guestID = self.bookingDetailArr?.guestID ?? 0
                     let hostID = self.bookingDetailArr?.hostID ?? 0
+                    let chatPropertyId = self.bookingDetailArr?.propertyID.map(String.init) ?? self.propertyID
                     self.channelName = ChatChannelName.make(
                         guestId: "\(guestID)",
-                        hostId: "\(hostID)"
+                        hostId: "\(hostID)",
+                        propertyId: chatPropertyId
                     )
                     print(self.channelName,"self.channelName")
                     print(guestID, hostID, self.propertyID, "ASDFASDF")
@@ -866,7 +902,7 @@ extension HostBookingAVC{
                     
                     self.totalLbl.text = "$\(self.formatPrice(self.bookingDetailArr?.bookingTotalAmount ?? ""))"
                     self.propertyNameLbl1.text = self.bookingDetailArr?.propertyTitle
-                    self.bookingStatusBtn.setTitle("   \(self.bookingDetailArr?.bookingStatus ?? "")   ", for: .normal)
+                    self.configureBookingStatusBadge(self.bookingDetailArr?.bookingStatus)
                     
                     let parkingrules = self.bookingDetailArr?.parkingRules ?? ""
                     if parkingrules != "" {
@@ -1002,11 +1038,12 @@ extension HostBookingAVC{
                     print(self.Message,"self.Message")
                     vc.Message = self.Message
                     vc.uniqueConversationName = self.channelName
-                    vc.friend_id = "\(receiverID)"
+                    vc.friend_id = "\(senderID)"
                     vc.hostProfileImg = self.hostProfileImg
                     vc.guesttProfileImg =  self.guestProfileImg1
-                    vc.guestName = self.getJoinChannelDetails?.receiverName ?? ""
-                    vc.hostName = self.getJoinChannelDetails?.senderName ?? ""
+                    vc.guestName = self.getJoinChannelDetails?.senderName ?? ""
+                    vc.hostName = self.getJoinChannelDetails?.receiverName ?? ""
+                    vc.propertyTitle = self.propertyNameLbl.text ?? ""
                     self.tabBarController?.tabBar.isHidden = true
                     vc.hidesBottomBarWhenPushed = true
                     self.navigationController?.pushViewController(vc, animated: true)
@@ -1065,6 +1102,35 @@ extension HostBookingAVC{
     
 }
 extension HostBookingAVC{
+    private func configureBookingStatusBadge(_ rawStatus: String?) {
+        let status = rawStatus?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let normalizedStatus = status.lowercased()
+
+        let badgeColor: UIColor
+        switch normalizedStatus {
+        case "confirmed":
+            badgeColor = UIColor(red: 133/255, green: 214/255, blue: 255/255, alpha: 1)
+        case "finished", "completed":
+            badgeColor = UIColor(red: 74/255, green: 237/255, blue: 177/255, alpha: 1)
+        case "awaiting payment", "waiting payment":
+            badgeColor = UIColor(red: 255/255, green: 241/255, blue: 120/255, alpha: 1)
+        case "cancelled", "canceled":
+            badgeColor = UIColor(red: 58/255, green: 75/255, blue: 76/255, alpha: 0.10)
+        case "pending":
+            badgeColor = UIColor(red: 255/255, green: 241/255, blue: 120/255, alpha: 1)
+        default:
+            badgeColor = UIColor(red: 58/255, green: 75/255, blue: 76/255, alpha: 0.10)
+        }
+
+        bookingStatusBtn.setTitle("   \(status)   ", for: .normal)
+        bookingStatusBtn.setTitleColor(UIColor.black.withAlphaComponent(0.8), for: .normal)
+        bookingStatusBtn.backgroundColor = badgeColor
+        bookingStatusBtn.layer.borderWidth = 1
+        bookingStatusBtn.layer.borderColor = badgeColor.cgColor
+        bookingStatusBtn.layer.cornerRadius = 20
+        bookingStatusBtn.layer.masksToBounds = true
+    }
+
     func formatPrice(_ priceString: String?) -> String {
         guard let priceString = priceString,
               let priceDouble = Double(priceString) else {

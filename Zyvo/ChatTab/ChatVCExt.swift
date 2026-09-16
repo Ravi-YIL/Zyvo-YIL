@@ -1,134 +1,164 @@
 //
-//  ChatVC2.swift
-//  WHH
-//
-//  Created by Satyam  on 05/03/23.
-//  Copyright © 2020 satyam. All rights reserved.
+//  ChatVCExt.swift
+//  Zyvo
 //
 
 import Foundation
-import MobileCoreServices
+import QuickLook
 import UniformTypeIdentifiers
 import UIKit
 
-extension ChatVC:UIDocumentPickerDelegate,UIDocumentMenuDelegate {
-    func documentMenu(_ documentMenu: UIDocumentMenuViewController, didPickDocumentPicker documentPicker: UIDocumentPickerViewController) {
-        documentPicker.delegate = self
-        present(documentPicker, animated: true, completion: nil)
+extension ChatVC: UIDocumentPickerDelegate {
+    func choosePDF() {
+        let picker = UIDocumentPickerViewController(forOpeningContentTypes: [.pdf], asCopy: true)
+        picker.delegate = self
+        picker.allowsMultipleSelection = false
+        present(picker, animated: true)
     }
-    
-    func ChooseFile(){
-            let importMenu = UIDocumentPickerViewController(documentTypes: [String(kUTTypePDF),String(kUTTypePNG),String(kUTTypeJPEG),String(kUTTypeImage),String(kUTTypeXML),String(kUTTypeRTF),String(kUTTypePlainText),String(kUTTypeContent),String(kUTTypeItem),String(kUTTypeData),kUTTypeZipArchive as String,"com.microsoft.word.doc","com.adobe.photoshop-​image","com.adobe.illustrator.ai-​image","com.apple.keynote.key"], in: .import)
-            importMenu.delegate = self
-            importMenu.modalPresentationStyle = .formSheet
-            self.present(importMenu, animated: true, completion: nil)
-//        }
 
-    }
-    func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentAt url: URL) {
-        let cico = url as URL
-        print("import result : \(cico)")
-            do {
-                _ = try NSData(contentsOf: cico, options: NSData.ReadingOptions())
-                let p : String = "\(cico)"
-                let pdfData = try Data(contentsOf: cico, options: Data.ReadingOptions())
-                let filee = "." + p.fileExtension()
-                let fullName = p.fileNameWithExtension()
-            
-            } catch {
-                print(error)
-            }
-    }
-    
     func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
-        guard let cico = urls.first else {
-            return
-        }
-        print("import result : \(cico)")
-        let alerty = UIAlertController(title: "Loading file...", message: nil, preferredStyle: .alert)
-        self.present(alerty, animated: true) {
-            do {
-                let p : String = "\(cico)"
-                let pdfData = try Data(contentsOf: cico, options: Data.ReadingOptions())
-                alerty.dismiss(animated: true) {
-                }
-                let filee = "." + p.fileExtension()
-                let fullName = p.fileNameWithExtension()
-//                self.listAllImages.append(UploadFileParameter(fileName : fullName, key: "image_url", data: pdfData, mimeType: filee))
-                
-            } catch {
-                alerty.dismiss(animated: true) {
-                }
-                print(error)
-            }
-        }
-    }
-    func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
-        print("view was cancelled")
-        dismiss(animated: true, completion: nil)
-    }
-    func documentDirectory() -> String {
-        let documentDirectory = NSSearchPathForDirectoriesInDomains(.documentDirectory,
-                                                                    .userDomainMask,
-                                                                    true)
-        return documentDirectory[0]
-    }
-    func append(toPath path: String,
-                        withPathComponent pathComponent: String) -> String? {
-        if var pathURL = URL(string: path) {
-            pathURL.appendPathComponent(pathComponent)
-            
-            return pathURL.absoluteString
-        }
-        
-        return nil
-    }
-    func save(text: String,
-                      toDirectory directory: String,
-                      withFileName fileName: String) {
-        guard let filePath = self.append(toPath: directory,
-                                         withPathComponent: fileName) else {
-            return
-        }
-        
-        do {
-            try text.write(toFile: filePath,
-                           atomically: true,
-                           encoding: .utf8)
-        } catch {
-            print("Error", error)
-            return
-        }
-        
-        print("Save successful",filePath)
-    }
-    func read(fromDocumentsWithFileName fileName: String) -> String? {
-        guard let filePath = self.append(toPath: self.documentDirectory(),
-                                         withPathComponent: fileName) else {
-                                            return nil
-        }
-        do {
-            let savedString = try String(contentsOfFile: filePath)
-            print(savedString)
-            return savedString
-        } catch {
-            print("Error reading saved file")
-            return nil
-        }
-    }
-
-    
-    
-    func documentsRemoveItem(fromDocumentsWithFileName fileName: URL) {
-        let filePath = fileName.path
-        let fileManager = FileManager.default
-        if fileManager.fileExists(atPath: filePath) {
-            do {
-                try? fileManager.removeItem(atPath: "\(filePath)")
-            }catch{
-                print(error.localizedDescription)
-            }
-        }
+        guard let url = urls.first else { return }
+        handleSelectedPDF(at: url)
     }
 }
 
+extension HostChatVC: UIDocumentPickerDelegate {
+    func choosePDF() {
+        let picker = UIDocumentPickerViewController(forOpeningContentTypes: [.pdf], asCopy: true)
+        picker.delegate = self
+        picker.allowsMultipleSelection = false
+        present(picker, animated: true)
+    }
+
+    func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
+        guard let url = urls.first else { return }
+        handleSelectedPDF(at: url)
+    }
+}
+
+extension UIViewController {
+    func presentChatPDFActions(remoteURL: URL, fileName: String, sourceView: UIView? = nil) {
+        let alert = UIAlertController(title: fileName, message: nil, preferredStyle: .actionSheet)
+        alert.addAction(UIAlertAction(title: "View in App", style: .default) { [weak self] _ in
+            self?.downloadChatPDF(remoteURL: remoteURL, fileName: fileName) { result in
+                guard let self = self else { return }
+                switch result {
+                case .success(let localURL):
+                    let preview = ChatPDFPreviewController(fileURL: localURL)
+                    self.present(preview, animated: true)
+                case .failure(let error):
+                    self.showAlert(for: error.localizedDescription)
+                }
+            }
+        })
+        alert.addAction(UIAlertAction(title: "Download", style: .default) { [weak self] _ in
+            self?.downloadChatPDF(remoteURL: remoteURL, fileName: fileName) { result in
+                guard let self = self else { return }
+                switch result {
+                case .success(let localURL):
+                    let exporter = UIDocumentPickerViewController(forExporting: [localURL], asCopy: true)
+                    self.present(exporter, animated: true)
+                case .failure(let error):
+                    self.showAlert(for: error.localizedDescription)
+                }
+            }
+        })
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+
+        if let popover = alert.popoverPresentationController {
+            popover.sourceView = sourceView ?? view
+            popover.sourceRect = sourceView?.bounds ?? CGRect(
+                x: view.bounds.midX,
+                y: view.bounds.maxY - 20,
+                width: 1,
+                height: 1
+            )
+        }
+        present(alert, animated: true)
+    }
+
+    private func downloadChatPDF(
+        remoteURL: URL,
+        fileName: String,
+        completion: @escaping (Result<URL, Error>) -> Void
+    ) {
+        let safeName = (fileName as NSString).lastPathComponent.isEmpty
+            ? "Zyvo-chat-document.pdf"
+            : (fileName as NSString).lastPathComponent
+        let cacheDirectory = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
+            .appendingPathComponent("ChatPDFs", isDirectory: true)
+        let cacheKey = String(remoteURL.absoluteString.hashValue, radix: 16)
+        let documentCacheDirectory = cacheDirectory.appendingPathComponent(cacheKey, isDirectory: true)
+        let localURL = documentCacheDirectory.appendingPathComponent(safeName)
+
+        do {
+            try FileManager.default.createDirectory(
+                at: documentCacheDirectory,
+                withIntermediateDirectories: true
+            )
+            if FileManager.default.fileExists(atPath: localURL.path) {
+                completion(.success(localURL))
+                return
+            }
+        } catch {
+            completion(.failure(error))
+            return
+        }
+
+        GameLoaderView.show(in: view)
+        URLSession.shared.downloadTask(with: remoteURL) { [weak self] temporaryURL, _, error in
+            let result: Result<URL, Error>
+            if let error = error {
+                result = .failure(error)
+            } else if let temporaryURL = temporaryURL {
+                do {
+                    if FileManager.default.fileExists(atPath: localURL.path) {
+                        try FileManager.default.removeItem(at: localURL)
+                    }
+                    // Download-task temporary files must be moved before this
+                    // completion handler returns.
+                    try FileManager.default.moveItem(at: temporaryURL, to: localURL)
+                    result = .success(localURL)
+                } catch {
+                    result = .failure(error)
+                }
+            } else {
+                result = .failure(ChatPDFError.downloadFailed)
+            }
+
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+                GameLoaderView.hide(from: self.view)
+                completion(result)
+            }
+        }.resume()
+    }
+}
+
+private final class ChatPDFPreviewController: QLPreviewController, QLPreviewControllerDataSource {
+    private let fileURL: URL
+
+    init(fileURL: URL) {
+        self.fileURL = fileURL
+        super.init(nibName: nil, bundle: nil)
+        dataSource = self
+    }
+
+    required init?(coder: NSCoder) {
+        return nil
+    }
+
+    func numberOfPreviewItems(in controller: QLPreviewController) -> Int { 1 }
+
+    func previewController(_ controller: QLPreviewController, previewItemAt index: Int) -> QLPreviewItem {
+        fileURL as NSURL
+    }
+}
+
+private enum ChatPDFError: LocalizedError {
+    case downloadFailed
+
+    var errorDescription: String? {
+        "Unable to download this PDF. Please try again."
+    }
+}

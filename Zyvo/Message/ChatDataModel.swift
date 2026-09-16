@@ -5,13 +5,15 @@
 //  Created by ravi on 21/03/25.
 //
 
+import Foundation
+
 // MARK: - ChatDataModel
 struct ChatDataModel: Codable {
 
     let groupName, receiverID, receiverName, receiverImage: String?
     let senderID, senderName: String?
     let senderProfile: String?
-    let propertyTitle: String?
+    var propertyTitle: String?
 
     var isFavorite: Bool?
     var isBlocked, isOtherBlocked, isMuted, isArchived: Int?
@@ -34,6 +36,7 @@ struct ChatDataModel: Codable {
         case senderName = "sender_name"
         case senderProfile = "sender_profile"
         case propertyTitle = "property_title"
+        case propertyName = "property_name"
         case isBlocked = "is_blocked"
         case isOtherBlocked = "is_other_block"
         case isFavorite = "is_favorite"
@@ -54,9 +57,14 @@ struct ChatDataModel: Codable {
         senderID = try? container.decode(String.self, forKey: .senderID)
         senderName = try? container.decode(String.self, forKey: .senderName)
         senderProfile = try? container.decode(String.self, forKey: .senderProfile)
-        propertyTitle = try? container.decode(String.self, forKey: .propertyTitle)
+        let propertyName = (try? container.decode(String.self, forKey: .propertyName))?
+            .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let backendPropertyTitle = (try? container.decode(String.self, forKey: .propertyTitle))?
+            .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        propertyTitle = backendPropertyTitle.isEmpty ? propertyName : backendPropertyTitle
 
         isBlocked = try? container.decode(Int.self, forKey: .isBlocked)
+        isOtherBlocked = try? container.decode(Int.self, forKey: .isOtherBlocked)
         isMuted = try? container.decode(Int.self, forKey: .isMuted)
         isArchived = try? container.decode(Int.self, forKey: .isArchived)
         
@@ -79,6 +87,25 @@ struct ChatDataModel: Codable {
 
         isDeleted = try? container.decode(Bool.self, forKey: .isDeleted)
         chatData = nil
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encodeIfPresent(groupName, forKey: .groupName)
+        try container.encodeIfPresent(receiverID, forKey: .receiverID)
+        try container.encodeIfPresent(receiverName, forKey: .receiverName)
+        try container.encodeIfPresent(receiverImage, forKey: .receiverImage)
+        try container.encodeIfPresent(senderID, forKey: .senderID)
+        try container.encodeIfPresent(senderName, forKey: .senderName)
+        try container.encodeIfPresent(senderProfile, forKey: .senderProfile)
+        try container.encodeIfPresent(propertyTitle, forKey: .propertyTitle)
+        try container.encodeIfPresent(isBlocked, forKey: .isBlocked)
+        try container.encodeIfPresent(isOtherBlocked, forKey: .isOtherBlocked)
+        try container.encodeIfPresent(isFavorite, forKey: .isFavorite)
+        try container.encodeIfPresent(isMuted, forKey: .isMuted)
+        try container.encodeIfPresent(isArchived, forKey: .isArchived)
+        try container.encodeIfPresent(isDeleted, forKey: .isDeleted)
+        try container.encode(unreadCount, forKey: .unreadCount)
     }
 }
 

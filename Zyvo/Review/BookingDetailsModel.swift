@@ -32,6 +32,8 @@ struct BookingDetailsModel: Codable {
     let reviews: [ReviewData]?
     let addOns: [AddOn]?
     let hostRules: [String]?
+    let pendingExtendedBooking: PendingExtendedBooking?
+    let isBookingExtended: Bool?
 
     enum CodingKeys: String, CodingKey {
         case longitude
@@ -57,6 +59,46 @@ struct BookingDetailsModel: Codable {
         case amenities, activities, reviews
         case addOns = "add_ons"
         case hostRules = "host_rules"
+        case pendingExtendedBooking = "pending_extendend_booking"
+        case isBookingExtended = "is_booking_extended"
+    }
+}
+
+struct PendingExtendedBooking: Codable {
+    let extensionHours: Int?
+    let extensionStart, extensionEnd, extensionStatus, extensionBookingAmount: String?
+
+    enum CodingKeys: String, CodingKey {
+        case extensionHours = "extension_hours"
+        case extensionStart = "extension_start"
+        case extensionEnd = "extension_end"
+        case extensionStatus = "extension_status"
+        case extensionBookingAmount = "extension_booking_amount"
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        if let value = try? container.decode(Int.self, forKey: .extensionHours) {
+            extensionHours = value
+        } else if let value = try? container.decode(String.self, forKey: .extensionHours) {
+            extensionHours = Int(value)
+        } else if let value = try? container.decode(Double.self, forKey: .extensionHours) {
+            extensionHours = Int(value)
+        } else {
+            extensionHours = nil
+        }
+        extensionStart = try container.decodeIfPresent(String.self, forKey: .extensionStart)
+        extensionEnd = try container.decodeIfPresent(String.self, forKey: .extensionEnd)
+        extensionStatus = try container.decodeIfPresent(String.self, forKey: .extensionStatus)
+        if let value = try? container.decode(String.self, forKey: .extensionBookingAmount) {
+            extensionBookingAmount = value
+        } else if let value = try? container.decode(Double.self, forKey: .extensionBookingAmount) {
+            extensionBookingAmount = String(value)
+        } else if let value = try? container.decode(Int.self, forKey: .extensionBookingAmount) {
+            extensionBookingAmount = String(value)
+        } else {
+            extensionBookingAmount = nil
+        }
     }
 }
 

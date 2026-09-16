@@ -32,12 +32,15 @@ class NeedMoreTimePopUpVC: UIViewController {
     }
     
     @IBAction func btnNo_Tap(_ sender: UIButton) {
-        self.dismiss(animated: true)
-        self.backAction("No")
+        self.dismiss(animated: true) {
+            self.backAction("No")
+        }
     }
     
     @IBAction func btnCross_Tap(_ sender: UIButton) {
-        self.dismiss(animated: true)
+        self.dismiss(animated: true) {
+            self.backAction("Dismissed")
+        }
     }
     
 }

@@ -29,9 +29,10 @@ class CircularSeekBar: UIView {
     private var radius: CGFloat = 0.0
     private var thumbX: CGFloat = 0.0
     private var thumbY: CGFloat = 0.0
-    private var progressAngle: CGFloat = 28.8
+    private var progressAngle: CGFloat = 30
     private var progress = 0 // Start progress at 0 (0 hours)
     private let maxHours = 24
+    public var minimumHour = 2
     private var isTouchingThumb = false
     private var hourDots: [(CGFloat, CGFloat)] = []
     private var initialTouchAngle: CGFloat = 0.0
@@ -131,12 +132,23 @@ class CircularSeekBar: UIView {
        // let hours = Int((progressAngle / 360) * CGFloat(maxHours))
       //  let hours = Int(floor((progressAngle / 360) * CGFloat(maxHours)))
         
-        let hours = max(1, Int(round((progressAngle / 360) * CGFloat(maxHours))))
+        let allowedMinimumHour = min(max(1, minimumHour), maxHours)
+        let minimumAngle = CGFloat(allowedMinimumHour) * 360 / CGFloat(maxHours)
+
+        if progressAngle >= 350 || progressAngle < minimumAngle {
+            progressAngle = minimumAngle
+        }
+
+        let hours = max(
+            allowedMinimumHour,
+            Int(round((progressAngle / 360) * CGFloat(maxHours)))
+        )
 
         let displayHour = (hours == 0 ? 00 : hours) // Map 0 to 12
         // Update the center label text with the current hour
         centerLabel.numberOfLines = 0
-        centerLabel.text = "\(displayHour) \nHours"
+        let hourUnit = displayHour == 1 ? "Hour" : "Hours"
+        centerLabel.text = "\(displayHour) \n\(hourUnit)"
         // Create the attributed text
         let attributedString = NSMutableAttributedString(string: centerLabel.text ?? "")
 
@@ -146,18 +158,14 @@ class CircularSeekBar: UIView {
             attributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 52, weight: .medium), range: nsRange)
         }
 
-        // Set font size 18 for "Hours"
-        if let range = centerLabel.text?.range(of: "Hours") {
+        // Set font size 18 for the hour unit
+        if let range = centerLabel.text?.range(of: hourUnit) {
             let nsRange = NSRange(range, in: centerLabel.text ?? "")
             attributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 18, weight: .regular), range: nsRange)
         }
 
         // Assign the attributed string to the label
         
-        if progressAngle >= 350 || progressAngle <= 31.071459058558048{
-            progressAngle = 31.071459058558048 
-            setupView()
-        }
         centerLabel.attributedText = attributedString
         // Notify the delegate
         delegate?.didUpdateCenterLabel(Hours: "\(displayHour)")
@@ -248,10 +256,11 @@ class CircularSeekBar: UIView {
 
         let center = CGPoint(x: bounds.width / 2, y: bounds.height / 2)
 
-        var nearestHour = 1
+        let allowedMinimumHour = min(max(1, minimumHour), maxHours)
+        var nearestHour = allowedMinimumHour
         var minimumDistance = CGFloat.greatestFiniteMagnitude
 
-        for hour in 1...maxHours {
+        for hour in allowedMinimumHour...maxHours {
 
             let angle = CGFloat(hour) * 360.0 / CGFloat(maxHours)
 
@@ -338,7 +347,8 @@ class CircularSeekBar: UIView {
     }
     
     public func setHour(_ hour: Int) {
-        guard hour >= 0 && hour <= maxHours else { return }
+        let allowedMinimumHour = min(max(1, minimumHour), maxHours)
+        guard hour >= allowedMinimumHour && hour <= maxHours else { return }
 
         self.progress = hour
         self.progressAngle = CGFloat(hour) * 360 / CGFloat(maxHours)
@@ -357,5 +367,4 @@ extension CGFloat {
         return self * 180 / .pi
     }
 }
-
 

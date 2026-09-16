@@ -185,7 +185,7 @@ class CheckoutVC: UIViewController {
     private var viewModel1 = BookingDetailsViewModel()
     
     var getJoinChannelDetails : JoinChanelModel?
-    private var selectedHostMessage = "I have a doubt"
+    private var selectedHostMessage = ""
     
     var bookingResult : BookingModel?
     
@@ -247,7 +247,8 @@ Where a listing has a host-specific cancellation policy, that policy controls un
         
         self.channelName = ChatChannelName.make(
             guestId: "\(guestID ?? 0)",
-            hostId: "\(hostID)"
+            hostId: "\(hostID)",
+            propertyId: propertyID.isEmpty ? property_id : propertyID
         )
         print(self.channelName,"self.channelName")
         print(guestID ?? 0, hostID, self.propertyID, "ASDFASDF")
@@ -285,7 +286,7 @@ Where a listing has a host-specific cancellation policy, that policy controls un
         let finalPrice = "\(totalAmount)"
         self.lbl_finalPrice.text = "$\(finalPrice.formattedPriceString())"
         
-        self.lbl_name.text = self.hostName.abbreviatedHostName
+        self.lbl_name.text = self.hostName
         
         self.lbl_timeFromTo.text = "From \(self.startTime) to \(self.endTime)"
         
@@ -385,6 +386,10 @@ Where a listing has a host-specific cancellation policy, that policy controls un
         view_IhaveDoubt.layer.cornerRadius = 10
         view_IhaveDoubt.layer.borderWidth = 1.5
         view_IhaveDoubt.layer.borderColor = UIColor.init(red: 228/255, green: 228/255, blue: 228/255, alpha: 1).cgColor
+        view_IhaveDoubt.isHidden = false
+        view_IhaveDoubt.backgroundColor = .clear
+        view_availableDays.backgroundColor = .clear
+        view_otherReason.backgroundColor = .clear
         
         view_availableDays.layer.cornerRadius = 10
         view_availableDays.layer.borderWidth = 1.5
@@ -592,14 +597,24 @@ Where a listing has a host-specific cancellation policy, that policy controls un
     @IBAction func btnSendMessageHost_Tap(_ sender: UIButton) {
         let senderID = UserDetail.shared.getUserId().trimmingCharacters(in: .whitespacesAndNewlines)
         guard !senderID.isEmpty, hostID > 0, senderID != "\(hostID)" else { return }
+        guard !selectedHostMessage.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            showAlert(for: "Please select a message")
+            return
+        }
         if selectedHostMessage == "Others",
            hostMessageTextView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             showAlert(for: "Please enter your message")
             return
         }
         view.endEditing(true)
-        channelName = ChatChannelName.make(guestId: senderID, hostId: "\(hostID)")
-        viewModel1.apiForJoinChannel(senderId: senderID, receiverId: "\(hostID)", groupChannel: channelName, userType: "guest")
+        let chatPropertyId = propertyID.isEmpty ? property_id : propertyID
+        guard !chatPropertyId.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            showAlert(for: "Unable to start chat for this property")
+            return
+        }
+        channelName = ChatChannelName.make(guestId: senderID, hostId: "\(hostID)", propertyId: chatPropertyId)
+        let chatPropertyTitle = lbl_propertyName.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        viewModel1.apiForJoinChannel(senderId: senderID, receiverId: "\(hostID)", groupChannel: channelName, userType: "guest", propertyId: chatPropertyId, propertyTitle: chatPropertyTitle)
     }
     
     @IBAction func btnParking_Tap(_ sender: UIButton) {
@@ -831,6 +846,13 @@ Where a listing has a host-specific cancellation policy, that policy controls un
     @IBAction func btnShowMessageHost_Tap(_ sender: UIButton) {
         let senderID = UserDetail.shared.getUserId().trimmingCharacters(in: .whitespacesAndNewlines)
         guard !senderID.isEmpty, hostID > 0, senderID != "\(hostID)" else { return }
+        if viewHold_MessageHost.isHidden {
+            selectedHostMessage = ""
+            view_IhaveDoubt.backgroundColor = .clear
+            view_availableDays.backgroundColor = .clear
+            view_otherReason.backgroundColor = .clear
+            view_MessageHostDesc.isHidden = true
+        }
         viewHold_MessageHost.isHidden.toggle()
         view.endEditing(true)
     }
@@ -1386,7 +1408,8 @@ extension CheckoutVC {
                         vc.friend_id = "\(receiverID)"
                         vc.SenderID = senderID
                         vc.guestName = self.getJoinChannelDetails?.senderName ?? ""
-                        vc.hostName = (self.getJoinChannelDetails?.receiverName ?? self.hostName).abbreviatedHostName
+                        vc.hostName = self.getJoinChannelDetails?.receiverName ?? self.hostName
+                        vc.propertyTitle = self.lbl_propertyName.text ?? ""
                         vc.hostProfileImg = self.hostProfileImg
                         vc.guesttProfileImg =  self.guestProfileImg
                         self.tabBarController?.tabBar.isHidden = true

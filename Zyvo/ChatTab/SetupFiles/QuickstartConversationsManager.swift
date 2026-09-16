@@ -12,10 +12,12 @@ import UIKit
 import Alamofire
 
 enum ChatChannelName {
-    static func make(guestId: String, hostId: String) -> String {
+    static func make(guestId: String, hostId: String, propertyId: String? = nil) -> String {
         let guest = guestId.trimmingCharacters(in: .whitespacesAndNewlines)
         let host = hostId.trimmingCharacters(in: .whitespacesAndNewlines)
-        return "Zyvoo_guest_\(guest)_host_\(host)"
+        let property = propertyId?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let roleChannel = "Zyvoo_guest_\(guest)_host_\(host)"
+        return property.isEmpty ? roleChannel : "\(roleChannel)_property_\(property)"
     }
 
     static func isGuestChannel(_ channelName: String?, userId: String) -> Bool {
@@ -23,7 +25,19 @@ enum ChatChannelName {
     }
 
     static func isHostChannel(_ channelName: String?, userId: String) -> Bool {
-        channelName?.hasSuffix("_host_\(userId)") == true
+        guard let channelName else { return false }
+        let hostMarker = "_host_\(userId)"
+        return channelName.hasSuffix(hostMarker) || channelName.contains("\(hostMarker)_property_")
+    }
+
+    static func propertyId(from channelName: String?) -> String? {
+        guard let channelName,
+              let range = channelName.range(of: "_property_", options: .backwards) else {
+            return nil
+        }
+        let propertyId = String(channelName[range.upperBound...])
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        return propertyId.isEmpty ? nil : propertyId
     }
 }
 
@@ -59,10 +73,13 @@ final class FirebaseChatMessage: Hashable {
     let dateUpdated: String?
     let index: NSNumber?
     let attachedMedia: [FirebaseChatMedia]
+    let mediaType: String?
+    let fileName: String?
     fileprivate let createdAt: Date
 
     init(sid: String = UUID().uuidString, body: String? = nil, author: String? = nil,
-         createdAt: Date = Date(), mediaURL: URL? = nil) {
+         createdAt: Date = Date(), mediaURL: URL? = nil,
+         mediaType: String? = nil, fileName: String? = nil) {
         self.sid = sid
         self.body = body
         self.author = author
@@ -72,6 +89,13 @@ final class FirebaseChatMessage: Hashable {
         self.dateUpdated = isoDate
         self.index = NSNumber(value: Int64(createdAt.timeIntervalSince1970 * 1_000))
         self.attachedMedia = mediaURL.map { [FirebaseChatMedia(remoteURL: $0)] } ?? []
+        self.mediaType = mediaType
+        self.fileName = fileName
+    }
+
+    var isPDF: Bool {
+        mediaType?.lowercased() == "application/pdf" ||
+            fileName?.lowercased().hasSuffix(".pdf") == true
     }
 
     static func == (lhs: FirebaseChatMessage, rhs: FirebaseChatMessage) -> Bool { lhs.sid == rhs.sid }
@@ -111,13 +135,19 @@ final class FirebaseChatConversation: Hashable {
     fileprivate weak var manager: FirebaseChatManager?
     fileprivate var cachedMessages: [FirebaseChatMessage] = []
     fileprivate(set) var lastMessageDate: Date?
+    fileprivate(set) var propertyId: String?
+    fileprivate(set) var propertyTitle: String?
     weak var delegate: FirebaseChatConversationDelegate?
 
-    init(name: String, participantIds: [String], manager: FirebaseChatManager, lastMessageDate: Date? = nil) {
+    init(name: String, participantIds: [String], manager: FirebaseChatManager,
+         lastMessageDate: Date? = nil, propertyId: String? = nil,
+         propertyTitle: String? = nil) {
         self.uniqueName = name
         self.participantIds = participantIds
         self.manager = manager
         self.lastMessageDate = lastMessageDate
+        self.propertyId = propertyId
+        self.propertyTitle = propertyTitle
     }
 
     var lastMessageIndex: NSNumber? {
@@ -216,6 +246,7 @@ final class FirebaseChatManager: NSObject {
     private var typingListener: ListenerRegistration?
     private var typingEndWorkItem: DispatchWorkItem?
     private var presenceTimer: Timer?
+    private var latestPresenceExpirations: [String: Date] = [:]
     private var initialMessagesDelivered = false
     private var partnerWasTyping = false
     private var deletionBoundaries: [String: Date] = [:]
@@ -338,6 +369,199 @@ final class FirebaseChatManager: NSObject {
     func sendMessage(_ messageText: String,
                      completion: @escaping (FirebaseChatResult, FirebaseChatMessage?) -> Void) {
         sendMessage(body: messageText, mediaURL: nil, mediaType: "text", completion: completion)
+    }
+
+    /// Property metadata lives on the existing channel document so the current
+    /// channel snapshot can hydrate the inbox without another API or listener.
+    func setChannelPropertyMetadata(channelName: String, propertyId: String,
+                                    propertyTitle: String,
+                                    completion: ((FirebaseChatResult) -> Void)? = nil) {
+        let name = canonicalChannelName(from: channelName)
+        let id = propertyId.trimmingCharacters(in: .whitespacesAndNewlines)
+        let title = propertyTitle.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !name.isEmpty, !id.isEmpty, !title.isEmpty else {
+            completion?(.failure(FirebaseChatError(message: "Missing channel property metadata.")))
+            return
+        }
+        database.collection(channelsCollection).document(name).setData([
+            "channel_name": name,
+            "property_id": id,
+            "property_title": title,
+            "updated_at": FieldValue.serverTimestamp()
+        ], merge: true) { error in
+            if let error {
+                print("🏠 [ChatProperty] Firestore update failed | channel=\(name) error=\(error.localizedDescription)")
+            } else {
+                print("🏠 [ChatProperty] Firestore update succeeded | channel=\(name) property_id=\(id) property_title=\(title)")
+            }
+            completion?(error.map(FirebaseChatResult.failure) ?? .success)
+        }
+    }
+
+    /// Firestore is the realtime source of truth for whether either participant
+    /// has blocked this conversation. A non-empty `blocked_by` array means no
+    /// participant may add messages until the blocker removes their ID.
+    func isMessagingBlocked(channelName: String,
+                            completion: @escaping (FirebaseChatResult, Bool) -> Void) {
+        let name = canonicalChannelName(from: channelName)
+        guard !name.isEmpty else {
+            completion(.failure(FirebaseChatError(message: "Missing channel name.")), true)
+            return
+        }
+        database.collection(channelsCollection).document(name).getDocument { snapshot, error in
+            if let error = error {
+                completion(.failure(error), true)
+                return
+            }
+            let blockers = snapshot?.data()?["blocked_by"] as? [String] ?? []
+            completion(.success, !blockers.isEmpty)
+        }
+    }
+
+    /// Observes the channel's block state in realtime and identifies which
+    /// participant applied the block. The caller owns the returned listener.
+    func observeBlockStatus(
+        channelName: String,
+        currentUserId: String,
+        onStatusChanged: @escaping (_ isBlockedByMe: Bool, _ isBlockedByOther: Bool) -> Void
+    ) -> ListenerRegistration? {
+        let name = canonicalChannelName(from: channelName)
+        let userId = currentUserId.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !name.isEmpty, !userId.isEmpty else { return nil }
+
+        return database.collection(channelsCollection).document(name)
+            .addSnapshotListener { snapshot, error in
+                guard error == nil, let snapshot = snapshot, snapshot.exists else { return }
+
+                let blockers = snapshot.data()?["blocked_by"] as? [String] ?? []
+                let isBlockedByMe = blockers.contains(userId)
+                let isBlockedByOther = blockers.contains { $0 != userId }
+
+                DispatchQueue.main.async {
+                    onStatusChanged(isBlockedByMe, isBlockedByOther)
+                }
+            }
+    }
+
+    /// Observes a user's Firestore heartbeat and reports presence changes live.
+    /// The delayed expiry handles force-quit/network-loss cases where no explicit
+    /// offline write is received.
+    func observePresence(
+        userId: String,
+        onStatusChanged: @escaping (Bool) -> Void
+    ) -> ListenerRegistration? {
+        let id = userId.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !id.isEmpty else { return nil }
+
+        return database.collection(presenceCollection).document(safeDocumentID(id))
+            .addSnapshotListener { [weak self] snapshot, error in
+                guard let self = self, error == nil else { return }
+                let expiration = (snapshot?.data()?["active_until"] as? Timestamp)?.dateValue()
+                    ?? .distantPast
+
+                DispatchQueue.main.async {
+                    self.latestPresenceExpirations[id] = expiration
+                    onStatusChanged(expiration > Date())
+
+                    guard expiration > Date() else { return }
+                    DispatchQueue.main.asyncAfter(
+                        deadline: .now() + expiration.timeIntervalSinceNow + 0.1
+                    ) { [weak self] in
+                        guard let self = self,
+                              self.latestPresenceExpirations[id] == expiration else { return }
+                        onStatusChanged(false)
+                    }
+                }
+            }
+    }
+
+    func setMessagingBlocked(channelName: String, blockerId: String, isBlocked: Bool,
+                             completion: ((FirebaseChatResult) -> Void)? = nil) {
+        let name = canonicalChannelName(from: channelName)
+        let blocker = blockerId.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !name.isEmpty, !blocker.isEmpty else {
+            completion?(.failure(FirebaseChatError(message: "Missing channel or user ID.")))
+            return
+        }
+        let value: Any = isBlocked
+            ? FieldValue.arrayUnion([blocker])
+            : FieldValue.arrayRemove([blocker])
+        database.collection(channelsCollection).document(name).setData([
+            "blocked_by": value,
+            "updated_at": FieldValue.serverTimestamp()
+        ], merge: true) { error in
+            completion?(error.map(FirebaseChatResult.failure) ?? .success)
+        }
+    }
+
+    /// Stores each participant's notification preference on the conversation.
+    /// A user ID in `muted_by` means push notifications must not be requested
+    /// for that recipient; messages themselves are still delivered normally.
+    func setConversationMuted(
+        channelName: String,
+        userId: String,
+        isMuted: Bool,
+        completion: ((FirebaseChatResult) -> Void)? = nil
+    ) {
+        let name = canonicalChannelName(from: channelName)
+        let mutedUserId = userId.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !name.isEmpty, !mutedUserId.isEmpty else {
+            completion?(.failure(FirebaseChatError(message: "Missing channel or user ID.")))
+            return
+        }
+
+        let value: Any = isMuted
+            ? FieldValue.arrayUnion([mutedUserId])
+            : FieldValue.arrayRemove([mutedUserId])
+        database.collection(channelsCollection).document(name).setData([
+            "muted_by": value,
+            "updated_at": FieldValue.serverTimestamp()
+        ], merge: true) { error in
+            if let error = error {
+                print("🔕 [ChatMute] Firestore update FAILED | channel=\(name) user=\(mutedUserId) muted=\(isMuted) error=\(error.localizedDescription)")
+            } else {
+                print("🔕 [ChatMute] Firestore update SUCCESS | channel=\(name) user=\(mutedUserId) muted=\(isMuted)")
+            }
+            completion?(error.map(FirebaseChatResult.failure) ?? .success)
+        }
+    }
+
+    /// Checks the recipient's preference before the app asks the backend to
+    /// send a push notification. Firestore errors fail closed to avoid sending
+    /// a notification against a possibly-muted conversation.
+    func shouldSendChatNotification(
+        channelName: String,
+        recipientId: String,
+        completion: @escaping (FirebaseChatResult, Bool) -> Void
+    ) {
+        let name = canonicalChannelName(from: channelName)
+        let recipient = recipientId.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !name.isEmpty, !recipient.isEmpty else {
+            print("🔔 [ChatPush] SKIPPED | missing channel or recipient | channel=\(name) recipient=\(recipient)")
+            completion(.failure(FirebaseChatError(message: "Missing channel or recipient ID.")), false)
+            return
+        }
+
+        database.collection(channelsCollection).document(name).getDocument { snapshot, error in
+            if let error = error {
+                print("🔔 [ChatPush] SKIPPED | mute check failed | channel=\(name) recipient=\(recipient) error=\(error.localizedDescription)")
+                completion(.failure(error), false)
+                return
+            }
+            let rawMutedUsers = snapshot?.data()?["muted_by"] as? [Any] ?? []
+            let mutedUsers = rawMutedUsers.compactMap { value -> String? in
+                if let string = value as? String {
+                    return string.trimmingCharacters(in: .whitespacesAndNewlines)
+                }
+                if let number = value as? NSNumber {
+                    return number.stringValue
+                }
+                return nil
+            }
+            let isMuted = mutedUsers.contains(recipient)
+            print("🔔 [ChatPush] MUTE CHECK | channel=\(name) recipient=\(recipient) muted_by=\(mutedUsers) decision=\(isMuted ? "SKIP" : "SEND")")
+            completion(.success, !isMuted)
+        }
     }
 
     func sendMediaMessage(data: Data, contentType: String, fileName: String,
@@ -527,17 +751,27 @@ final class FirebaseChatManager: NSObject {
                     let data = document.data()
                     let participants = data["participant_ids"] as? [String] ?? []
                     let lastDate = (data["last_message_at"] as? Timestamp)?.dateValue()
+                    let propertyId = (data["property_id"] as? String)?
+                        .trimmingCharacters(in: .whitespacesAndNewlines)
+                    let propertyTitle = (data["property_title"] as? String)?
+                        .trimmingCharacters(in: .whitespacesAndNewlines)
                     let item = self.allConversations.first(where: { $0.uniqueName == document.documentID })
                         ?? FirebaseChatConversation(name: document.documentID, participantIds: participants,
-                                                    manager: self, lastMessageDate: lastDate)
+                                                    manager: self, lastMessageDate: lastDate,
+                                                    propertyId: propertyId,
+                                                    propertyTitle: propertyTitle)
                     item.lastMessageDate = lastDate
+                    item.propertyId = propertyId
+                    item.propertyTitle = propertyTitle
                     if let lastDate = lastDate {
                         item.cachedMessages = [FirebaseChatMessage(
                             sid: data["last_message_id"] as? String ?? document.documentID,
                             body: data["last_message"] as? String,
                             author: data["last_sender_id"] as? String,
                             createdAt: lastDate,
-                            mediaURL: (data["last_media_url"] as? String).flatMap(Self.absoluteMediaURL(from:))
+                            mediaURL: (data["last_media_url"] as? String).flatMap(Self.absoluteMediaURL(from:)),
+                            mediaType: data["last_media_type"] as? String,
+                            fileName: data["last_file_name"] as? String
                         )]
                     }
                     return item
@@ -672,7 +906,8 @@ final class FirebaseChatManager: NSObject {
         let channelRef = database.collection(channelsCollection).document(name)
         let messageRef = channelRef.collection(messagesCollection).document()
         let localMessage = FirebaseChatMessage(sid: messageRef.documentID, body: body,
-                                               author: senderId, mediaURL: mediaURL)
+                                               author: senderId, mediaURL: mediaURL,
+                                               mediaType: mediaType, fileName: fileName)
         var messageData: [String: Any] = [
             "sender_id": senderId,
             "type": mediaURL == nil ? "text" : "media",
@@ -686,24 +921,60 @@ final class FirebaseChatManager: NSObject {
             "channel_name": name,
             "participant_ids": conversation.participantIds,
             "last_message_id": messageRef.documentID,
-            "last_message": body ?? "Photo",
+            "last_message": body ?? (mediaType == "application/pdf" ? (fileName ?? "PDF document") : "Photo"),
             "last_sender_id": senderId,
             "last_message_at": FieldValue.serverTimestamp(),
             "updated_at": FieldValue.serverTimestamp()
         ]
-        if let mediaURL = mediaURL { channelData["last_media_url"] = mediaURL.absoluteString }
-        let batch = database.batch()
-        batch.setData(messageData, forDocument: messageRef)
-        batch.setData(channelData, forDocument: channelRef, merge: true)
-        for receiverId in conversation.participantIds where receiverId != senderId {
-            batch.setData(["user_id": receiverId, "unread_count": FieldValue.increment(Int64(1))],
-                          forDocument: memberReference(channelName: name, userId: receiverId), merge: true)
+        if let mediaURL = mediaURL {
+            channelData["last_media_url"] = mediaURL.absoluteString
+            channelData["last_media_type"] = mediaType
+            if let fileName = fileName { channelData["last_file_name"] = fileName }
+        } else {
+            channelData["last_media_url"] = FieldValue.delete()
+            channelData["last_media_type"] = FieldValue.delete()
+            channelData["last_file_name"] = FieldValue.delete()
         }
-        // Re-show the conversation for the sender while retaining deleted_before,
-        // which keeps their previous history hidden.
-        batch.setData(["user_id": senderId, "is_deleted": false],
-                      forDocument: memberReference(channelName: name, userId: senderId), merge: true)
-        batch.commit { error in
+        database.runTransaction({ transaction, errorPointer -> Any? in
+            do {
+                let channelSnapshot = try transaction.getDocument(channelRef)
+                let blockers = channelSnapshot.data()?["blocked_by"] as? [String] ?? []
+                guard blockers.isEmpty else {
+                    errorPointer?.pointee = NSError(
+                        domain: "FirebaseChat",
+                        code: 403,
+                        userInfo: [NSLocalizedDescriptionKey: "Messaging is blocked for this conversation."]
+                    )
+                    return nil
+                }
+
+                transaction.setData(messageData, forDocument: messageRef)
+                transaction.setData(channelData, forDocument: channelRef, merge: true)
+                for receiverId in conversation.participantIds where receiverId != senderId {
+                    transaction.setData(
+                        [
+                            "user_id": receiverId,
+                            "unread_count": FieldValue.increment(Int64(1)),
+                            // Re-show the chat while retaining deleted_before,
+                            // which keeps the recipient's old history hidden.
+                            "is_deleted": false
+                        ],
+                        forDocument: self.memberReference(channelName: name, userId: receiverId),
+                        merge: true
+                    )
+                }
+                // Re-show the conversation for the sender while retaining
+                // deleted_before, which keeps their previous history hidden.
+                transaction.setData(
+                    ["user_id": senderId, "is_deleted": false],
+                    forDocument: self.memberReference(channelName: name, userId: senderId),
+                    merge: true
+                )
+            } catch {
+                errorPointer?.pointee = error as NSError
+            }
+            return nil
+        }) { _, error in
             if let error = error { completion(.failure(error), nil) }
             else { completion(.success, localMessage) }
         }
@@ -733,7 +1004,9 @@ final class FirebaseChatManager: NSObject {
             body: data["text"] as? String,
             author: data["sender_id"] as? String,
             createdAt: (data["created_at"] as? Timestamp)?.dateValue() ?? Date(),
-            mediaURL: (data["media_url"] as? String).flatMap(Self.absoluteMediaURL(from:))
+            mediaURL: (data["media_url"] as? String).flatMap(Self.absoluteMediaURL(from:)),
+            mediaType: data["media_type"] as? String,
+            fileName: data["file_name"] as? String
         )
     }
 

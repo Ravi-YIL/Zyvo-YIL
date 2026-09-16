@@ -37,6 +37,7 @@ class ChatDataViewModel: NSObject {
     
     // MARK: - Private Properties
     private var cancellables = Set<AnyCancellable>()
+    private var chatListRequest: AnyCancellable?
 }
 
 // MARK: - API Calls
@@ -47,21 +48,47 @@ extension ChatDataViewModel {
                            groupChannel: String,
                            userType: String,
                            loader: Bool = false) {
+        guard Thread.isMainThread else {
+            DispatchQueue.main.async { [weak self] in
+                self?.apiForJoinChannel(
+                    senderId: senderId,
+                    receiverId: receiverId,
+                    groupChannel: groupChannel,
+                    userType: userType,
+                    loader: loader
+                )
+            }
+            return
+        }
+        // The backend channel contract is role-based, not based on who sent the
+        // latest message: guest is always sender and host is always receiver.
+        // Host screens naturally provide the current host as sender, so reverse
+        // those two values before registering/restoring the channel.
+        let isHostRequest = userType.trimmingCharacters(in: .whitespacesAndNewlines)
+            .caseInsensitiveCompare("host") == .orderedSame
+        let guestId = isHostRequest ? receiverId : senderId
+        let hostId = isHostRequest ? senderId : receiverId
+
         var parameters = [String: Any]()
-        parameters[APIKeys.senderId] = senderId
-        parameters[APIKeys.receiverId] = receiverId
+        parameters[APIKeys.senderId] = guestId
+        parameters[APIKeys.receiverId] = hostId
         parameters[APIKeys.groupChannel] = groupChannel
-        parameters[APIKeys.user_Type] = userType
+        parameters[APIKeys.user_Type] = "guest"
+        if let propertyId = ChatChannelName.propertyId(from: groupChannel) {
+            parameters[APIKeys.propertyid] = propertyId
+        }
 
         APIServices<JoinChanelModel>().post(endpoint: .joinchannel,
                                             parameters: parameters,
                                             loader: loader)
             .receive(on: DispatchQueue.main)
-            .sink { completion in
+            .sink { [weak self] completion in
+                guard self != nil else { return }
                 if case .failure(let error) = completion {
                     print("Failed to register chat channel: \(error.localizedDescription)")
                 }
-            } receiveValue: { response in
+            } receiveValue: { [weak self] response in
+                guard self != nil else { return }
                 if response.success != true {
                     let message = response.message ?? "Unknown error"
                     print("Failed to register chat channel: \(message)")
@@ -71,41 +98,70 @@ extension ChatDataViewModel {
     }
     
     func apiForGetChatData(userType: String) {
+        guard Thread.isMainThread else {
+            DispatchQueue.main.async { [weak self] in
+                self?.apiForGetChatData(userType: userType)
+            }
+            return
+        }
         var para = [String: Any]()
         para[APIKeys.userID] = UserDetail.shared.getUserId()
         para[APIKeys.user_type] = userType
         
-        APIServices<[ChatDataModel]>().post1(endpoint: .get_user_channels, parameters: para, loader: true)
+        chatListRequest?.cancel()
+        chatListRequest = APIServices<[ChatDataModel]>().post1(endpoint: .get_user_channels, parameters: para, loader: true)
             .receive(on: DispatchQueue.main)
-            .sink { complition in
+            .sink { [weak self] complition in
+                guard let self = self else { return }
                 switch complition {
                 case .finished:
                     print("Successfully fetched.....")
                 case .failure(let error):
                     self.getChatDataResult = .failure(error)
                 }
-            } receiveValue: { response in
+            } receiveValue: { [weak self] response in
+                guard let self = self else { return }
                 self.getChatDataResult = .success(self.deduplicatedChatResponse(response, userType: userType))
-            }.store(in: &cancellables)
+            }
     }
     
     func apiForGetChatData2(userType: String, loader: Bool = true) {
+        guard Thread.isMainThread else {
+            DispatchQueue.main.async { [weak self] in
+                self?.apiForGetChatData2(userType: userType, loader: loader)
+            }
+            return
+        }
         var para = [String: Any]()
         para[APIKeys.userID] = UserDetail.shared.getUserId()
         para[APIKeys.user_type] = userType
         
-        APIServices<[ChatDataModel]>().post(endpoint: .get_user_channels, parameters: para, loader: loader)
+        chatListRequest?.cancel()
+        chatListRequest = APIServices<[ChatDataModel]>().post(endpoint: .get_user_channels, parameters: para, loader: loader)
             .receive(on: DispatchQueue.main)
-            .sink { complition in
+            .sink { [weak self] complition in
+                guard let self = self else { return }
                 switch complition {
                 case .finished:
                     print("Successfully fetched.....")
                 case .failure(let error):
                     self.getChatDataResult = .failure(error)
                 }
-            } receiveValue: { response in
+            } receiveValue: { [weak self] response in
+                guard let self = self else { return }
                 self.getChatDataResult = .success(self.deduplicatedChatResponse(response, userType: userType))
-            }.store(in: &cancellables)
+            }
+    }
+
+    func cancelChatListRequest() {
+        guard Thread.isMainThread else {
+            DispatchQueue.main.async { [weak self] in
+                self?.cancelChatListRequest()
+            }
+            return
+        }
+        chatListRequest?.cancel()
+        chatListRequest = nil
     }
 
     private func deduplicatedChatResponse(
@@ -189,28 +245,10 @@ extension ChatDataViewModel {
     }
     
     func apiForBlockUser(senderId: String, group_channel: String, blockUnblock: Int) {
-        var para = [String: Any]()
-        para[APIKeys.senderId] = senderId
-        para[APIKeys.group_channel] = group_channel
-        para[APIKeys.blockUnblock] = blockUnblock
-        
-        APIServices<UserBlockStatusModel>().post(endpoint: .block_user, parameters: para, loader: true)
-            .receive(on: DispatchQueue.main)
-            .sink { complition in
-                switch complition {
-                case .finished:
-                    print("Successfully fetched.....")
-                case .failure(let error):
-                    self.blockResult = .failure(error)
-                }
-            } receiveValue: { response in
-                if response.success ?? false {
-                    self.blockResult = .success(response)
-                } else {
-                    self.blockResult = .success(response)
-                    topViewController?.showAlert(for: response.message ?? "")
-                }
-            }.store(in: &cancellables)
+        // Legacy backend block/unblock API intentionally disabled.
+        // Firestore `blocked_by` is now the only source of truth. New code must
+        // call FirebaseChatManager.setMessagingBlocked directly so its result
+        // and realtime observer drive the UI without backend status conflicts.
     }
     
     func apiForSetFavourite(senderId: String, group_channel: String, favorite: String) {
@@ -238,8 +276,21 @@ extension ChatDataViewModel {
     }
     
     func apiForSetMuteUnmute(senderId: String, group_channel: String, mute: String) {
+        let currentUserId = UserDetail.shared.getUserId()
+        let isMuting = mute == "1"
+
+        // Apply mute before waiting for the backend so an incoming message
+        // cannot slip through the notification gate during the API round trip.
+        if isMuting {
+            FirebaseChatManager.shared.setConversationMuted(
+                channelName: group_channel,
+                userId: currentUserId,
+                isMuted: true
+            )
+        }
+
         var para = [String: Any]()
-        para[APIKeys.userID] = UserDetail.shared.getUserId()
+        para[APIKeys.userID] = currentUserId
         para[APIKeys.group_channel] = group_channel
         para[APIKeys.mute] = mute
         
@@ -254,8 +305,19 @@ extension ChatDataViewModel {
                 }
             } receiveValue: { response in
                 if response.success ?? false {
+                    // Unmute only after the backend accepts it. Mute has already
+                    // been applied above to close the notification race window.
+                    if !isMuting {
+                        FirebaseChatManager.shared.setConversationMuted(
+                            channelName: group_channel,
+                            userId: currentUserId,
+                            isMuted: false
+                        )
+                    }
+                    print("🔕 [ChatMute] Backend API SUCCESS | channel=\(group_channel) user=\(currentUserId) muted=\(isMuting)")
                     self.getMuteUnmuteResult = .success(response)
                 } else {
+                    print("🔕 [ChatMute] Backend API REJECTED | channel=\(group_channel) user=\(currentUserId) muted=\(isMuting) message=\(response.message ?? "Unknown error")")
                     self.getMuteUnmuteResult = .success(response)
                 }
             }.store(in: &cancellables)
@@ -285,23 +347,27 @@ extension ChatDataViewModel {
     }
     
     func apiForSendChatNotification(senderId: String, receiver_id: String) {
+        print("🔔 [ChatPush] API HIT | sender=\(senderId) receiver=\(receiver_id)")
         var para = [String: Any]()
         para[APIKeys.senderid] = senderId
         para[APIKeys.receiverid] = receiver_id
        
-        APIServices<EmptyModel>().post(endpoint: .send_chat_notification, parameters: para, loader: true)
+        APIServices<EmptyModel>().post(endpoint: .send_chat_notification, parameters: para, loader: false)
             .receive(on: DispatchQueue.main)
             .sink { complition in
                 switch complition {
                 case .finished:
-                    print("Successfully fetched.....")
+                    print("🔔 [ChatPush] API COMPLETED | sender=\(senderId) receiver=\(receiver_id)")
                 case .failure(let error):
+                    print("🔔 [ChatPush] API FAILED | sender=\(senderId) receiver=\(receiver_id) error=\(error.localizedDescription)")
                     self.sendChatNotiResult = .failure(error)
                 }
             } receiveValue: { response in
                 if response.success ?? false {
+                    print("🔔 [ChatPush] API SUCCESS | sender=\(senderId) receiver=\(receiver_id)")
                     self.sendChatNotiResult = .success(response)
                 } else {
+                    print("🔔 [ChatPush] API REJECTED | sender=\(senderId) receiver=\(receiver_id) message=\(response.message ?? "Unknown error")")
                     self.sendChatNotiResult = .success(response)
                 }
             }.store(in: &cancellables)

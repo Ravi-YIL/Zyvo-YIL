@@ -76,6 +76,7 @@ class APIKeys {
     static let bookingid                     = "booking_id"
     static let extension_time                     = "extension_time"
     static let propertyid                     = "property_id"
+    static let propertyTitle                  = "property_title"
     static let reportreasonsid                     = "report_reasons_id"
     static let additionaldetails                     = "additional_details"
     

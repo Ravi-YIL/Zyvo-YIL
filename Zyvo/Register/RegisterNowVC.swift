@@ -479,4 +479,3 @@ extension RegisterNowVC: CountryPickerViewDelegate {
         }
     }
 }
-

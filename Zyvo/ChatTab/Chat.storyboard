@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24412" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24765" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24405"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24743"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -37,7 +38,7 @@
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bVT-oL-n7I">
                                                 <rect key="frame" x="20" y="7" width="60" height="60"/>
                                                 <subviews>
-                                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="woman-s-face-38289 7" translatesAutoresizingMaskIntoConstraints="NO" id="RNX-SA-oGw">
+                                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="woman-s-face-38289 7" translatesAutoresizingMaskIntoConstraints="NO" id="RNX-SA-oGw">
                                                         <rect key="frame" x="0.0" y="0.0" width="60" height="60"/>
                                                     </imageView>
                                                 </subviews>
@@ -110,6 +111,8 @@
                                             <constraint firstItem="fkV-ok-G7S" firstAttribute="bottom" secondItem="bVT-oL-n7I" secondAttribute="bottom" constant="-5" id="WYV-QR-YjD"/>
                                             <constraint firstAttribute="trailing" secondItem="CEZ-Eg-pXN" secondAttribute="trailing" id="XJP-zn-r6x"/>
                                             <constraint firstItem="Nho-Pf-8SC" firstAttribute="centerY" secondItem="rL5-MO-lGX" secondAttribute="centerY" id="dSp-qw-SNM"/>
+                                            <constraint firstItem="Nho-Pf-8SC" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="MjE-tP-4ty" secondAttribute="trailing" constant="8" id="Cht-Nm-Tr1"/>
+                                            <constraint firstItem="Nho-Pf-8SC" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="fkV-ok-G7S" secondAttribute="trailing" constant="8" id="Cht-St-Tr2"/>
                                             <constraint firstAttribute="height" constant="80" id="dof-3O-B0x"/>
                                             <constraint firstItem="MjE-tP-4ty" firstAttribute="leading" secondItem="bVT-oL-n7I" secondAttribute="trailing" constant="10" id="gIC-Ya-00q"/>
                                             <constraint firstItem="fkV-ok-G7S" firstAttribute="top" relation="greaterThanOrEqual" secondItem="MjE-tP-4ty" secondAttribute="bottom" constant="5" id="ggA-P3-rPa"/>
@@ -425,7 +428,7 @@
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemGray5Color">
-            <color red="0.89803921568627454" green="0.89803921568627454" blue="0.91764705882352937" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.8980392157" green="0.8980392157" blue="0.91764705879999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

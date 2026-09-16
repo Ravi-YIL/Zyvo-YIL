@@ -19,6 +19,8 @@ class HomeVCWithoutLoginVC: UIViewController,LocationPickerDelegate {
     var isComingBackFromMap = false
     private var cancellables = Set<AnyCancellable>()
     private var viewModel = HomeDataViewModel()
+    private let sessionLogoutViewModel = LogoutViewModel()
+    private var isEndingNonPersistentSession = false
     var getHomeDataArr : [HomeDataModel]?
     
     var comingFrom = ""
@@ -53,6 +55,7 @@ class HomeVCWithoutLoginVC: UIViewController,LocationPickerDelegate {
         let isProfileCompleted = UserDetail.shared.getisCompleteProfile()
         let isKeepMeLogin = UserDetail.shared.getKeepMeLogin()
         let fullName = UserDetail.shared.getName()
+        endNonPersistentSessionIfNeeded(userID: userID, keepMeLoggedIn: isKeepMeLogin)
         print(isKeepMeLogin,"isKeepMeLogin")
         print(isProfileCompleted,fullName,isKeepMeLogin, "HomeVCWithoutLoginVC")
         if isKeepMeLogin == "Yes" {
@@ -159,6 +162,10 @@ class HomeVCWithoutLoginVC: UIViewController,LocationPickerDelegate {
     
     
     @objc func appDidBecomeActive() {
+        endNonPersistentSessionIfNeeded(
+            userID: UserDetail.shared.getUserId(),
+            keepMeLoggedIn: UserDetail.shared.getKeepMeLogin()
+        )
         // When the app returns from settings, check location again
   
         checkLocationFlow()
@@ -513,7 +520,7 @@ extension HomeVCWithoutLoginVC :UICollectionViewDelegate,UICollectionViewDataSou
         cell.view_Instant.isHidden = true
         cell.btnCross.isHidden = true
         
-        cell.lbl_NameHostedBy.text = (data?.hostName ?? "").abbreviatedHostName
+        cell.lbl_NameHostedBy.text = data?.hostName ?? ""
         cell.lbl_AddressHostedby.text = data?.hostAddress ?? ""
         let hostProfileImgUrl = data?.hostProfileImageUrl ?? ""
        
@@ -657,6 +664,38 @@ extension HomeVCWithoutLoginVC:UICollectionViewDelegateFlowLayout {
 }
 
 extension HomeVCWithoutLoginVC {
+    private func endNonPersistentSessionIfNeeded(userID: String, keepMeLoggedIn: String) {
+        guard keepMeLoggedIn.caseInsensitiveCompare("Yes") != .orderedSame,
+              !userID.isEmpty,
+              !isEndingNonPersistentSession else { return }
+
+        isEndingNonPersistentSession = true
+        sessionLogoutViewModel.apiForLogOut(loader: false) { [weak self] didLogout in
+            guard let self = self else { return }
+            self.isEndingNonPersistentSession = false
+            guard didLogout else {
+                print("Silent logout will retry when the logged-out home becomes active again.")
+                return
+            }
+
+            FirebaseChatManager.shared.cleanupFirebase()
+            UserDetail.shared.removeUserId()
+            UserDetail.shared.removeChatToken()
+            UserDetail.shared.removeKeepMeLogin()
+            UserDetail.shared.removeUserType()
+            UserDetail.shared.removelogintType()
+            UserDetail.shared.removeTokenWith()
+            UserDetail.shared.removeisTimeExtend()
+            UserDetail.shared.removeisCompleteProfile()
+            UserDetail.shared.removeProfileimg()
+            UserDetail.shared.removeName()
+            CurrentDateTimer.shared.stopTimer()
+            WhereSaveData.shared.clearData()
+            FilterSavedData.shared.clearData()
+            print("Silent logout completed for a non-persistent session.")
+        }
+    }
+
     func bindVC() {
 
         viewModel.$getHomeDataResult

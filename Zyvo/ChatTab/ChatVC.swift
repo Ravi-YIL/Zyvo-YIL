@@ -16,6 +16,7 @@ import IQKeyboardManagerSwift
 import SDWebImage
 import Photos
 import Combine
+import FirebaseFirestore
 
 class ChatVC: UIViewController, UITextViewDelegate {
     
@@ -55,6 +56,8 @@ class ChatVC: UIViewController, UITextViewDelegate {
     var guesttProfileImg = ""
     var hostName = ""
     var guestName = ""
+    var propertyID = ""
+    var propertyTitle = ""
     var favoriteStatus: Int? = 0
     var backAction: (_ str: String, _ favStatus: String, _ muteStatus: String, _ archiveStatus: String) -> () = { _, _, _, _ in }
     
@@ -75,8 +78,16 @@ class ChatVC: UIViewController, UITextViewDelegate {
     private let MyChatCellIdentifier = "ChatCell"
     private let MyChatImgCellIdentifier = "ImgChatCell"
     private var token: NSKeyValueObservation?
+    private var blockStatusListener: ListenerRegistration?
     private var onlineStatusTimer: Timer?
     private var mediaUrlCache: [String: URL] = [:]
+    private enum PendingOutgoingMessage {
+        case text(String, resetComposer: Bool)
+        case image(Data)
+        case pdf(Data, fileName: String)
+    }
+    private var pendingOutgoingMessage: PendingOutgoingMessage?
+    private var hasPresentedInitialMessages = false
     
     private let blockedWords: [String] = [
         "a55","a55hole","aeolus","ahole","anal","analprobe","anilingus",
@@ -184,6 +195,7 @@ class ChatVC: UIViewController, UITextViewDelegate {
     var currentConversation: TCHConversation?
     
     deinit {
+        blockStatusListener?.remove()
         onlineStatusTimer?.invalidate()
         conversationsManager.leaveActiveChat()
         NotificationCenter.default.removeObserver(self)
@@ -192,8 +204,23 @@ class ChatVC: UIViewController, UITextViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        if !user_id.isEmpty, !friend_id.isEmpty {
-            uniqueConversationName = ChatChannelName.make(guestId: user_id, hostId: friend_id)
+        if uniqueConversationName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+           !user_id.isEmpty, !friend_id.isEmpty {
+            uniqueConversationName = ChatChannelName.make(
+                guestId: user_id,
+                hostId: friend_id,
+                propertyId: propertyID
+            )
+        }
+        if isBlockStatus == 1 {
+            conversationsManager.setMessagingBlocked(
+                channelName: uniqueConversationName, blockerId: user_id, isBlocked: true
+            )
+        }
+        if isOtherBlockStatus == 1 {
+            conversationsManager.setMessagingBlocked(
+                channelName: uniqueConversationName, blockerId: friend_id, isBlocked: true
+            )
         }
         
         bindVC()
@@ -209,19 +236,25 @@ class ChatVC: UIViewController, UITextViewDelegate {
              print("🔥 Conversation Ready")
 
              let pendingMessage = self.Message.trimmingCharacters(in: .whitespacesAndNewlines)
-             if !pendingMessage.isEmpty {
+             if !pendingMessage.isEmpty, self.pendingOutgoingMessage == nil {
                  // Consume the initial message once. The ready callback can fire
                  // again while the conversation client reconnects.
                  self.Message = ""
-                 self.sendMessage(inputMessage: pendingMessage)
+                 self.checkBlockAndSend(.text(pendingMessage, resetComposer: false))
              }
          }
         
-        self.imgProfile.loadImage(from:self.guesttProfileImg,placeholder: UIImage(named: "user"))
+        self.imgProfile.loadImage(from:self.hostProfileImg,placeholder: UIImage(named: "user"))
         print(self.hostName,"self.hostName")
         print(self.guestName,"self.guestName")
         
-        self.lbl_User.text = self.hostName.abbreviatedHostName
+        self.lbl_User.text = chatHeaderTitle(name: self.hostName)
+        self.lbl_User.adjustsFontSizeToFitWidth = true
+        self.lbl_User.minimumScaleFactor = 0.75
+        self.lbl_User.lineBreakMode = .byTruncatingTail
+        self.lbl_User.numberOfLines = 1
+        self.lbl_User.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        self.lbl_User.setContentHuggingPriority(.defaultLow, for: .horizontal)
         
         IQKeyboardManager.shared.enable = false
         
@@ -252,7 +285,7 @@ class ChatVC: UIViewController, UITextViewDelegate {
         view_ProfileImg.layer.borderColor = UIColor.init(red: 58/255, green: 75/255, blue: 76/266, alpha: 0.3).cgColor
         
         self.imgProfile.layer.cornerRadius = self.imgProfile.layer.frame.height / 2
-        self.imgProfile.contentMode = .scaleToFill
+        self.imgProfile.contentMode = .scaleAspectFill
         
         view_message.layer.cornerRadius = view_message.layer.frame.height / 2
         view_message.layer.borderWidth = 1
@@ -261,11 +294,18 @@ class ChatVC: UIViewController, UITextViewDelegate {
         viewBlock.layer.cornerRadius = viewBlock.layer.frame.height / 2
 
         friend_identity = friend_id
-        uniqueConversationName = ChatChannelName.make(guestId: user_id, hostId: friend_identity)
+        if uniqueConversationName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            uniqueConversationName = ChatChannelName.make(
+                guestId: user_id,
+                hostId: friend_identity,
+                propertyId: propertyID
+            )
+        }
         
         print(friend_identity,"friendidentity")
         self.conversationsManager.delegate = self
         self.setupTableview()
+        self.tableView.alpha = 0
         self.keyboardNotifications()
         
         txtChat.delegate = self
@@ -275,15 +315,57 @@ class ChatVC: UIViewController, UITextViewDelegate {
         }
         self.loadUserImage()
     }
+
+    private func chatHeaderTitle(name: String) -> String {
+        let cleanName = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        let cleanPropertyTitle = propertyTitle.trimmingCharacters(in: .whitespacesAndNewlines)
+        return cleanPropertyTitle.isEmpty ? cleanName : "\(cleanName) (\(cleanPropertyTitle))"
+    }
     
     // MARK: - Check Bad Words
-         func containsBlockedWord(_ text: String) -> Bool {
-             let lowerText = text.lowercased()
-             
-             return blockedWords.contains { word in
-                 lowerText.contains(word.lowercased())
-             }
-         }
+    func containsBlockedWord(_ text: String) -> Bool {
+        let normalizedText = text.folding(
+            options: [.caseInsensitive, .diacriticInsensitive],
+            locale: .current
+        )
+
+        return blockedWords.contains { blockedWord in
+            containsWholeWord(blockedWord, in: normalizedText)
+        }
+    }
+
+    private func containsWholeWord(_ word: String, in text: String) -> Bool {
+        let normalizedWord = word.folding(
+            options: [.caseInsensitive, .diacriticInsensitive],
+            locale: .current
+        )
+        guard !normalizedWord.isEmpty else { return false }
+
+        var searchStart = text.startIndex
+        while searchStart < text.endIndex,
+              let range = text.range(
+                of: normalizedWord,
+                options: [],
+                range: searchStart..<text.endIndex
+              ) {
+            let startsOnBoundary = range.lowerBound == text.startIndex ||
+                !isWordCharacter(text[text.index(before: range.lowerBound)])
+            let endsOnBoundary = range.upperBound == text.endIndex ||
+                !isWordCharacter(text[range.upperBound])
+
+            if startsOnBoundary && endsOnBoundary {
+                return true
+            }
+            searchStart = text.index(after: range.lowerBound)
+        }
+        return false
+    }
+
+    private func isWordCharacter(_ character: Character) -> Bool {
+        character.unicodeScalars.allSatisfy {
+            CharacterSet.alphanumerics.contains($0)
+        }
+    }
     
     // Remove placeholder on edit
     func textViewDidBeginEditing(_ textView: UITextView) {
@@ -305,6 +387,7 @@ class ChatVC: UIViewController, UITextViewDelegate {
         super.viewWillAppear(animated)
         self.tabBarController?.tabBar.isHidden = true
         self.conversationsManager.delegate = self
+        observeBlockStatus()
         if conversationsManager.conversation == nil {
             getChat()
         }
@@ -333,10 +416,26 @@ class ChatVC: UIViewController, UITextViewDelegate {
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
+        blockStatusListener?.remove()
+        blockStatusListener = nil
         // Invalidate timer when user leaves chat
         onlineStatusTimer?.invalidate()
         onlineStatusTimer = nil
         conversationsManager.leaveActiveChat()
+    }
+
+    private func observeBlockStatus() {
+        blockStatusListener?.remove()
+        blockStatusListener = conversationsManager.observeBlockStatus(
+            channelName: uniqueConversationName,
+            currentUserId: user_id
+        ) { [weak self] isBlockedByMe, isBlockedByOther in
+            guard let self = self else { return }
+            self.isBlockStatus = isBlockedByMe ? 1 : 0
+            self.isOtherBlockStatus = isBlockedByOther ? 1 : 0
+            self.viewSendMessage.isHidden = isBlockedByMe || isBlockedByOther
+            self.viewBlock.isHidden = !isBlockedByMe
+        }
     }
     
     func getChat() {
@@ -379,6 +478,7 @@ class ChatVC: UIViewController, UITextViewDelegate {
         tableView!.register(cellNib1, forCellReuseIdentifier:MyChatImgCellIdentifier)
         
         tableView!.register(cellNib, forCellReuseIdentifier:MyChatCellIdentifier)
+        tableView!.register(ChatDocumentCell.self, forCellReuseIdentifier: ChatDocumentCell.reuseIdentifier)
         tableView.delegate = self
         tableView.dataSource = self
         tableView.allowsSelection = false
@@ -396,24 +496,43 @@ class ChatVC: UIViewController, UITextViewDelegate {
     
     @IBAction func btnFavourite_Tap(_ sender: UIButton) {
         if (favoriteStatus ?? 0) == 0 {
-            viewModel.apiForSetFavourite(senderId: self.SenderID , group_channel: self.uniqueConversationName , favorite: "1")
+            viewModel.apiForSetFavourite(senderId: UserDetail.shared.getUserId()/*self.SenderID */, group_channel: self.uniqueConversationName , favorite: "1")
             
         } else {
             
-            viewModel.apiForSetFavourite(senderId: self.SenderID , group_channel: self.uniqueConversationName , favorite: "0")
+            viewModel.apiForSetFavourite(senderId:UserDetail.shared.getUserId() , group_channel: self.uniqueConversationName , favorite: "0")
         }
     }
     @IBAction func btnSelectImage(_ sender: UIButton) {
-       
-        viewModel.apiForCheckBlockUser2(IDSS: SenderID, group_channel: self.uniqueConversationName)
-         
+        guard isBlockStatus != 1, isOtherBlockStatus != 1 else {
+            showToast("You are blocked now. You can't chat with this user.")
+            return
+        }
+        // Legacy backend check intentionally disabled.
+        // viewModel.apiForCheckBlockUser2(IDSS: SenderID, group_channel: uniqueConversationName)
+        conversationsManager.isMessagingBlocked(channelName: uniqueConversationName) { [weak self] result, isBlocked in
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+                guard result.isSuccessful else {
+                    self.displayErrorMessage(result.error?.localizedDescription ?? "Unable to verify block status")
+                    return
+                }
+                if isBlocked {
+                    self.showToast("You are blocked now. You can't chat with this user.")
+                } else {
+                    self.showImagePickerOptions()
+                }
+            }
+        }
     }
     
     
     @IBAction func btnblockChat_Tap(_ sender: UIButton) {
         
         if (isBlockStatus ?? 0) == 0 {
-            viewModel.apiForBlockUser(senderId: self.SenderID , group_channel: self.uniqueConversationName , blockUnblock: 1)
+            // Legacy backend block API intentionally disabled.
+            // viewModel.apiForBlockUser(senderId: SenderID, group_channel: uniqueConversationName, blockUnblock: 1)
+            setBlockStatus(true)
         }
     }
     
@@ -508,12 +627,14 @@ class ChatVC: UIViewController, UITextViewDelegate {
             
                 
                 if item == "Block" {
-                    viewModel.apiForBlockUser(senderId: self.SenderID ?? "", group_channel: self.uniqueConversationName ?? "", blockUnblock: 1)
+                    // Legacy backend block API intentionally disabled.
+                    self.setBlockStatus(true)
                 }
             
             
                 if item == "Unblock" {
-                    viewModel.apiForBlockUser(senderId: self.SenderID ?? "", group_channel: self.uniqueConversationName ?? "", blockUnblock: 0)
+                    // Legacy backend block API intentionally disabled.
+                    self.setBlockStatus(false)
                 }
             
             if item == "Mute" {
@@ -556,7 +677,7 @@ class ChatVC: UIViewController, UITextViewDelegate {
     }
     
     func showImagePickerOptions() {
-        let actionSheet = UIAlertController(title: "Select Image", message: nil, preferredStyle: .actionSheet)
+        let actionSheet = UIAlertController(title: "Select Attachment", message: nil, preferredStyle: .actionSheet)
         
         let cameraAction = UIAlertAction(title: "Camera", style: .default) { _ in
             self.openCamera()
@@ -565,11 +686,16 @@ class ChatVC: UIViewController, UITextViewDelegate {
         let galleryAction = UIAlertAction(title: "Photo Library", style: .default) { _ in
             self.openPhotoLibrary()
         }
+
+        let pdfAction = UIAlertAction(title: "PDF Document", style: .default) { _ in
+            self.choosePDF()
+        }
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         
         actionSheet.addAction(cameraAction)
         actionSheet.addAction(galleryAction)
+        actionSheet.addAction(pdfAction)
         actionSheet.addAction(cancelAction)
         
         present(actionSheet, animated: true, completion: nil)
@@ -603,12 +729,101 @@ class ChatVC: UIViewController, UITextViewDelegate {
                     return
                 } else {
                     
-                    viewModel.apiForCheckBlockUser(IDSS: SenderID, group_channel: self.uniqueConversationName)
+                    checkBlockAndSend(.text(self.txtChat.text, resetComposer: true))
                     
                 }
             }
     }
     // MARK: - Chat Service
+
+    private func checkBlockAndSend(_ message: PendingOutgoingMessage) {
+        guard pendingOutgoingMessage == nil else { return }
+        guard isBlockStatus != 1, isOtherBlockStatus != 1 else {
+            showToast("You are blocked now. You can't chat with this user.")
+            return
+        }
+        pendingOutgoingMessage = message
+        // Legacy backend check intentionally disabled. Firestore now owns the
+        // realtime block state for message authorization.
+        // viewModel.apiForCheckBlockUser(IDSS: SenderID, group_channel: uniqueConversationName)
+        conversationsManager.isMessagingBlocked(channelName: uniqueConversationName) { [weak self] result, isBlocked in
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+                guard result.isSuccessful else {
+                    self.pendingOutgoingMessage = nil
+                    self.displayErrorMessage(result.error?.localizedDescription ?? "Unable to verify block status")
+                    return
+                }
+                self.completePendingSend(isBlocked: isBlocked)
+            }
+        }
+    }
+
+    private func completePendingSend(isBlocked: Bool) {
+        guard let pendingMessage = pendingOutgoingMessage else { return }
+        pendingOutgoingMessage = nil
+
+        guard !isBlocked else {
+            showToast("You are blocked now. You can't chat with this user.")
+            return
+        }
+
+        switch pendingMessage {
+        case .text(let text, let resetComposer):
+            sendMessage(inputMessage: text)
+            if resetComposer {
+                resetTextView()
+                view.endEditing(true)
+            }
+        case .image(let data):
+            sendImage(data: data)
+        case .pdf(let data, let fileName):
+            sendPDF(data: data, fileName: fileName)
+        }
+    }
+
+    func handleSelectedPDF(at url: URL) {
+        let fileName = url.lastPathComponent.isEmpty ? "Zyvo-chat-document.pdf" : url.lastPathComponent
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            do {
+                let data = try Data(contentsOf: url, options: .mappedIfSafe)
+                guard data.count <= 25 * 1_024 * 1_024 else {
+                    DispatchQueue.main.async {
+                        self?.showAlert(for: "Please select a PDF smaller than 25 MB.")
+                    }
+                    return
+                }
+                DispatchQueue.main.async {
+                    self?.checkBlockAndSend(.pdf(data, fileName: fileName))
+                }
+            } catch {
+                DispatchQueue.main.async {
+                    self?.showAlert(for: "Unable to read this PDF. Please select it again.")
+                }
+            }
+        }
+    }
+
+    private func sendPDF(data: Data, fileName: String) {
+        GameLoaderView.show(in: view)
+        conversationsManager.sendMediaMessage(
+            data: data,
+            contentType: "application/pdf",
+            fileName: fileName
+        ) { [weak self] result, _ in
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+                GameLoaderView.hide(from: self.view)
+                guard result?.isSuccessful == true else {
+                    self.showAlert(for: result?.error?.localizedDescription ?? "Unable to send PDF.")
+                    return
+                }
+                self.restoreBackendConversationList()
+                self.schedulePushNotificationIfNeeded()
+                self.scrollToBottom()
+            }
+        }
+    }
 
     
     func sendMessage(inputMessage: String) {
@@ -622,17 +837,13 @@ class ChatVC: UIViewController, UITextViewDelegate {
 
             if result.isSuccessful {
                 print("✅ Message sent")
+                self.restoreBackendConversationList()
                 
                 DispatchQueue.main.async {
                     self.reloadMessages()
                 }
 
-                if self.lbl_Status.text == "Offline" {
-                    self.viewModel.apiForSendChatNotification(
-                        senderId: self.SenderID,
-                        receiver_id: self.friend_id
-                    )
-                }
+                self.schedulePushNotificationIfNeeded()
 
             } else {
                 print("❌ Message failed")
@@ -644,7 +855,26 @@ class ChatVC: UIViewController, UITextViewDelegate {
    
     
     @IBAction func btnUnblock_Tap(_ sender: UIButton) {
-        viewModel.apiForBlockUser(senderId: self.SenderID , group_channel: self.uniqueConversationName , blockUnblock: 0)
+        // Legacy backend block API intentionally disabled.
+        // viewModel.apiForBlockUser(senderId: SenderID, group_channel: uniqueConversationName, blockUnblock: 0)
+        setBlockStatus(false)
+    }
+
+    private func setBlockStatus(_ isBlocked: Bool) {
+        conversationsManager.setMessagingBlocked(
+            channelName: uniqueConversationName,
+            blockerId: user_id,
+            isBlocked: isBlocked
+        ) { [weak self] result in
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+                guard result.isSuccessful else {
+                    self.displayErrorMessage(result.error?.localizedDescription ?? "Unable to update block status")
+                    return
+                }
+                self.showToast(isBlocked ? "You have blocked this user." : "You have unblocked this user.")
+            }
+        }
     }
     @IBAction func btnBack(_ sender: UIButton) {
         
@@ -671,31 +901,40 @@ class ChatVC: UIViewController, UITextViewDelegate {
                     print("Media upload failed: \(String(describing: result?.error))")
                 } else {
                     print("Media upload successful")
+                    self.restoreBackendConversationList()
+                    self.schedulePushNotificationIfNeeded()
                 }
                 if let d = self.uploadingArray.firstIndex(where: {($0.name == "\(imgName).jpg")}) {
                     self.uploadingArray.remove(at: d)
                     DispatchQueue.main.async {
-                        self.tableView.reloadSections([0], with: .none)
+                        self.tableView.reloadSections([1], with: .none)
                     }
                 }
             }
         }
         // Append message to uploading array
         uploadingArray.append(uploadStruce(msg: messageOptions, name: "\(imgName).jpg", img: data))
-        tableView.reloadSections([0], with: .none)
+        tableView.reloadSections([1], with: .none)
         self.scrollToBottom()
         
     }
     func scrollToBottom(animated: Bool = true) {
-        DispatchQueue.main.async {
-            let numberOfSections = self.tableView.numberOfSections
-            if numberOfSections > 0 {
-                let numberOfRows = self.tableView.numberOfRows(inSection: numberOfSections - 1)
-                if numberOfRows > 0 {
-                    let indexPath = IndexPath(row: numberOfRows - 1, section: numberOfSections - 1)
-                    self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: animated)
-                }
+        let scroll = {
+            let indexPath: IndexPath?
+            if !self.uploadingArray.isEmpty {
+                indexPath = IndexPath(row: self.uploadingArray.count - 1, section: 1)
+            } else if !self.sortedMessages.isEmpty {
+                indexPath = IndexPath(row: self.sortedMessages.count - 1, section: 0)
+            } else {
+                indexPath = nil
             }
+            guard let indexPath = indexPath else { return }
+            self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: animated)
+        }
+        if Thread.isMainThread {
+            scroll()
+        } else {
+            DispatchQueue.main.async(execute: scroll)
         }
     }
 
@@ -717,11 +956,21 @@ extension ChatVC {
                     
                     if (isblockedStatus) == 0 {
                         self.isBlockStatus = 0
+                        self.conversationsManager.setMessagingBlocked(
+                            channelName: self.uniqueConversationName,
+                            blockerId: self.user_id,
+                            isBlocked: false
+                        )
                         self.viewSendMessage.isHidden = false
                         self.viewBlock.isHidden = true
                         
                     } else {
                         self.isBlockStatus = 1
+                        self.conversationsManager.setMessagingBlocked(
+                            channelName: self.uniqueConversationName,
+                            blockerId: self.user_id,
+                            isBlocked: true
+                        )
                         self.viewSendMessage.isHidden = true
                         self.viewBlock.isHidden = false
                     }
@@ -819,62 +1068,6 @@ extension ChatVC {
                 })
             }.store(in: &cancellables)
         
-        // Result Mute Unmute api
-        viewModel.$chekcBlockResult
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] result in
-                guard let self = self else{return}
-                result?.handle(success: { response in
-                    print(response.message ?? "")
-                    
-                    
-                    var isblockedStatus = response.data?.isBlocked ?? 0
-                    print(response.message ?? "")
-                    
-                    print(isblockedStatus ,"isBlockStatus")
-                    
-                    if (isblockedStatus) == 0 {
-                        
-                        self.sendMessage(inputMessage: self.txtChat.text ?? "")
-                        self.resetTextView()
-
-                           DispatchQueue.main.async {
-                               self.txtChat.resignFirstResponder()
-                               self.txtChat.becomeFirstResponder()
-                           }
-                        
-                    } else {
-                        self.showToast("You are blocked now. You can't chat with this user.")
-                    }
-
-                })
-            }.store(in: &cancellables)
-        
-        // Result Mute Unmute api
-        viewModel.$chekcBlockResult2
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] result in
-                guard let self = self else{return}
-                result?.handle(success: { response in
-                    print(response.message ?? "")
-                    
-                    
-                    var isblockedStatus = response.data?.isBlocked ?? 0
-                    print(response.message ?? "")
-                    
-                    print(isblockedStatus ,"isBlockStatus")
-                    
-                    if (isblockedStatus) == 0 {
-                        
-                        self.showImagePickerOptions()
-                        
-                    } else {
-                        self.showToast("You are blocked now. You can't chat with this user.")
-                    }
-
-                })
-            }.store(in: &cancellables)
-        
     }
     func resetTextView() {
         txtChat.text = placeholderText
@@ -930,13 +1123,13 @@ extension ChatVC : UITableViewDelegate,UITableViewDataSource {
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: NSInteger) -> Int {
         if section == 0 {
-            return uploadingArray.count
-        }else{
             return sortedMessages.count
+        }else{
+            return uploadingArray.count
         }
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if indexPath.section == 0 {
+        if indexPath.section == 1 {
             let message = uploadingArray[indexPath.row]
             return getChatCellForTableView(tableView: tableView, forIndexPath:indexPath, message:message)
         }
@@ -966,16 +1159,45 @@ extension ChatVC : UITableViewDelegate,UITableViewDataSource {
         }
         var ms = message.author ?? ""
         
-        if !message.attachedMedia.isEmpty {
+        if message.isPDF {
+            let cell = tableView.dequeueReusableCell(
+                withIdentifier: ChatDocumentCell.reuseIdentifier,
+                for: indexPath
+            ) as! ChatDocumentCell
+            let isCurrentUser = ms == user_id
+            let name = isCurrentUser ? guestName : hostName
+            let avatarURL = isCurrentUser ? guesttProfileImg : hostProfileImg
+            let fileName = message.fileName ?? "PDF document.pdf"
+            cell.configure(
+                name: name,
+                avatarURL: avatarURL,
+                fileName: fileName,
+                time: updateLastMsgTime(message.dateUpdated ?? "")
+            )
+            cell.onFileTapped = { [weak self, weak cell] in
+                guard let self = self, let cell = cell,
+                      let media = message.attachedMedia.first else { return }
+                media.getTemporaryContentUrl { result, url in
+                    DispatchQueue.main.async {
+                        guard result.isSuccessful, let url = url else {
+                            self.showAlert(for: result.error?.localizedDescription ?? "Unable to open this PDF.")
+                            return
+                        }
+                        self.presentChatPDFActions(remoteURL: url, fileName: fileName, sourceView: cell)
+                    }
+                }
+            }
+            return cell
+        } else if !message.attachedMedia.isEmpty {
             let cell = tableView.dequeueReusableCell(withIdentifier: "ImgChatCell", for: indexPath) as! ImgChatCell
             let messageSid = message.sid ?? ""
             
             if ms == "\(self.user_id)" {
-                cell.imgUser.loadImage(from: self.hostProfileImg, placeholder: UIImage(named: "user"))
+                cell.imgUser.loadImage(from: self.guesttProfileImg, placeholder: UIImage(named: "user"))
                 cell.lbl_name.text = self.guestName
             } else {
-                cell.imgUser.loadImage(from: self.guesttProfileImg, placeholder: UIImage(named: "user"))
-                cell.lbl_name.text = self.hostName.abbreviatedHostName
+                cell.imgUser.loadImage(from: self.hostProfileImg, placeholder: UIImage(named: "user"))
+                cell.lbl_name.text = self.hostName
             }
             cell.lbl_Time.text = self.updateLastMsgTime(message.dateUpdated ?? "")
             
@@ -1010,14 +1232,14 @@ extension ChatVC : UITableViewDelegate,UITableViewDataSource {
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: MyChatCellIdentifier, for:indexPath as IndexPath) as! ChatCell
             if ms == "\(user_id)" {
-                cell.img.loadImage(from:self.hostProfileImg,placeholder: UIImage(named: "user"))
+                cell.img.loadImage(from:self.guesttProfileImg,placeholder: UIImage(named: "user"))
                 cell.lbl_name.text = self.guestName
                 cell.setUser(user: message.author ?? "[Unknown author]", imgArr: Media(image:user_imgV, data: nil, url: nil), messageBody: message,user_id:user_id)
                 return cell
             } else {
                 
-                cell.img.loadImage(from:self.guesttProfileImg,placeholder: UIImage(named: "user"))
-                cell.lbl_name.text = self.hostName.abbreviatedHostName
+                cell.img.loadImage(from:self.hostProfileImg,placeholder: UIImage(named: "user"))
+                cell.lbl_name.text = self.hostName
                 
                 cell.setUser(user: message.author ?? "[Unknown author]", imgArr: Media(image:user_imgV, data: nil, url: nil), messageBody: message,user_id:user_id)
                 return cell
@@ -1045,7 +1267,47 @@ extension ChatVC : UITableViewDelegate,UITableViewDataSource {
                 }else{
                     self.lastCell = 3
                 }
-            })
+        })
+    }
+    }
+
+    private func restoreBackendConversationList() {
+        viewModel.apiForJoinChannel(
+            senderId: user_id,
+            receiverId: friend_id,
+            groupChannel: uniqueConversationName,
+            userType: "guest",
+            loader: false
+        )
+    }
+
+    private func schedulePushNotificationIfNeeded() {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self, self.lbl_Status.text == "Offline" else { return }
+            // Let the Firestore snapshot render the delivered message first.
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
+                self?.sendPushNotificationIfAllowed()
+            }
+        }
+    }
+
+    private func sendPushNotificationIfAllowed() {
+        conversationsManager.shouldSendChatNotification(
+            channelName: uniqueConversationName,
+            recipientId: friend_id
+        ) { [weak self] result, shouldSend in
+            guard let self = self else { return }
+            guard result.isSuccessful, shouldSend else {
+                print("🔔 [ChatPush] API NOT HIT | guest chat | channel=\(self.uniqueConversationName) recipient=\(self.friend_id) reason=muted-or-check-failed")
+                return
+            }
+            print("🔔 [ChatPush] API ALLOWED | guest chat | channel=\(self.uniqueConversationName) recipient=\(self.friend_id)")
+            DispatchQueue.main.async {
+                self.viewModel.apiForSendChatNotification(
+                    senderId: self.user_id,
+                    receiver_id: self.friend_id
+                )
+            }
         }
     }
 
@@ -1064,8 +1326,15 @@ extension ChatVC : UITableViewDelegate,UITableViewDataSource {
                 self.messages = mergedMessages
                 self.sortedMessages = sorted
                 self.tableView.reloadData()
-                if loadToBottom {
-                    self.scrollToBottom()
+                self.tableView.layoutIfNeeded()
+                if !self.hasPresentedInitialMessages {
+                    self.scrollToBottom(animated: false)
+                    self.hasPresentedInitialMessages = true
+                    UIView.animate(withDuration: 0.12) {
+                        self.tableView.alpha = 1
+                    }
+                } else if loadToBottom {
+                    self.scrollToBottom(animated: true)
                 }
             }
         }
@@ -1087,7 +1356,7 @@ extension ChatVC:  UIImagePickerControllerDelegate, UINavigationControllerDelega
                             self.showAlert(for: "Image could not be processed. Please select a smaller image.")
                             return
                         }
-                        self.sendImage(data: imageData)
+                        self.checkBlockAndSend(.image(imageData))
                     }
                 }
             }
@@ -1211,36 +1480,7 @@ extension ChatVC: QuickstartConversationsManagerDelegate {
         self.addMessages(newMessages: Set(items))
     }
     func updateLastMsgTime(_ time:String) -> String{
-        print(time)
-        let dateFormatte = DateFormatter()
-        dateFormatte.timeZone = TimeZone(abbreviation: "UTC")
-        dateFormatte.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
-        
-        if let theSecondDate = dateFormatte.date(from: time) {
-            dateFormatte.timeZone = TimeZone.current
-            dateFormatte.dateFormat = "yyyy-MM-dd HH:mm:ss"
-           
-            let theFirstDate = Date()
-            
-            let theComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second ], from: theSecondDate, to: theFirstDate)
-            if let theNumbe = theComponents.year, theNumbe > 0 {
-                return "\(theNumbe)y ago"
-            }else if let theNumbe = theComponents.month, theNumbe > 0 {
-                return "\(theNumbe)month ago"
-            }else if let theNumbe = theComponents.day, theNumbe > 0 {
-                return "\(theNumbe)d ago"
-            }else if let theNumbe = theComponents.hour, theNumbe > 0 {
-                return "\(theNumbe)h ago"
-            }else if let theNumbe = theComponents.minute, theNumbe > 0 {
-               
-                if theNumbe >= 1 {
-                    return "\(theNumbe)m ago"
-                }else{
-                    return "now"
-                }
-            }
-        }
-        return  "now"
+        ChatMessageTimestampFormatter.string(from: time)
     }
 }
 

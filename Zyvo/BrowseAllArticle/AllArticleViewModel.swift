@@ -28,9 +28,8 @@ extension AllArticleViewModel {
    
     func apiForGetAllArticle(){
         var para : [String:Any] = [:]
-        
-//        para[APIKeys.userID] = UserDetail.shared.getUserId()
-//        para[APIKeys.usertype] = self.usertype
+        let normalizedUserType = usertype.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        para[APIKeys.usertype] = normalizedUserType == "host" ? "host" : "guest"
        
         APIServices<[AllArticleModel]>().post(endpoint: .getAllArticle, parameters: para)
             .receive(on: DispatchQueue.main)
@@ -59,5 +58,4 @@ extension AllArticleViewModel {
     
 
 }
-
 

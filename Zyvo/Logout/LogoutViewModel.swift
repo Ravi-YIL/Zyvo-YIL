@@ -15,10 +15,10 @@ class LogoutViewModel:NSObject {
     
     private var cancellables = Set<AnyCancellable>()
     
-    func apiForLogOut(){
+    func apiForLogOut(loader: Bool = true, completion: ((Bool) -> Void)? = nil){
            var para = [String:Any]()
            para[APIKeys.userID] = UserDetail.shared.getUserId()
-           APIServices<EmptyModel>().post(endpoint: .logout, parameters: para,loader: true)
+           APIServices<EmptyModel>().post(endpoint: .logout, parameters: para,loader: loader)
                .receive(on: DispatchQueue.main)
                .sink { complition in
                    switch complition{
@@ -26,12 +26,15 @@ class LogoutViewModel:NSObject {
                        print("Successfully fetched.....")
                    case .failure(let error) :
                        self.logOutResult = .failure(error)
+                       completion?(false)
                    }
                } receiveValue: { response in
                    if response.success ?? false {
                        self.logOutResult = .success(response)
+                       completion?(true)
                    }else {
                      //  topViewController?.showAlert(for: response.message ?? "")
+                       completion?(false)
                    }
                }.store(in: &cancellables)
        }

@@ -65,13 +65,36 @@ extension BookingDetailsViewModel {
             }.store(in: &cancellables)
     }
     
-    func apiForJoinChannel(senderId:String,receiverId:String,groupChannel:String,userType:String){
+    func apiForJoinChannel(senderId:String,receiverId:String,groupChannel:String,userType:String, propertyId: String? = nil, propertyTitle: String? = nil){
         var para = [String:Any]()
-        
-        para[APIKeys.senderId] = senderId
-        para[APIKeys.receiverId] = receiverId
+
+        // Channel participants are persisted by role, regardless of which side
+        // initiates the request: guest is sender and host is receiver.
+        let isHostRequest = userType.trimmingCharacters(in: .whitespacesAndNewlines)
+            .caseInsensitiveCompare("host") == .orderedSame
+        para[APIKeys.senderId] = isHostRequest ? receiverId : senderId
+        para[APIKeys.receiverId] = isHostRequest ? senderId : receiverId
         para[APIKeys.groupChannel] = groupChannel
         para[APIKeys.user_Type] = userType
+        let explicitPropertyId = propertyId?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let resolvedPropertyId = explicitPropertyId.isEmpty
+            ? ChatChannelName.propertyId(from: groupChannel)
+            : explicitPropertyId
+        if let resolvedPropertyId, !resolvedPropertyId.isEmpty {
+            para[APIKeys.propertyid] = resolvedPropertyId
+        }
+        let resolvedPropertyTitle = propertyTitle?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        if !resolvedPropertyTitle.isEmpty {
+            para[APIKeys.propertyTitle] = resolvedPropertyTitle
+        }
+        if let resolvedPropertyId, !resolvedPropertyId.isEmpty, !resolvedPropertyTitle.isEmpty {
+            print("🏠 [ChatProperty] Saving visible title | channel=\(groupChannel) property_id=\(resolvedPropertyId) property_title=\(resolvedPropertyTitle)")
+            QuickstartConversationsManager.shared.setChannelPropertyMetadata(
+                channelName: groupChannel,
+                propertyId: resolvedPropertyId,
+                propertyTitle: resolvedPropertyTitle
+            )
+        }
        
         APIServices<JoinChanelModel>().post(endpoint: .joinchannel, parameters: para,loader: true)
             .receive(on: DispatchQueue.main)
@@ -118,4 +141,3 @@ extension BookingDetailsViewModel {
     
 
 }
-

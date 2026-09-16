@@ -17,6 +17,8 @@ class ImgChatCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         selectionStyle = .none
+        lbl_Time.adjustsFontSizeToFitWidth = true
+        lbl_Time.minimumScaleFactor = 0.75
         img11.isUserInteractionEnabled = true
         img11.previewType = 1
         img11.gestureType = .tap
@@ -51,36 +53,7 @@ class ImgChatCell: UITableViewCell {
     }
     
     func updateLastMsgTime(_ time:String) -> String{
-        print(time)
-        let dateFormatte = DateFormatter()
-        dateFormatte.timeZone = TimeZone(abbreviation: "UTC")
-        dateFormatte.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
-        
-        if let theSecondDate = dateFormatte.date(from: time) {
-            dateFormatte.timeZone = TimeZone.current
-            dateFormatte.dateFormat = "yyyy-MM-dd HH:mm:ss"
-           
-            let theFirstDate = Date()
-            
-            let theComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second ], from: theSecondDate, to: theFirstDate)
-            if let theNumbe = theComponents.year, theNumbe > 0 {
-                return "\(theNumbe)y ago"
-            }else if let theNumbe = theComponents.month, theNumbe > 0 {
-                return "\(theNumbe)month ago"
-            }else if let theNumbe = theComponents.day, theNumbe > 0 {
-                return "\(theNumbe)d ago"
-            }else if let theNumbe = theComponents.hour, theNumbe > 0 {
-                return "\(theNumbe)h ago"
-            }else if let theNumbe = theComponents.minute, theNumbe > 0 {
-               
-                if theNumbe >= 1 {
-                    return "\(theNumbe)m ago"
-                }else{
-                    return "now"
-                }
-            }
-        }
-        return  "now"
+        ChatMessageTimestampFormatter.string(from: time)
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

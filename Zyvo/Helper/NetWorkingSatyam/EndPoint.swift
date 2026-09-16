@@ -1,7 +1,6 @@
 //
 //  EndPoints.swift
 //  RPG
-//
 //  Created by YATIN  KALRA on 12/02/24.
 //
 
@@ -289,11 +288,8 @@ extension AppURL {
         case earnings = "earnings"
         case get_host_booking_list = "get_host_booking_list"
         case mark_host_bookings = "mark_host_bookings"
-        
-        
         case approve_decline_booking = "approve_decline_booking"
         case host_booking_details = "host_booking_details"
-        //        case filter_property_reviews = "filter_property_reviews"
         case review_guest = "review_guest"
         case host_report_violation = "host_report_violation"
         case list_report_reasons = "list_report_reasons"

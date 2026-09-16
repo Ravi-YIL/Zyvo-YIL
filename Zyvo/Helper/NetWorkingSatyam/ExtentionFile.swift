@@ -852,8 +852,14 @@ extension UIViewController {
         )
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         alert.addAction(UIAlertAction(title: "Settings", style: .default, handler: { _ in
-            if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
-                UIApplication.shared.open(settingsURL)
+            // Let UIAlertController finish dismissing before leaving the app.
+            // Opening Settings during the alert transition can be ignored by iOS.
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                guard let settingsURL = URL(string: UIApplication.openSettingsURLString),
+                      UIApplication.shared.canOpenURL(settingsURL) else {
+                    return
+                }
+                UIApplication.shared.open(settingsURL, options: [:], completionHandler: nil)
             }
         }))
         self.present(alert, animated: true, completion: nil)
@@ -875,17 +881,6 @@ extension UITextView {
     }
 }
 extension String {
-
-    /// Guest-facing host name, e.g. "Mia Johnson" becomes "Mia J.".
-    var abbreviatedHostName: String {
-        let parts = trimmingCharacters(in: .whitespacesAndNewlines)
-            .split(whereSeparator: { $0.isWhitespace })
-            .map(String.init)
-        guard let firstName = parts.first else { return "" }
-        guard parts.count > 1, let initial = parts.last?.first else { return firstName }
-        return "\(firstName) \(initial)."
-    }
-    
     func widthOfString(usingFont font: UIFont) -> CGFloat {
         let fontAttributes = [NSAttributedString.Key.font: font]
         let size = self.size(withAttributes: fontAttributes)

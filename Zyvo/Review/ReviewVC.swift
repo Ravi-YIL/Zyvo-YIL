@@ -74,6 +74,16 @@ class ReviewVC: UIViewController,UITextViewDelegate {
     @IBOutlet weak var imgHeart: UIImageView!
     @IBOutlet weak var view_timeFrom: UIView!
     @IBOutlet weak var view_bookedHours: UIView!
+    @IBOutlet weak var view_PendingExtension: UIView!
+    @IBOutlet weak var view_PendingExtensionDate: UIView!
+    @IBOutlet weak var view_PendingExtensionHours: UIView!
+    @IBOutlet weak var view_PendingExtensionTime: UIView!
+    @IBOutlet weak var view_PendingExtensionAmount: UIView!
+    @IBOutlet weak var lbl_PendingExtensionDate: UILabel!
+    @IBOutlet weak var lbl_PendingExtensionHours: UILabel!
+    @IBOutlet weak var lbl_PendingExtensionTime: UILabel!
+    @IBOutlet weak var lbl_PendingExtensionAmount: UILabel!
+    @IBOutlet weak var lbl_PendingExtensionStatus: UILabel!
     @IBOutlet weak var view_ParkingDesc: UIView!
     @IBOutlet weak var view_HostDesc: UIView!
     @IBOutlet weak var collVH: NSLayoutConstraint!
@@ -302,6 +312,39 @@ class ReviewVC: UIViewController,UITextViewDelegate {
         lbl_Bookingtime.font = UIFont(name: "poppins", size: 15)
         lbl_bookedHours.font = UIFont(name: "poppins", size: 15)
         lbl_bookedDate.font = UIFont(name: "poppins", size: 15)
+        lbl_PendingExtensionDate.font = UIFont(name: "Poppins-Regular", size: 13)
+        lbl_PendingExtensionHours.font = UIFont(name: "Poppins-Regular", size: 13)
+        lbl_PendingExtensionTime.font = UIFont(name: "Poppins-Regular", size: 13)
+        lbl_PendingExtensionAmount.font = UIFont(name: "Poppins-Regular", size: 13)
+        lbl_PendingExtensionStatus.font = UIFont(name: "Poppins-Medium", size: 12)
+        lbl_PendingExtensionStatus.text = "Pending"
+        lbl_PendingExtensionStatus.textColor = .black
+        lbl_PendingExtensionStatus.backgroundColor = UIColor(
+            red: 255/255,
+            green: 241/255,
+            blue: 120/255,
+            alpha: 1
+        )
+        lbl_PendingExtensionStatus.layer.cornerRadius = 13
+        lbl_PendingExtensionStatus.layer.masksToBounds = true
+        let extensionDetailViews = [
+            view_PendingExtensionDate,
+            view_PendingExtensionHours,
+            view_PendingExtensionTime,
+            view_PendingExtensionAmount
+        ]
+        extensionDetailViews.forEach { detailView in
+            detailView?.layer.cornerRadius = 20
+            detailView?.layer.borderWidth = 1.5
+            detailView?.layer.borderColor = UIColor(
+                red: 228/255,
+                green: 228/255,
+                blue: 228/255,
+                alpha: 1
+            ).cgColor
+            detailView?.layer.masksToBounds = true
+        }
+        view_PendingExtension.isHidden = true
         
         btnReviewBooking.titleLabel?.font = UIFont(name: "poppins", size: 17)
         btnMessageHost.titleLabel?.font = UIFont(name: "poppins", size: 17)
@@ -321,15 +364,18 @@ class ReviewVC: UIViewController,UITextViewDelegate {
         msgTxt_V.delegate = self
         msgTxt_V.textColor = .lightGray
         
-        self.Message = "I have a doubt"
+        view_IhaveDoubt.isHidden = false
+        view_IhaveDoubt.backgroundColor = .clear
+        view_AvailableDays.backgroundColor = .clear
+        view_OtherReason.backgroundColor = .clear
         view_MessageDesc.isHidden = true
         print(BookingStatus,"BookingStatus Coming")
-        switch BookingStatus {
-        case "Finished":
+        switch BookingStatus.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() {
+        case "finished":
             btnReviewBooking.setTitle("Review Booking", for: .normal)
             btnBelowBookingStatus.backgroundColor = UIColor(red: 74/255, green: 237/255, blue: 177/255, alpha: 1)
             btnBelowBookingStatus.setTitle("Finished", for: .normal)
-        case "Confirmed":
+        case "confirmed":
             btnBelowBookingStatus.setTitle("Confirmed", for: .normal)
             btnBelowBookingStatus.backgroundColor = UIColor(red: 133/255, green: 214/255, blue: 255/255, alpha: 1)
             btnReviewBooking.setTitle("Cancel Booking", for: .normal)
@@ -337,7 +383,7 @@ class ReviewVC: UIViewController,UITextViewDelegate {
             btnBelowBookingStatus.setTitle("Waiting payment", for: .normal)
             btnBelowBookingStatus.backgroundColor = UIColor(red: 255/255, green: 241/255, blue: 120/255, alpha: 1)
             btnReviewBooking.setTitle("Cancel Booking", for: .normal)
-        case "Cancelled":
+        case "cancelled":
             
             btnBelowBookingStatus.setTitle("Cancelled", for: .normal)
             btnBelowBookingStatus.backgroundColor = UIColor(red: 58/255, green: 75/255, blue: 76/255, alpha: 0.10)
@@ -348,10 +394,10 @@ class ReviewVC: UIViewController,UITextViewDelegate {
             btnReviewBooking.backgroundColor = UIColor.clear
             btnReviewBooking.layer.borderColor = UIColor.black.cgColor
             
-        case "Pending":
+        case "pending":
             
             btnBelowBookingStatus.setTitle("Pending", for: .normal)
-            btnBelowBookingStatus.backgroundColor = UIColor(red: 58/255, green: 75/255, blue: 76/255, alpha: 0.10)
+            btnBelowBookingStatus.backgroundColor = UIColor(red: 255/255, green: 241/255, blue: 120/255, alpha: 1)
             btnReviewBooking.setTitle("Cancel Booking", for: .normal)
             btnReviewBooking.setTitleColor(.black, for: .normal)
             btnReviewBooking.layer.cornerRadius = 10
@@ -372,7 +418,7 @@ class ReviewVC: UIViewController,UITextViewDelegate {
         
         self.lbl_sortType.text = "Sort by: Highest Review"
         self.imgProfile.layer.cornerRadius = self.imgProfile.layer.frame.height / 2
-        self.imgProfile.contentMode = .scaleAspectFill
+        self.imgProfile.contentMode = .scaleAspectFit
         self.imgProfile.layer.borderWidth = 1
         self.imgProfile.layer.borderColor = UIColor.lightGray.cgColor
         self.latitude = UserDetail.shared.getAppLatitude()
@@ -565,13 +611,24 @@ class ReviewVC: UIViewController,UITextViewDelegate {
 
         // Get sender ID
         let senderID = UserDetail.shared.getUserId()
+        guard !propertyID.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            showAlert(for: "Unable to start chat for this property")
+            return
+        }
+        self.channelName = ChatChannelName.make(
+            guestId: senderID,
+            hostId: "\(self.getBookingDetails?.hostID ?? 0)",
+            propertyId: propertyID
+        )
 
         // Call API
         viewModel.apiForJoinChannel(
             senderId: senderID,
             receiverId: "\(self.getBookingDetails?.hostID ?? 0)",
             groupChannel: self.channelName,
-            userType: "guest"
+            userType: "guest",
+            propertyId: self.propertyID,
+            propertyTitle: self.lbl_PropertyName.text
         )
         
     }
@@ -795,6 +852,11 @@ class ReviewVC: UIViewController,UITextViewDelegate {
         print(sender.tag)
         
         if sender.tag == 0 {
+              Message = ""
+              view_IhaveDoubt.backgroundColor = .clear
+              view_AvailableDays.backgroundColor = .clear
+              view_OtherReason.backgroundColor = .clear
+              view_MessageDesc.isHidden = true
               self.view_MainHoldMessage.isHidden = false
               sender.tag = 1
           } else {
@@ -815,6 +877,8 @@ class ReviewVC: UIViewController,UITextViewDelegate {
     
     @IBAction func btnIhaveDoubt_Tap(_ sender: UIButton) {
         self.Message = "I have a doubt"
+        view_MessageDesc.isHidden = true
+        msgTxt_V.resignFirstResponder()
         view_IhaveDoubt.backgroundColor = UIColor.init(red: 154/255, green: 154/255, blue: 154/255, alpha: 0.25)
         view_AvailableDays.backgroundColor = UIColor.white
         view_OtherReason.backgroundColor = UIColor.clear
@@ -822,6 +886,8 @@ class ReviewVC: UIViewController,UITextViewDelegate {
     
     @IBAction func btnAvailableDays_Tap(_ sender: UIButton) {
         self.Message = "Available days"
+        view_MessageDesc.isHidden = true
+        msgTxt_V.resignFirstResponder()
         view_IhaveDoubt.backgroundColor = UIColor.clear
         view_AvailableDays.backgroundColor =  UIColor.init(red: 154/255, green: 154/255, blue: 154/255, alpha: 0.25)
         view_OtherReason.backgroundColor = UIColor.clear
@@ -955,7 +1021,8 @@ extension ReviewVC {
                     }
                     self.channelName = ChatChannelName.make(
                         guestId: "\(guestID)",
-                        hostId: "\(hostID)"
+                        hostId: "\(hostID)",
+                        propertyId: self.propertyID
                     )
                     print(self.channelName,"self.channelName")
                     print(guestID, hostID, self.propertyID, "ASDFASDF")
@@ -1048,6 +1115,7 @@ extension ReviewVC {
                     self.lbl_bookedDate.text = bookingDetails?.date ?? ""
                     self.lbl_bookedHours.text = bookingDetails?.time ?? ""
                     self.lbl_Bookingtime.text   = bookingDetails?.startEndTime ?? ""
+                    self.configurePendingExtension(self.getBookingDetails?.pendingExtendedBooking)
                     
                     
                     var parkingRules =  self.getBookingDetails?.parkingRules ?? []
@@ -1058,7 +1126,7 @@ extension ReviewVC {
                         self.lbl_hostRulesDesc.text = hostRules[0] }
                     
                     print(self.chargeArr?.hourlyRate ?? "")
-                    self.lbl_HostName.text = (self.getBookingDetails?.hostName ?? "").abbreviatedHostName
+                    self.lbl_HostName.text = self.getBookingDetails?.hostName ?? ""
                     let image = self.getBookingDetails?.hostProfileImage ?? ""
                     let imgURL = AppURL.imageURL + image
                     
@@ -1241,11 +1309,12 @@ extension ReviewVC {
                         vc.friend_id = "\(receiverID)"
                         vc.SenderID = senderID
                         
-                        vc.hostProfileImg = self.guestProfileImg
-                        vc.guesttProfileImg = self.hostProfileImg
-                        vc.hostName = (self.getJoinChannelDetails?.receiverName ?? "").abbreviatedHostName
+                        vc.hostProfileImg = self.hostProfileImg
+                        vc.guesttProfileImg = self.guestProfileImg
+                        vc.hostName = self.getJoinChannelDetails?.receiverName ?? ""
                         vc.guestName = self.getJoinChannelDetails?.senderName ?? ""
-                        vc.hostName = (self.getJoinChannelDetails?.receiverName ?? "").abbreviatedHostName
+                        vc.hostName = self.getJoinChannelDetails?.receiverName ?? ""
+                        vc.propertyTitle = self.lbl_PropertyName.text ?? ""
                         self.tabBarController?.tabBar.isHidden = true
                         vc.hidesBottomBarWhenPushed = true
                         self.navigationController?.pushViewController(vc, animated: true)
@@ -1316,6 +1385,90 @@ extension ReviewVC {
                     }
                 })
             }.store(in: &cancellables)
+    }
+
+    private func configurePendingExtension(_ extensionBooking: PendingExtendedBooking?) {
+        guard let extensionBooking,
+              extensionBooking.extensionStatus?
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+                .caseInsensitiveCompare("pending") == .orderedSame,
+              let startDate = parseExtensionDate(extensionBooking.extensionStart) else {
+            view_PendingExtension.isHidden = true
+            return
+        }
+
+        let hours = max(extensionBooking.extensionHours ?? 0, 0)
+        let calculatedEndDate = hours > 0
+            ? Calendar.current.date(byAdding: .hour, value: hours, to: startDate)
+            : nil
+        let endDate = calculatedEndDate ?? parseExtensionDate(extensionBooking.extensionEnd)
+        guard let endDate else {
+            view_PendingExtension.isHidden = true
+            return
+        }
+
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+        dateFormatter.timeZone = TimeZone.current
+        dateFormatter.dateFormat = "MMMM d, yyyy"
+
+        let timeFormatter = DateFormatter()
+        timeFormatter.locale = Locale(identifier: "en_US_POSIX")
+        timeFormatter.timeZone = TimeZone.current
+        timeFormatter.dateFormat = "hh:mm a"
+
+        lbl_PendingExtensionDate.text = dateFormatter.string(from: startDate)
+        lbl_PendingExtensionHours.text = "\(hours) \(hours == 1 ? "hour" : "hours")"
+        lbl_PendingExtensionTime.text = "From \(timeFormatter.string(from: startDate)) to \(timeFormatter.string(from: endDate))"
+        lbl_PendingExtensionAmount.text = formattedExtensionAmount(extensionBooking.extensionBookingAmount)
+        lbl_PendingExtensionStatus.text = "Pending"
+        view_PendingExtension.isHidden = false
+        UIView.performWithoutAnimation {
+            mainStackView.layoutIfNeeded()
+            view.layoutIfNeeded()
+        }
+    }
+
+    private func formattedExtensionAmount(_ value: String?) -> String {
+        guard let rawValue = value?.trimmingCharacters(in: .whitespacesAndNewlines),
+              let amount = Double(rawValue) else {
+            return "$0.00"
+        }
+        return String(format: "$%.2f", amount)
+    }
+
+    private func parseExtensionDate(_ value: String?) -> Date? {
+        let rawValue = value?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        guard !rawValue.isEmpty else { return nil }
+
+        // The booking-details API returns extension_start/extension_end without a
+        // timezone suffix. Those values are already in the user's booking timezone,
+        // so parse them in the device timezone without applying another conversion.
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone.current
+        for format in [
+            "yyyy-MM-dd HH:mm:ss",
+            "yyyy-MM-dd hh:mm:a",
+            "yyyy-MM-dd h:mm:a",
+            "yyyy-MM-dd hh:mm a",
+            "yyyy-MM-dd h:mm a"
+        ] {
+            formatter.dateFormat = format
+            if let date = formatter.date(from: rawValue) {
+                return date
+            }
+        }
+
+        // Timestamp values carrying Z or an explicit offset are absolute UTC dates.
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        for format in ["yyyy-MM-dd'T'HH:mm:ss.SSSSSSZ", "yyyy-MM-dd'T'HH:mm:ssZ"] {
+            formatter.dateFormat = format
+            if let date = formatter.date(from: rawValue) {
+                return date
+            }
+        }
+        return nil
     }
     
     func calculateFinalPriceWithDiscount(totalPrice: Double, discountPercent: Double, taxPercent: Double) -> (totalPrice: Double, discountAmount: Double, discountedPrice: Double, taxAmount: Double, finalPrice: Double) {

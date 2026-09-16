@@ -439,11 +439,11 @@ extension ListingDetailsVC {
                     let host  = self.getHostDetailsArr?.host
                     
                     if (host?.name ?? "") != "" {
-                        self.lbl_title.text = "\((host?.name ?? "").abbreviatedHostName)'s Listings" } else {
+                        self.lbl_title.text = "\(host?.name ?? "")'s Listings" } else {
                             self.lbl_title.text = ""
                         }
                     
-                    self.lbl_name.text = (host?.name ?? "").abbreviatedHostName
+                    self.lbl_name.text = host?.name ?? ""
                     
                     var img = AppURL.imageURL + (host?.profilePicture ?? "")
                     

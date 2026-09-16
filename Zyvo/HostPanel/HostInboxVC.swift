@@ -10,6 +10,7 @@ import UIKit
 import DropDown
 import Combine
 import IQKeyboardManagerSwift
+import FirebaseFirestore
 
 class HostInboxVC:UIViewController {
     
@@ -41,6 +42,12 @@ class HostInboxVC:UIViewController {
     var currentStatus = ""
     var isFetched : Bool? = false
     private let refreshControl = UIRefreshControl()
+    private var blockStatusListeners: [String: ListenerRegistration] = [:]
+    private var presenceStatusListeners: [String: ListenerRegistration] = [:]
+    private var onlineUserIds = Set<String>()
+    private var pendingChatDataArr: [ChatDataModel]?
+    private var listReloadGeneration = 0
+    private var isHydratingChatList = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -66,10 +73,17 @@ class HostInboxVC:UIViewController {
     }
     
     override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        blockStatusListeners.values.forEach { $0.remove() }
+        blockStatusListeners.removeAll()
+        presenceStatusListeners.values.forEach { $0.remove() }
+        presenceStatusListeners.removeAll()
+        onlineUserIds.removeAll()
+        viewModel.cancelChatListRequest()
+        listReloadGeneration += 1
+        pendingChatDataArr = nil
+        isHydratingChatList = false
         isFetched = false
-        self.tblV.setEmptyView(message: "")
-        self.chatDataArr.removeAll()
-        self.tblV.reloadData()
     }
     
     private func setupTableView() {
@@ -77,11 +91,6 @@ class HostInboxVC:UIViewController {
         tblV.dataSource = self
         tblV.register(UINib(nibName: "msgCell", bundle: nil), forCellReuseIdentifier: "msgCell")
         
-        let token = UserDetail.shared.getChatToken()
-        QuickstartConversationsManager.shared.loginWithAccessToken(token) { (res) in
-            print("Login with Access Token")
-            self.viewModel.apiForGetChatData2(userType: "host")
-        }
         self.conversationsManager.delegate = self
     }
     
@@ -115,6 +124,7 @@ class HostInboxVC:UIViewController {
                 
         let token = UserDetail.shared.getChatToken()
         if isFetched == false {
+            isFetched = true
 //            DispatchQueue.main.async {
 //                GameLoaderView.show(in:  self.view)
 //            }
@@ -290,9 +300,14 @@ extension HostInboxVC : UITableViewDelegate,UITableViewDataSource {
         let cell = tblV.dequeueReusableCell(withIdentifier: "msgCell", for: indexPath) as! msgCell
         
         let data = chatDataArr[indexPath.row]
-        cell.userName.text = data.senderName ?? ""
-        cell.view_online.isHidden = true
-        cell.lbl_PropertyTitle.text = "(\(data.propertyTitle ?? ""))"
+        let senderName = data.senderName ?? ""
+        let propertyTitle = data.propertyTitle?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        cell.userName.text = propertyTitle.isEmpty
+            ? senderName
+            : "\(senderName) (\(propertyTitle))"
+        cell.lbl_PropertyTitle.text = nil
+        cell.lbl_PropertyTitle.isHidden = true
+        cell.view_online.isHidden = !onlineUserIds.contains(otherParticipantId(for: data))
         let image = data.senderProfile ?? ""
         let imgURL = AppURL.imageURL + image
         cell.userImg.loadImage(from:imgURL,placeholder: UIImage(named: "img1"))
@@ -300,24 +315,7 @@ extension HostInboxVC : UITableViewDelegate,UITableViewDataSource {
        // cell.btnDetails.tag = indexPath.row
         cell.btnMenu.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
         //cell.btnDetails.addTarget(self, action: #selector(buttonDetails(_:)), for: .touchUpInside)
-        cell.view_online.isHidden = true
-        
         print(data.unreadCount,"row-Wise Count")
-        if let uniqueName = data.groupName, let conversation = data.chatData, uniqueName == conversation.uniqueName {
-            if let lastMessageIndex = conversation.lastMessageIndex {
-                conversation.message(withIndex: lastMessageIndex) { (result, message) in
-                    DispatchQueue.main.async {
-                        if let messageBody = message {
-                            cell.lbl_message.text = messageBody.body
-                            if let dateUpdated = messageBody.dateUpdated {
-                                cell.lbl_time.text = self.updateLastMsgTime(dateUpdated)
-                            }
-                        }
-                    }
-                }
-            }
-          
-        }
         cell.lbl_message.text = data.lastMessage ?? ""
         cell.lbl_time.text = data.lastMessageTime ?? ""
         return cell
@@ -340,12 +338,13 @@ extension HostInboxVC : UITableViewDelegate,UITableViewDataSource {
             vc.isBlockStatus = data.isBlocked ?? 0
             vc.isMuteStatus = data.isMuted ?? 0
             vc.isArchiveStatus = data.isArchived ?? 0
-            let hostImage = data.senderProfile ?? ""
-            let guestImage = data.receiverImage ?? ""
+            let guestImage = data.senderProfile ?? ""
+            let hostImage = data.receiverImage ?? ""
             vc.hostProfileImg = AppURL.imageURL + hostImage
             vc.guesttProfileImg = AppURL.imageURL + guestImage
             vc.hostName = data.receiverName ?? ""
             vc.guestName = data.senderName ?? ""
+            vc.propertyTitle = data.propertyTitle ?? ""
             self.tabBarController?.tabBar.isHidden = true
             vc.hidesBottomBarWhenPushed = true
 
@@ -513,19 +512,8 @@ extension HostInboxVC : UITableViewDelegate,UITableViewDataSource {
                 
                 if item == "Block" {
                     
-                    let userid = UserDetail.shared.getUserId()
-
-                    let senderId = chatDataArr[sender.tag].senderID ?? ""
-                    let receiverId = chatDataArr[sender.tag].receiverID ?? ""
-
-                    // Current user ke opposite user ka id nikalo
-                    let otherUserId = (senderId == userid) ? receiverId : senderId
-
-                    viewModel.apiForBlockUser(
-                        senderId: userid,
-                        group_channel: chatDataArr[sender.tag].groupName ?? "",
-                        blockUnblock: 1
-                    )
+                    // Legacy backend block API intentionally disabled.
+                    setBlockStatus(channelName: chatDataArr[sender.tag].groupName ?? "", isBlocked: true)
 //                    let userid = UserDetail.shared.getUserId()
 //                    let idds = chatDataArr[sender.tag].senderID ?? ""
 //                    let iddss = chatDataArr[sender.tag].receiverID ?? ""
@@ -537,19 +525,8 @@ extension HostInboxVC : UITableViewDelegate,UITableViewDataSource {
                 print("call api for unblock here")
                 
                 if item == "Unblock" {
-                    let userid = UserDetail.shared.getUserId()
-
-                    let senderId = chatDataArr[sender.tag].senderID ?? ""
-                    let receiverId = chatDataArr[sender.tag].receiverID ?? ""
-
-                    // Current user ke opposite user ka id nikalo
-                    let otherUserId = (senderId == userid) ? receiverId : senderId
-
-                    viewModel.apiForBlockUser(
-                        senderId: userid,
-                        group_channel: chatDataArr[sender.tag].groupName ?? "",
-                        blockUnblock: 0
-                    )
+                    // Legacy backend block API intentionally disabled.
+                    setBlockStatus(channelName: chatDataArr[sender.tag].groupName ?? "", isBlocked: false)
                 }
             }
             if item == "Mute" {
@@ -669,64 +646,105 @@ extension HostInboxVC {
 extension HostInboxVC: QuickstartConversationsManagerDelegate {
     
     func reloadAllData() {
-        
+        guard Thread.isMainThread else {
+            DispatchQueue.main.async { [weak self] in self?.reloadAllData() }
+            return
+        }
+
+        listReloadGeneration += 1
+        let generation = listReloadGeneration
         debouncer.debounce(0.0) { [weak self] in
             guard let self = self else { return }
-            
-            DispatchQueue.global(qos: .userInitiated).async {
-                
+            let localChannels = self.listOfChannel
+            var localChatData = self.pendingChatDataArr ?? self.chatDataArr
+
+            guard !localChatData.isEmpty else {
+                guard generation == self.listReloadGeneration else { return }
+                self.pendingChatDataArr = nil
+                self.isHydratingChatList = false
+                self.chatDataArr = []
+                self.MainchatDataArr = []
+                self.tblV.reloadData()
+                self.refreshControl.endRefreshing()
+                return
+            }
+
+            DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+                guard let self = self else { return }
                 let group = DispatchGroup()
-                
-                for i in 0..<self.chatDataArr.count {
-                    
-                    let name = self.chatDataArr[i].groupName
-                    
-                    if let conversation = self.listOfChannel.first(where: { $0.uniqueName == name }) {
-                        
-                        self.chatDataArr[i].chatData = conversation
-                        
-                        if let lastIndex = conversation.lastMessageIndex {
-                            
+                var fetchedMessages: [String: (body: String, time: String)] = [:]
+                let lockQueue = DispatchQueue(label: "com.zyvo.hostChatFetchLock")
+
+                for i in localChatData.indices {
+                    let name = localChatData[i].groupName
+                    if let conversation = localChannels.first(where: { $0.uniqueName == name }) {
+                        localChatData[i].chatData = conversation
+                        let firestoreTitle = conversation.propertyTitle?
+                            .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+                        if !firestoreTitle.isEmpty {
+                            localChatData[i].propertyTitle = firestoreTitle
+                        }
+                        if let lastIndex = conversation.lastMessageIndex,
+                           let groupName = name {
                             group.enter()
-                            
                             conversation.message(withIndex: lastIndex) { result, message in
-                                
                                 if let msg = message {
-                                    
-                                    DispatchQueue.main.async { [weak self] in
-                                        guard let self = self else { return }
-                                        
-                                        // ✅ Index safe check
-                                        guard self.chatDataArr.indices.contains(i) else { return }
-                                        
-                                        // ✅ LAST MESSAGE
-                                        self.chatDataArr[i].lastMessage = msg.body ?? ""
-                                        
-                                        // ✅ LAST MESSAGE TIME
-                                        if let date = msg.dateUpdated ?? msg.dateCreated {
-                                            self.chatDataArr[i].lastMessageTime = self.updateLastMsgTime(date)
-                                        } else {
-                                            self.chatDataArr[i].lastMessageTime = ""
-                                        }
+                                    let body = msg.body ?? ""
+                                    let time = (msg.dateUpdated ?? msg.dateCreated)
+                                        .map { self.updateLastMsgTime($0) } ?? ""
+                                    lockQueue.async {
+                                        fetchedMessages[groupName] = (body, time)
+                                        group.leave()
                                     }
+                                } else {
+                                    group.leave()
                                 }
-                                
-                                group.leave()
                             }
                         }
                     }
                 }
-                
-                group.notify(queue: .main) {
-                    
-                    self.chatDataArr.sort {
+
+                group.notify(queue: .main) { [weak self] in
+                    guard let self = self,
+                          generation == self.listReloadGeneration else { return }
+
+                    for i in localChatData.indices {
+                        if let groupName = localChatData[i].groupName,
+                           let fetched = fetchedMessages[groupName] {
+                            localChatData[i].lastMessage = fetched.body
+                            localChatData[i].lastMessageTime = fetched.time
+                        }
+                    }
+
+                    localChatData.sort {
                         ($0.chatData?.lastMessageDate ?? Date.distantPast) >
                         ($1.chatData?.lastMessageDate ?? Date.distantPast)
                     }
-                    
-                    self.tblV.reloadData()
+
+                    for index in localChatData.indices {
+                        guard let groupName = localChatData[index].groupName,
+                              let status = self.MainchatDataArr.first(where: { $0.groupName == groupName }) else { continue }
+                        localChatData[index].isBlocked = status.isBlocked
+                        localChatData[index].isOtherBlocked = status.isOtherBlocked
+                    }
+
+                    self.pendingChatDataArr = nil
+                    self.isHydratingChatList = false
+                    self.MainchatDataArr = localChatData
+
+                    let searchText = self.txt_Search.text?
+                        .trimmingCharacters(in: .whitespacesAndNewlines)
+                        .lowercased() ?? ""
+                    self.chatDataArr = searchText.isEmpty ? localChatData : localChatData.filter {
+                        ($0.senderName ?? "").lowercased().contains(searchText)
+                    }
+                    UIView.performWithoutAnimation {
+                        self.tblV.reloadData()
+                        self.tblV.layoutIfNeeded()
+                    }
                     //  IMPORTANT
                     //self.fetchUnreadMessageCounts()
+                    self.refreshControl.endRefreshing()
                     
                     NotificationCenter.default.post(
                         name: NSNotification.Name("UpdateUnreadBadge"),
@@ -798,10 +816,13 @@ extension HostInboxVC {
                     let arr = response.data ?? []
                     
                     //   self.chatDataArr = arr.filter { $0.isDeleted == false && $0.propertyTitle != ""}
-                    self.chatDataArr = arr //.filter { $0.isDeleted == false }
-                    self.MainchatDataArr = self.chatDataArr
+                    self.pendingChatDataArr = arr
+                    self.isHydratingChatList = true
+                    self.MainchatDataArr = arr
+                    self.observeBlockStatuses()
+                    self.observePresenceStatuses()
                     
-                    if self.chatDataArr.count == 0 {
+                    if arr.isEmpty {
                         self.tblV.setEmptyView(message: "No Conversation Found.")
                     } else {
                         self.tblV.setEmptyView(message: "")
@@ -891,11 +912,111 @@ extension HostInboxVC {
                 result?.handle(success: { response in
                     print(response.message ?? "")
                     self.showToast(response.message ?? "")
-                    self.chatDataArr.remove(at: self.index ?? 0)
+                    let activeIndex = self.index ?? 0
+                    guard self.chatDataArr.indices.contains(activeIndex) else { return }
+                    let groupName = self.chatDataArr[activeIndex].groupName
+                    self.chatDataArr.remove(at: activeIndex)
+                    self.MainchatDataArr.removeAll { $0.groupName == groupName }
+                    self.pendingChatDataArr?.removeAll { $0.groupName == groupName }
                     DispatchQueue.main.async {
                         self.tblV.reloadData()
                     }
                 })
             }.store(in: &cancellables)
+    }
+
+    private func setBlockStatus(channelName: String, isBlocked: Bool) {
+        conversationsManager.setMessagingBlocked(
+            channelName: channelName,
+            blockerId: UserDetail.shared.getUserId(),
+            isBlocked: isBlocked
+        ) { [weak self] result in
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+                guard result.isSuccessful else {
+                    self.showToast(result.error?.localizedDescription ?? "Unable to update block status")
+                    return
+                }
+                self.showToast(isBlocked ? "You have blocked this user." : "You have unblocked this user.")
+            }
+        }
+    }
+
+    private func observeBlockStatuses() {
+        blockStatusListeners.values.forEach { $0.remove() }
+        blockStatusListeners.removeAll()
+
+        let userId = UserDetail.shared.getUserId()
+        guard !userId.isEmpty else { return }
+        let channelNames = Set(MainchatDataArr.compactMap { item -> String? in
+            let name = item.groupName?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+            return name.isEmpty ? nil : name
+        })
+
+        for channelName in channelNames {
+            blockStatusListeners[channelName] = conversationsManager.observeBlockStatus(
+                channelName: channelName,
+                currentUserId: userId
+            ) { [weak self] isBlockedByMe, isBlockedByOther in
+                guard let self = self else { return }
+                for index in self.MainchatDataArr.indices where self.MainchatDataArr[index].groupName == channelName {
+                    self.MainchatDataArr[index].isBlocked = isBlockedByMe ? 1 : 0
+                    self.MainchatDataArr[index].isOtherBlocked = isBlockedByOther ? 1 : 0
+                }
+                for index in self.chatDataArr.indices where self.chatDataArr[index].groupName == channelName {
+                    self.chatDataArr[index].isBlocked = isBlockedByMe ? 1 : 0
+                    self.chatDataArr[index].isOtherBlocked = isBlockedByOther ? 1 : 0
+                }
+                if var pendingChats = self.pendingChatDataArr {
+                    for index in pendingChats.indices where pendingChats[index].groupName == channelName {
+                        pendingChats[index].isBlocked = isBlockedByMe ? 1 : 0
+                        pendingChats[index].isOtherBlocked = isBlockedByOther ? 1 : 0
+                    }
+                    self.pendingChatDataArr = pendingChats
+                }
+                guard !self.isHydratingChatList else { return }
+                let rows = self.chatDataArr.enumerated().compactMap { index, chat in
+                    chat.groupName == channelName ? IndexPath(row: index, section: 0) : nil
+                }
+                guard !rows.isEmpty else { return }
+                self.tblV.reloadRows(at: rows, with: .none)
+            }
+        }
+    }
+
+    private func otherParticipantId(for chat: ChatDataModel) -> String {
+        let currentUserId = UserDetail.shared.getUserId()
+        if chat.senderID == currentUserId { return chat.receiverID ?? "" }
+        if chat.receiverID == currentUserId { return chat.senderID ?? "" }
+        return chat.senderID ?? ""
+    }
+
+    private func observePresenceStatuses() {
+        presenceStatusListeners.values.forEach { $0.remove() }
+        presenceStatusListeners.removeAll()
+        onlineUserIds.removeAll()
+
+        let participantIds = Set(MainchatDataArr.map(otherParticipantId(for:)).filter { !$0.isEmpty })
+        for participantId in participantIds {
+            presenceStatusListeners[participantId] = conversationsManager.observePresence(
+                userId: participantId
+            ) { [weak self] isOnline in
+                guard let self = self else { return }
+                let wasOnline = self.onlineUserIds.contains(participantId)
+                guard wasOnline != isOnline else { return }
+                if isOnline {
+                    self.onlineUserIds.insert(participantId)
+                } else {
+                    self.onlineUserIds.remove(participantId)
+                }
+                guard !self.isHydratingChatList else { return }
+                let rows = self.chatDataArr.enumerated().compactMap { index, chat in
+                    self.otherParticipantId(for: chat) == participantId
+                        ? IndexPath(row: index, section: 0) : nil
+                }
+                guard !rows.isEmpty else { return }
+                self.tblV.reloadRows(at: rows, with: .none)
+            }
+        }
     }
 }

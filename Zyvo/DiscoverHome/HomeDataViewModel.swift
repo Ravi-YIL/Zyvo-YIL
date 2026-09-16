@@ -103,8 +103,19 @@ extension HomeDataViewModel {
         self.getHomeDataResult = nil
         var para = [String: Any]()
         
-        let appLatitude = self.latitude.isEmpty ? UserDetail.shared.getAppLatitude() : self.latitude
-        let appLongitude = self.longitude.isEmpty ? UserDetail.shared.getAppLongitude() : self.longitude
+        let hasLocationFilter = !locationss
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .isEmpty
+
+        // A named location must use only the coordinates selected for that
+        // location. Falling back to device/global coordinates here can send a
+        // payload such as location=Houston with coordinates from another city.
+        let appLatitude = hasLocationFilter
+            ? latitude
+            : (latitude.isEmpty ? UserDetail.shared.getAppLatitude() : latitude)
+        let appLongitude = hasLocationFilter
+            ? longitude
+            : (longitude.isEmpty ? UserDetail.shared.getAppLongitude() : longitude)
         
         UserDetail.shared.setAppLatitude(appLatitude)
         UserDetail.shared.setAppLongitude(appLongitude)
@@ -162,7 +173,6 @@ extension HomeDataViewModel {
             }.store(in: &cancellables)
     }
 }
-
 
 
 

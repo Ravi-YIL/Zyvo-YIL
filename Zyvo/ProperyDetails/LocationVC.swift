@@ -1,7 +1,6 @@
 //
 //  LocationVC.swift
 //  Zyvo
-//
 //  Created by ravi on 29/11/24.
 //
 
@@ -89,7 +88,7 @@ class LocationVC: UIViewController, FSCalendarDataSource, FSCalendarDelegate, Ci
     @IBOutlet weak var view_MessageHostEntry: UIView!
     @IBOutlet weak var view_HostContactHeader: UIView!
     @IBOutlet weak var hostMessageTextView: UITextView!
-    private var selectedHostMessage = "I have a doubt"
+    private var selectedHostMessage = ""
     @IBOutlet weak var viewHold_MessageHost: UIView!
     @IBOutlet weak var view_otherReason: UIView!
     @IBOutlet weak var view_availableDays: UIView!
@@ -263,7 +262,10 @@ class LocationVC: UIViewController, FSCalendarDataSource, FSCalendarDelegate, Ci
         view_ShareMessage.isHidden = true
         hostMessageTextView.text = ""
         hostMessageTextView.accessibilityLabel = "Message to host"
-        btnIhaveDoubt_Tap(btnShowMsgHost)
+        view_IhaveDoubt.isHidden = false
+        view_IhaveDoubt.backgroundColor = .clear
+        view_availableDays.backgroundColor = .clear
+        view_otherReason.backgroundColor = .clear
         viewHold_MessageHost.layer.cornerRadius = 20
         viewHold_MessageHost.layer.borderWidth = 1.5
         viewHold_MessageHost.layer.borderColor = UIColor(white: 228/255, alpha: 1).cgColor
@@ -406,7 +408,11 @@ class LocationVC: UIViewController, FSCalendarDataSource, FSCalendarDelegate, Ci
 
     private func updateMessageHostVisibility() {
         let currentUserId = UserDetail.shared.getUserId().trimmingCharacters(in: .whitespacesAndNewlines)
-        let canMessageHost = !currentUserId.isEmpty && hostID > 0 && currentUserId != "\(hostID)"
+        // Guests who are browsing without signing in should still be able to see
+        // the host contact controls. Authentication is required only when they
+        // actually try to send the message.
+        let isBrowsingWithoutLogin = comingFrom == "WithoutLogin" || currentUserId.isEmpty
+        let canMessageHost = hostID > 0 && (isBrowsingWithoutLogin || currentUserId != "\(hostID)")
         view_msgV.isHidden = !canMessageHost
         view_HostContactHeader.isHidden = !canMessageHost
         view_MessageHostEntry.isHidden = !canMessageHost
@@ -685,23 +691,45 @@ private func updateAddOnsCollectionViewHeight() {
     }
     
     @IBAction func btnshowMessageHost_Tap(_ sender: UIButton) {
-        guard !UserDetail.shared.getUserId().isEmpty, hostID > 0,
-              UserDetail.shared.getUserId() != "\(hostID)" else { return }
+        let currentUserId = UserDetail.shared.getUserId().trimmingCharacters(in: .whitespacesAndNewlines)
+        let isBrowsingWithoutLogin = comingFrom == "WithoutLogin" || currentUserId.isEmpty
+        guard hostID > 0, isBrowsingWithoutLogin || currentUserId != "\(hostID)" else { return }
+        if viewHold_MessageHost.isHidden {
+            selectedHostMessage = ""
+            view_IhaveDoubt.backgroundColor = .clear
+            view_availableDays.backgroundColor = .clear
+            view_otherReason.backgroundColor = .clear
+            view_ShareMessage.isHidden = true
+        }
         viewHold_MessageHost.isHidden.toggle()
         view.endEditing(true)
     }
 
     @IBAction func btnSendMessageHost_Tap(_ sender: UIButton) {
         let senderID = UserDetail.shared.getUserId().trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !senderID.isEmpty, hostID > 0, senderID != "\(hostID)" else { return }
+        guard comingFrom != "WithoutLogin", !senderID.isEmpty else {
+            let vc = storyboard?.instantiateViewController(withIdentifier: "LoginVC") as! LoginVC
+            navigationController?.pushViewController(vc, animated: false)
+            return
+        }
+        guard hostID > 0, senderID != "\(hostID)" else { return }
+        guard !selectedHostMessage.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            showAlert(for: "Please select a message")
+            return
+        }
         if selectedHostMessage == "Others",
            hostMessageTextView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             showAlert(for: "Please enter your message")
             return
         }
         view.endEditing(true)
-        channelName = ChatChannelName.make(guestId: senderID, hostId: "\(hostID)")
-        viewModel1.apiForJoinChannel(senderId: senderID, receiverId: "\(self.hostID )", groupChannel: self.channelName, userType: "guest")
+        guard !propertyID.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            showAlert(for: "Unable to start chat for this property")
+            return
+        }
+        channelName = ChatChannelName.make(guestId: senderID, hostId: "\(hostID)", propertyId: propertyID)
+        let chatPropertyTitle = self.lbl_title.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        viewModel1.apiForJoinChannel(senderId: senderID, receiverId: "\(self.hostID )", groupChannel: self.channelName, userType: "guest", propertyId: propertyID, propertyTitle: chatPropertyTitle)
     }
     
     @IBAction func btnChooseHours_Tap(_ sender: UIButton) {
@@ -1576,7 +1604,8 @@ extension LocationVC {
                     
                     self.channelName = ChatChannelName.make(
                         guestId: guestID,
-                        hostId: "\(self.hostID)"
+                        hostId: "\(self.hostID)",
+                        propertyId: self.propertyID
                     )
                     self.updateMessageHostVisibility()
                     print(self.channelName,"self.channelName")
@@ -1748,7 +1777,7 @@ extension LocationVC {
                     
                     self.updateUI()
                     
-                    self.lbl_hostBy.text = (self.getPropertyDetails?.hostedBy ?? "").abbreviatedHostName
+                    self.lbl_hostBy.text = self.getPropertyDetails?.hostedBy ?? ""
                     // self.lbl_sortType.text = self.getPropertyDetails.s
                     self.lbl_HostRules.text = self.getPropertyDetails?.hostRules ?? ""
                     
@@ -1921,7 +1950,8 @@ extension LocationVC {
                         vc.friend_id = "\(receiverID)"
                         vc.SenderID = senderID
                         vc.guestName = self.getJoinChannelDetails?.senderName ?? ""
-                        vc.hostName = (self.getJoinChannelDetails?.receiverName ?? "").abbreviatedHostName
+                        vc.hostName = self.getJoinChannelDetails?.receiverName ?? ""
+                        vc.propertyTitle = self.lbl_title.text ?? ""
                         vc.hostProfileImg = self.hostProfileImg
                         vc.guesttProfileImg =  self.guestProfileImg
                         self.tabBarController?.tabBar.isHidden = true
@@ -2007,7 +2037,7 @@ extension LocationVC {
                         }
                         vc.hostID = self.getPropertyDetails?.hostID ?? 0
                         
-                        vc.hostName = (self.getPropertyDetails?.hostedBy ?? "").abbreviatedHostName
+                        vc.hostName = self.getPropertyDetails?.hostedBy ?? ""
                         vc.propertyDistanceInMiles = self.propertyDistanceInMiles
                         vc.propertyName = self.lbl_title.text ?? ""
                         vc.propertyRating = self.lbl_rating.text ?? ""

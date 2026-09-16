@@ -108,6 +108,9 @@ class DiscoverVC: UIViewController,LocationPickerDelegate {
        var remainingTime: TimeInterval = 0
     
     var timer2: Timer?
+
+    private var isNeedMoreTimePromptPresented = false
+    private let needMoreTimeAcknowledgementPrefix = "needMoreTimePromptAcknowledged"
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -376,27 +379,8 @@ class DiscoverVC: UIViewController,LocationPickerDelegate {
             let minutes = (totalSeconds % 3600) / 60
             let seconds = totalSeconds % 60
             
-            let isNeedMoreOpenOnce = UserDetail.shared.getisNeedMoreOpenOnce()
             if hours == 0, minutes <= 30, seconds == 0 {
-                let isTimeExtend = UserDetail.shared.getisTimeExtend()
-                if isNeedMoreOpenOnce != "No" {
-                    if isTimeExtend == "No" {
-                        let vc = self.storyboard?.instantiateViewController(withIdentifier: "NeedMoreTimePopUpVC") as! NeedMoreTimePopUpVC
-                        vc.backAction = { [weak self] str in
-                            guard let self = self else { return }
-                            print(str, "Data Recieved")
-                            
-                            if str == "Yes" {
-                                self.presentAddMoreTimePopUp()
-                            }
-                            if str == "No" {
-                                UserDetail.shared.setisNeedMoreOpenOnce("No")
-                            }
-                        }
-                        vc.modalPresentationStyle = .overFullScreen
-                        self.present(vc, animated: true)
-                    }
-                }
+                presentNeedMoreTimePromptIfNeeded()
             }
         } else {
             timer?.invalidate() // Stop the timer when it reaches zero
@@ -490,6 +474,59 @@ class DiscoverVC: UIViewController,LocationPickerDelegate {
     }
     
     // MARK: - Time Extension Popup Helper
+
+    private func needMoreTimeAcknowledgementKey() -> String? {
+        guard let booking = getUserBooking?.bookings?.first,
+              let bookingID = booking.bookingID else {
+            return nil
+        }
+
+        let userID = UserDetail.shared.getUserId()
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !userID.isEmpty else { return nil }
+
+        // Including the final end time makes a successful extension a new,
+        // independently eligible prompt window for the same booking.
+        let finalBookingEnd = booking.finalBookingEnd ?? booking.bookingEnd ?? ""
+        return "\(needMoreTimeAcknowledgementPrefix).\(userID).\(bookingID).\(finalBookingEnd)"
+    }
+
+    private func hasAcknowledgedNeedMoreTimePrompt() -> Bool {
+        guard let key = needMoreTimeAcknowledgementKey() else { return false }
+        return UserDefaults.standard.bool(forKey: key)
+    }
+
+    private func acknowledgeNeedMoreTimePrompt() {
+        guard let key = needMoreTimeAcknowledgementKey() else { return }
+        UserDefaults.standard.set(true, forKey: key)
+    }
+
+    private func presentNeedMoreTimePromptIfNeeded(userInitiated: Bool = false) {
+        guard !isNeedMoreTimePromptPresented,
+              presentedViewController == nil,
+              userInitiated || !hasAcknowledgedNeedMoreTimePrompt() else {
+            return
+        }
+
+        guard let vc = storyboard?.instantiateViewController(
+            withIdentifier: "NeedMoreTimePopUpVC"
+        ) as? NeedMoreTimePopUpVC else {
+            return
+        }
+
+        isNeedMoreTimePromptPresented = true
+        vc.backAction = { [weak self] response in
+            guard let self = self else { return }
+            self.isNeedMoreTimePromptPresented = false
+            self.acknowledgeNeedMoreTimePrompt()
+
+            if response == "Yes" {
+                self.presentAddMoreTimePopUp()
+            }
+        }
+        vc.modalPresentationStyle = .overFullScreen
+        present(vc, animated: true)
+    }
     
     private func presentAddMoreTimePopUp() {
         let addMoreTimeVC = self.storyboard?.instantiateViewController(withIdentifier: "AddMoreTimePopUpVC") as! AddMoreTimePopUpVC
@@ -502,7 +539,7 @@ class DiscoverVC: UIViewController,LocationPickerDelegate {
             self.DiscountPercentage = Double(self.getUserBookingPropertyArr?.first?.bulkDiscountRate ?? "")
             self.taxPercentage = Double(self.getUserBookingPropertyArr?.first?.tax ?? "")
             self.bookingID = ("\(self.getBookingArr?.first?.bookingID ?? 0)")
-            self.hostName = (self.getUserBookingPropertyArr?.first?.hostedBy ?? "").abbreviatedHostName
+            self.hostName = self.getUserBookingPropertyArr?.first?.hostedBy ?? ""
             self.propertyName = self.getUserBookingPropertyArr?.first?.propertyTitle ?? ""
             
             self.propertyRating = self.getUserBookingPropertyArr?.first?.reviewsTotalRating ?? ""
@@ -593,6 +630,9 @@ class DiscoverVC: UIViewController,LocationPickerDelegate {
             }
             extraVC.awardStatus = self.getBookingArr?.first?.isHostStar ?? false
             extraVC.bookingID = ("\(self.getBookingArr?.first?.bookingID ?? 0)")
+            extraVC.hostID = self.getBookingArr?.first?.hostUserID
+                ?? self.getUserBookingPropertyArr?.first?.hostID
+                ?? 0
             extraVC.startTime = self.startTime
             extraVC.endTime = self.endTime
             extraVC.hostName = self.hostName
@@ -630,24 +670,7 @@ class DiscoverVC: UIViewController,LocationPickerDelegate {
     }
     
     @IBAction func btnExtratime_Tap(_ sender: UIButton) {
-        let isNeedMoreOpenOnce = UserDetail.shared.getisNeedMoreOpenOnce()
-        print(isNeedMoreOpenOnce)
-        if isNeedMoreOpenOnce == "No" || isNeedMoreOpenOnce == ""  {
-            let vc = self.storyboard?.instantiateViewController(withIdentifier: "NeedMoreTimePopUpVC") as! NeedMoreTimePopUpVC
-            vc.backAction = { [weak self] str in
-                guard let self = self else { return }
-                if str == "Yes" {
-                    UserDetail.shared.setisNeedMoreOpenOnce("No")
-                }
-                
-                print(str,"Data Recieved")
-                if str == "Yes" {
-                    self.presentAddMoreTimePopUp()
-                }
-            }
-            vc.modalPresentationStyle = .overFullScreen
-            self.present(vc, animated: true)
-        }
+        presentNeedMoreTimePromptIfNeeded(userInitiated: true)
     }
     
     @IBAction func btnTime_Tap(_ sender: UIButton) {
@@ -829,7 +852,7 @@ extension DiscoverVC :UICollectionViewDelegate,UICollectionViewDataSource {
         } else {
             cell.view_Instant.isHidden = false
         }
-        cell.lbl_NameHostedBy.text = (data?.hostName ?? "").abbreviatedHostName
+        cell.lbl_NameHostedBy.text = data?.hostName ?? ""
         cell.lbl_AddressHostedby.text = data?.hostAddress ?? ""
         let hostProfileImgUrl = data?.hostProfileImageUrl ?? ""
        
@@ -1029,27 +1052,8 @@ extension DiscoverVC :UICollectionViewDelegate,UICollectionViewDataSource {
           lbl_minutes.text = "\(minutes)"
           lbl_seconds.text = "\(seconds)"
           
-          let isNeedMoreOpenOnce = UserDetail.shared.getisNeedMoreOpenOnce()
           if hours == 0, minutes <= 30, seconds == 0 {
-              let isTimeExtend = UserDetail.shared.getisTimeExtend()
-              if isNeedMoreOpenOnce != "No" {
-                  if isTimeExtend == "No" {
-                      let vc = self.storyboard?.instantiateViewController(withIdentifier: "NeedMoreTimePopUpVC") as! NeedMoreTimePopUpVC
-                      vc.backAction = { [weak self] str in
-                          guard let self = self else { return }
-                          print(str, "Data Recieved")
-                          
-                          if str == "Yes" {
-                              self.presentAddMoreTimePopUp()
-                          }
-                          if str == "No" {
-                              UserDetail.shared.setisNeedMoreOpenOnce("No")
-                          }
-                      }
-                      vc.modalPresentationStyle = .overFullScreen
-                      self.present(vc, animated: true)
-                  }
-              }
+              presentNeedMoreTimePromptIfNeeded()
           }
       }
 }
