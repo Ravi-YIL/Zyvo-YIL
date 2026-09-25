@@ -212,7 +212,30 @@ class LocationVC: UIViewController, FSCalendarDataSource, FSCalendarDelegate, Ci
         
         // Keep the standard Google map styling on Property Details so road
         // names, street labels, and nearby place labels remain visible.
-        mapv1.mapStyle = nil
+       // mapv1.mapStyle = nil
+        
+        
+        // MARK: - Hide All Google Map Details
+
+        let hideAllDetailsJSON = """
+        [
+          {
+            "featureType": "all",
+            "elementType": "labels",
+            "stylers": [
+              {
+                "visibility": "off"
+              }
+            ]
+          }
+        ]
+        """
+
+        do {
+            mapv1.mapStyle = try GMSMapStyle(jsonString: hideAllDetailsJSON)
+        } catch {
+            print("Failed to apply map style: \(error.localizedDescription)")
+        }
         
         self.view_MainAddOns.isHidden = true
 

@@ -185,6 +185,10 @@ class DiscoverVC: UIViewController,LocationPickerDelegate {
         
         if isComingBackFromMap {
             isComingBackFromMap = false
+            if let sharedData = HomeDataStore.shared.homeDataArr {
+                self.getHomeDataArr = sharedData
+                self.collecV.reloadData()
+            }
             return
         }
 
@@ -200,6 +204,12 @@ class DiscoverVC: UIViewController,LocationPickerDelegate {
         print(savedLat,"savedLat")
         print(savedLng,"savedLng")
 
+        if let sharedData = HomeDataStore.shared.homeDataArr, !sharedData.isEmpty, !(getHomeDataArr?.isEmpty ?? true) {
+            self.getHomeDataArr = sharedData
+            self.collecV.reloadData()
+            return
+        }
+
         if !savedLat.isEmpty && !savedLng.isEmpty && savedLat != "0.0" && savedLng != "0.0" && savedLat != "0" && savedLng != "0" {
             viewModel.latitude = savedLat
             viewModel.longitude = savedLng
@@ -207,7 +217,7 @@ class DiscoverVC: UIViewController,LocationPickerDelegate {
             self.lat  = savedLat
             self.lng  = savedLng
           
-            if isappliedField == false || (getHomeDataArr == nil || getHomeDataArr?.isEmpty == true) {
+            if getHomeDataArr == nil || getHomeDataArr?.isEmpty == true {
                 viewModel.apiforGetHomeData()
                 shouldFetchHomeData = false
             }
@@ -408,6 +418,30 @@ class DiscoverVC: UIViewController,LocationPickerDelegate {
         NotificationCenter.default.removeObserver(self)
     }
     
+    private func handleClearLocation() {
+        WhereSaveData.shared.clearData()
+        FilterSavedData.shared.clearData()
+        HomeDataStore.shared.clearData()
+        self.viewModel.latitude = ""
+        self.viewModel.longitude = ""
+        let devLat = UserDetail.shared.getDeviceLatitude()
+        let devLng = UserDetail.shared.getDeviceLongitude()
+        if !devLat.isEmpty && !devLng.isEmpty && devLat != "0.0" && devLat != "0" {
+            UserDetail.shared.setAppLatitude(devLat)
+            UserDetail.shared.setAppLongitude(devLng)
+            self.lat = devLat
+            self.lng = devLng
+            if let latD = Double(devLat), let lngD = Double(devLng) {
+                self.latitude = latD
+                self.longitude = lngD
+            }
+        } else {
+            UserDetail.shared.setAppLatitude(self.lat)
+            UserDetail.shared.setAppLongitude(self.lng)
+        }
+        self.viewModel.apiforGetHomeData()
+    }
+
     // MARK: - Actions
     
     @IBAction func btnWhereTap(_ sender: UIButton) {
@@ -422,22 +456,7 @@ class DiscoverVC: UIViewController,LocationPickerDelegate {
             print(str, str1, "data Recieved")
 
             if str1 == "Clear" {
-                let devLat = UserDetail.shared.getDeviceLatitude()
-                let devLng = UserDetail.shared.getDeviceLongitude()
-                if !devLat.isEmpty && !devLng.isEmpty {
-                    UserDetail.shared.setAppLatitude(devLat)
-                    UserDetail.shared.setAppLongitude(devLng)
-                    self.lat = devLat
-                    self.lng = devLng
-                    if let latD = Double(devLat), let lngD = Double(devLng) {
-                        self.latitude = latD
-                        self.longitude = lngD
-                    }
-                } else {
-                    UserDetail.shared.setAppLatitude(self.lat)
-                    UserDetail.shared.setAppLongitude(self.lng)
-                }
-                self.viewModel.apiforGetHomeData()
+                self.handleClearLocation()
             } else {
                 self.comingFrom = "Filter"
 
@@ -681,22 +700,7 @@ class DiscoverVC: UIViewController,LocationPickerDelegate {
             guard let self = self else { return }
             print(str, str1, "data Recieved")
             if str1 == "Clear" {
-                let devLat = UserDetail.shared.getDeviceLatitude()
-                let devLng = UserDetail.shared.getDeviceLongitude()
-                if !devLat.isEmpty && !devLng.isEmpty {
-                    UserDetail.shared.setAppLatitude(devLat)
-                    UserDetail.shared.setAppLongitude(devLng)
-                    self.lat = devLat
-                    self.lng = devLng
-                    if let latD = Double(devLat), let lngD = Double(devLng) {
-                        self.latitude = latD
-                        self.longitude = lngD
-                    }
-                } else {
-                    UserDetail.shared.setAppLatitude(self.lat)
-                    UserDetail.shared.setAppLongitude(self.lng)
-                }
-                self.viewModel.apiforGetHomeData()
+                self.handleClearLocation()
             } else if str1 == "" {
                 self.viewModel.apiforGetHomeData()
             } else {
@@ -723,22 +727,7 @@ class DiscoverVC: UIViewController,LocationPickerDelegate {
             guard let self = self else { return }
             print(str, str1, "data Recieved")
             if str1 == "Clear" {
-                let devLat = UserDetail.shared.getDeviceLatitude()
-                let devLng = UserDetail.shared.getDeviceLongitude()
-                if !devLat.isEmpty && !devLng.isEmpty {
-                    UserDetail.shared.setAppLatitude(devLat)
-                    UserDetail.shared.setAppLongitude(devLng)
-                    self.lat = devLat
-                    self.lng = devLng
-                    if let latD = Double(devLat), let lngD = Double(devLng) {
-                        self.latitude = latD
-                        self.longitude = lngD
-                    }
-                } else {
-                    UserDetail.shared.setAppLatitude(self.lat)
-                    UserDetail.shared.setAppLongitude(self.lng)
-                }
-                self.viewModel.apiforGetHomeData()
+                self.handleClearLocation()
             } else if str1 == "" {
                 self.viewModel.apiforGetHomeData()
             } else {
@@ -770,22 +759,7 @@ class DiscoverVC: UIViewController,LocationPickerDelegate {
             guard let self = self else { return }
             print(str, str1, "data Recieved")
             if str1 == "Clear" {
-                let devLat = UserDetail.shared.getDeviceLatitude()
-                let devLng = UserDetail.shared.getDeviceLongitude()
-                if !devLat.isEmpty && !devLng.isEmpty {
-                    UserDetail.shared.setAppLatitude(devLat)
-                    UserDetail.shared.setAppLongitude(devLng)
-                    self.lat = devLat
-                    self.lng = devLng
-                    if let latD = Double(devLat), let lngD = Double(devLng) {
-                        self.latitude = latD
-                        self.longitude = lngD
-                    }
-                } else {
-                    UserDetail.shared.setAppLatitude(self.lat)
-                    UserDetail.shared.setAppLongitude(self.lng)
-                }
-                self.viewModel.apiforGetHomeData()
+                self.handleClearLocation()
             } else if str1 == "" {
                 self.viewModel.apiforGetHomeData()
             } else {
@@ -923,7 +897,10 @@ extension DiscoverVC :UICollectionViewDelegate,UICollectionViewDataSource {
                     if str == "Ravi" {
                         mainTabVC?.progressBar?.isHidden = false
                     }
-                    self?.viewModel.apiforGetHomeData()
+                    if let sharedData = HomeDataStore.shared.homeDataArr {
+                        self?.getHomeDataArr = sharedData
+                        self?.collecV.reloadData()
+                    }
                 }
                 vc.propertyID = "\(data?.propertyID ?? 0)"
                 self.navigationController?.pushViewController(vc, animated: true)
@@ -941,7 +918,10 @@ extension DiscoverVC :UICollectionViewDelegate,UICollectionViewDataSource {
         vc.propertyID = "\(data.propertyID ?? 0)"
         vc.propertyDistanceInMiles = data.distanceMiles ?? ""
         vc.backAction = { [weak self] str in
-            self?.viewModel.apiforGetHomeData()
+            if let sharedData = HomeDataStore.shared.homeDataArr {
+                self?.getHomeDataArr = sharedData
+                self?.collecV.reloadData()
+            }
         }
         self.navigationController?.pushViewController(vc, animated: true)
     }
@@ -953,7 +933,10 @@ extension DiscoverVC :UICollectionViewDelegate,UICollectionViewDataSource {
         vc.propertyID = "\(data.propertyID ?? 0)"
         vc.propertyDistanceInMiles = data.distanceMiles ?? ""
         vc.backAction = { [weak self] str in
-            self?.viewModel.apiforGetHomeData()
+            if let sharedData = HomeDataStore.shared.homeDataArr {
+                self?.getHomeDataArr = sharedData
+                self?.collecV.reloadData()
+            }
         }
         self.navigationController?.pushViewController(vc, animated: true)
     }

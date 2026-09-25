@@ -519,11 +519,18 @@ class WhereVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSCal
         print(self.longitude)
         
         // restore original/current device location
-        UserDetail.shared.setAppLatitude("")
-        UserDetail.shared.setAppLongitude("")
+        let devLat = UserDetail.shared.getDeviceLatitude()
+        let devLng = UserDetail.shared.getDeviceLongitude()
+        if !devLat.isEmpty && devLat != "0.0" && devLat != "0" {
+            UserDetail.shared.setAppLatitude(devLat)
+            UserDetail.shared.setAppLongitude(devLng)
+        } else {
+            UserDetail.shared.setAppLatitude("")
+            UserDetail.shared.setAppLongitude("")
+        }
 
-        WhereSaveData.shared.lat = ""
-        WhereSaveData.shared.long = ""
+        WhereSaveData.shared.clearData()
+        FilterSavedData.shared.clearData()
         
         isHourChanged = false
         hours = ""
@@ -533,7 +540,6 @@ class WhereVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSCal
         isappliedField = false
         self.FilterStatus = "Clear"
         self.view_Watch.setHour(2)
-        WhereSaveData.shared.clearData()
         calendarView.reloadData()
         self.priceTextField.text = ""
         calendarView.appearance.todayColor = nil

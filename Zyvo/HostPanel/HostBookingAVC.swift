@@ -257,11 +257,14 @@ class HostBookingAVC: UIViewController,UITextViewDelegate {
         
         self.lbl_SortType.text = "Sort by: Highest Review"
         
-        if bookingStatus == "pending"{
+        if bookingStatus == "Pending"{
             self.btnReviewBooking.setTitle("Approve Booking", for: .normal)
+            self.btnMessageHost.setTitle("Decline Booking", for: .normal)
         }else{
             self.btnReviewBooking.setTitle("Review Guest", for: .normal)
+            self.btnMessageHost.setTitle("Message the Guest", for: .normal)
         }
+        
         if extId == 0{
             self.extentionTimeView.isHidden = true
         }else{
@@ -544,11 +547,14 @@ class HostBookingAVC: UIViewController,UITextViewDelegate {
         }
     }
     @IBAction func btnReviewBooking_Tap(_ sender: UIButton) {
-        if self.bookingStatus == "pending" {
+        if self.bookingStatus == "Pending" {
             let vc = self.storyboard?.instantiateViewController(withIdentifier: "HostApproveRequestVC") as! HostApproveRequestVC
             vc.bookingId = "\(self.bookingId ?? 0)"
             vc.backAction = {
                 self.btnReviewBooking.setTitle("Review Guest", for: .normal)
+                self.btnMessageHost.setTitle("Message the Guest", for: .normal)
+                self.configureBookingStatusBadge("confirmed")
+                self.bookingStatus = "confirmed"
             }
             self.present(vc, animated: true)
         }else{
@@ -588,19 +594,34 @@ class HostBookingAVC: UIViewController,UITextViewDelegate {
     
     @IBAction func btnMessageHost_Tap(_ sender: UIButton) {
 //        sender.titleLabel?.textColor = UIColor.black
-        if sender.isSelected == true {
-            self.view_MainMessageGuest.isHidden = true
-            sender.isSelected = false
-        } else {
-            Message = ""
-            view_IhaveDoubt.backgroundColor = .clear
-            view_AvailableDays.backgroundColor = .clear
-            view_OtherReason.backgroundColor = .clear
-            view_MessageDesc.isHidden = true
-            self.view_MainMessageGuest.isHidden = false
-            sender.isSelected = true
-        }
         
+        if self.bookingStatus == "Pending" {
+            
+            let vc = self.storyboard?.instantiateViewController(withIdentifier: "HostDeclineRequestVC") as! HostDeclineRequestVC
+            
+            vc.bookingId = "\(self.bookingId ?? 0)"
+            vc.backAction = {
+                self.btnReviewBooking.setTitle("Review Guest", for: .normal)
+                self.btnMessageHost.setTitle("Message the Guest", for: .normal)
+                self.configureBookingStatusBadge("cancelled")
+                self.bookingStatus = "cancelled"
+            }
+            self.present(vc, animated: true)
+            
+        } else {
+            if sender.isSelected == true {
+                self.view_MainMessageGuest.isHidden = true
+                sender.isSelected = false
+            } else {
+                Message = ""
+                view_IhaveDoubt.backgroundColor = .clear
+                view_AvailableDays.backgroundColor = .clear
+                view_OtherReason.backgroundColor = .clear
+                view_MessageDesc.isHidden = true
+                self.view_MainMessageGuest.isHidden = false
+                sender.isSelected = true
+            }
+        }
         
         //        self.tabBarController?.selectedIndex = 1
 //        let senderID = UserDetail.shared.getUserId()

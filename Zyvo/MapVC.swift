@@ -62,20 +62,12 @@ class MapVC: UIViewController,GMSMapViewDelegate,LocationPickerDelegate {
         
         self.mapV.delegate = self
         
-        let savedLatStr = UserDetail.shared.getAppLatitude()
-        let savedLngStr = UserDetail.shared.getAppLongitude()
-        if let savedLat = Double(savedLatStr), let savedLng = Double(savedLngStr), savedLat != 0.0, savedLng != 0.0 {
-            self.latitude = savedLat
-            self.longitude = savedLng
-            let camera = GMSCameraPosition.camera(withLatitude: savedLat, longitude: savedLng, zoom: 15.0)
-            self.mapV.camera = camera
-            self.viewModel.apiforGetHomeData()
-        } else {
-            UserDetail.shared.setAppLatitude("0.0")
-            UserDetail.shared.setAppLongitude("0.0")
-            self.latitude = 0.0
-            self.longitude = 0.0
-            self.viewModel.apiforGetHomeData()
+        if let data = self.getHomeDataArr, !data.isEmpty {
+            self.showMarkers(data: data)
+            HomeDataStore.shared.homeDataArr = data
+        } else if let sharedData = HomeDataStore.shared.homeDataArr, !sharedData.isEmpty {
+            self.getHomeDataArr = sharedData
+            self.showMarkers(data: sharedData)
         }
         
         view_Search.layer.borderWidth = 1.5
@@ -83,10 +75,21 @@ class MapVC: UIViewController,GMSMapViewDelegate,LocationPickerDelegate {
         view_Search.layer.cornerRadius = view_Search.layer.frame.height / 2
     }
     
-
-    
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         self.tabBarController?.tabBar.isHidden = false
+        if let sharedData = HomeDataStore.shared.homeDataArr, !sharedData.isEmpty {
+            self.getHomeDataArr = sharedData
+            self.showMarkers(data: sharedData)
+        }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        if let data = self.getHomeDataArr {
+            HomeDataStore.shared.homeDataArr = data
+            backActionHomeData?(data)
+        }
     }
     
     @objc func appDidBecomeActive() {
@@ -248,6 +251,28 @@ class MapVC: UIViewController,GMSMapViewDelegate,LocationPickerDelegate {
         }
     }
     
+    private func handleClearLocation() {
+        WhereSaveData.shared.clearData()
+        FilterSavedData.shared.clearData()
+        HomeDataStore.shared.clearData()
+        self.viewModel.latitude = ""
+        self.viewModel.longitude = ""
+        let devLat = UserDetail.shared.getDeviceLatitude()
+        let devLng = UserDetail.shared.getDeviceLongitude()
+        if !devLat.isEmpty && !devLng.isEmpty && devLat != "0.0" && devLat != "0" {
+            UserDetail.shared.setAppLatitude(devLat)
+            UserDetail.shared.setAppLongitude(devLng)
+            if let latD = Double(devLat), let lngD = Double(devLng) {
+                self.latitude = latD
+                self.longitude = lngD
+            }
+        } else {
+            UserDetail.shared.setAppLatitude("\(self.latitude ?? 0.0)")
+            UserDetail.shared.setAppLongitude("\(self.longitude ?? 0.0)")
+        }
+        self.viewModel.apiforGetHomeData()
+    }
+
     @IBAction func btnWhereTap(_ sender: UIButton) {
         
         let vc = self.storyboard?.instantiateViewController(withIdentifier: "WhereVC") as! WhereVC
@@ -257,20 +282,7 @@ class MapVC: UIViewController,GMSMapViewDelegate,LocationPickerDelegate {
         vc.backAction = { str, str1 in
             print( str, str1,"data Recieved")
             if str1 == "Clear" {
-                let devLat = UserDetail.shared.getDeviceLatitude()
-                let devLng = UserDetail.shared.getDeviceLongitude()
-                if !devLat.isEmpty && !devLng.isEmpty {
-                    UserDetail.shared.setAppLatitude(devLat)
-                    UserDetail.shared.setAppLongitude(devLng)
-                    if let latD = Double(devLat), let lngD = Double(devLng) {
-                        self.latitude = latD
-                        self.longitude = lngD
-                    }
-                } else {
-                    UserDetail.shared.setAppLatitude("\(self.latitude ?? 0.0)")
-                    UserDetail.shared.setAppLongitude("\(self.longitude ?? 0.0)")
-                }
-                self.viewModel.apiforGetHomeData()
+                self.handleClearLocation()
             }  else {
                 self.comingFrom = "Filter"
                 if str?.count == nil {
@@ -299,21 +311,7 @@ class MapVC: UIViewController,GMSMapViewDelegate,LocationPickerDelegate {
         vc.backAction = { str, str1 in
             print( str, str1,"data Recieved")
             if str1 == "Clear" {
-                let devLat = UserDetail.shared.getDeviceLatitude()
-                let devLng = UserDetail.shared.getDeviceLongitude()
-                if !devLat.isEmpty && !devLng.isEmpty {
-                    UserDetail.shared.setAppLatitude(devLat)
-                    UserDetail.shared.setAppLongitude(devLng)
-                    if let latD = Double(devLat), let lngD = Double(devLng) {
-                        self.latitude = latD
-                        self.longitude = lngD
-                    }
-                } else {
-                    UserDetail.shared.setAppLatitude("\(self.latitude ?? 0.0)")
-                    UserDetail.shared.setAppLongitude("\(self.longitude ?? 0.0)")
-                }
-                self.viewModel.apiforGetHomeData()
-               
+                self.handleClearLocation()
             } else if str1 == "" {
                 self.viewModel.apiforGetHomeData()
             } else {
@@ -344,21 +342,7 @@ class MapVC: UIViewController,GMSMapViewDelegate,LocationPickerDelegate {
         vc.backAction = { str, str1 in
             print( str, str1,"data Recieved")
             if str1 == "Clear" {
-                let devLat = UserDetail.shared.getDeviceLatitude()
-                let devLng = UserDetail.shared.getDeviceLongitude()
-                if !devLat.isEmpty && !devLng.isEmpty {
-                    UserDetail.shared.setAppLatitude(devLat)
-                    UserDetail.shared.setAppLongitude(devLng)
-                    if let latD = Double(devLat), let lngD = Double(devLng) {
-                        self.latitude = latD
-                        self.longitude = lngD
-                    }
-                } else {
-                    UserDetail.shared.setAppLatitude("\(self.latitude ?? 0.0)")
-                    UserDetail.shared.setAppLongitude("\(self.longitude ?? 0.0)")
-                }
-                self.viewModel.apiforGetHomeData()
-               
+                self.handleClearLocation()
             } else if str1 == "" {
                 self.viewModel.apiforGetHomeData()
             } else {
@@ -446,6 +430,7 @@ extension MapVC {
                 result?.handle(success: { response in
 
                     self.getHomeDataArr = response.data ?? []
+                    HomeDataStore.shared.homeDataArr = self.getHomeDataArr
 
                     if self.getHomeDataArr?.isEmpty ?? true {
                         self.showMarkers(data: [])

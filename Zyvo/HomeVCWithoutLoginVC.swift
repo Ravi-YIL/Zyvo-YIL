@@ -121,6 +121,16 @@ class HomeVCWithoutLoginVC: UIViewController,LocationPickerDelegate {
         
         if isComingBackFromMap {
             isComingBackFromMap = false
+            if let sharedData = HomeDataStore.shared.homeDataArr {
+                self.getHomeDataArr = sharedData
+                self.collecV.reloadData()
+            }
+            return
+        }
+        
+        if let sharedData = HomeDataStore.shared.homeDataArr, !sharedData.isEmpty, !(getHomeDataArr?.isEmpty ?? true) {
+            self.getHomeDataArr = sharedData
+            self.collecV.reloadData()
             return
         }
         
@@ -322,6 +332,30 @@ class HomeVCWithoutLoginVC: UIViewController,LocationPickerDelegate {
     }
     
     
+    private func handleClearLocation() {
+        WhereSaveData.shared.clearData()
+        FilterSavedData.shared.clearData()
+        HomeDataStore.shared.clearData()
+        self.viewModel.latitude = ""
+        self.viewModel.longitude = ""
+        let devLat = UserDetail.shared.getDeviceLatitude()
+        let devLng = UserDetail.shared.getDeviceLongitude()
+        if !devLat.isEmpty && !devLng.isEmpty && devLat != "0.0" && devLat != "0" {
+            UserDetail.shared.setAppLatitude(devLat)
+            UserDetail.shared.setAppLongitude(devLng)
+            self.lat = devLat
+            self.lng = devLng
+            if let latD = Double(devLat), let lngD = Double(devLng) {
+                self.latitude = latD
+                self.longitude = lngD
+            }
+        } else {
+            UserDetail.shared.setAppLatitude(self.lat)
+            UserDetail.shared.setAppLongitude(self.lng)
+        }
+        self.viewModel.apiforGetHomeData()
+    }
+
     @IBAction func btnWhereTap(_ sender: UIButton) {
         
         let vc = self.storyboard?.instantiateViewController(withIdentifier: "WhereVC") as! WhereVC
@@ -335,22 +369,7 @@ class HomeVCWithoutLoginVC: UIViewController,LocationPickerDelegate {
             print(str, str1, "data Recieved")
 
             if str1 == "Clear" {
-                let devLat = UserDetail.shared.getDeviceLatitude()
-                let devLng = UserDetail.shared.getDeviceLongitude()
-                if !devLat.isEmpty && !devLng.isEmpty {
-                    UserDetail.shared.setAppLatitude(devLat)
-                    UserDetail.shared.setAppLongitude(devLng)
-                    self.lat = devLat
-                    self.lng = devLng
-                    if let latD = Double(devLat), let lngD = Double(devLng) {
-                        self.latitude = latD
-                        self.longitude = lngD
-                    }
-                } else {
-                    UserDetail.shared.setAppLatitude(self.lat)
-                    UserDetail.shared.setAppLongitude(self.lng)
-                }
-                self.viewModel.apiforGetHomeData()
+                self.handleClearLocation()
             }
             else {
                 self.comingFrom = "Filter"
@@ -377,22 +396,7 @@ class HomeVCWithoutLoginVC: UIViewController,LocationPickerDelegate {
         vc.backAction = { str, str1 in
             print( str, str1,"data Recieved")
             if str1 == "Clear" {
-                let devLat = UserDetail.shared.getDeviceLatitude()
-                let devLng = UserDetail.shared.getDeviceLongitude()
-                if !devLat.isEmpty && !devLng.isEmpty {
-                    UserDetail.shared.setAppLatitude(devLat)
-                    UserDetail.shared.setAppLongitude(devLng)
-                    self.lat = devLat
-                    self.lng = devLng
-                    if let latD = Double(devLat), let lngD = Double(devLng) {
-                        self.latitude = latD
-                        self.longitude = lngD
-                    }
-                } else {
-                    UserDetail.shared.setAppLatitude(self.lat)
-                    UserDetail.shared.setAppLongitude(self.lng)
-                }
-                self.viewModel.apiforGetHomeData()
+                self.handleClearLocation()
             } else if str1 == "" {
                 self.viewModel.apiforGetHomeData()
             } else {
@@ -420,22 +424,7 @@ class HomeVCWithoutLoginVC: UIViewController,LocationPickerDelegate {
         vc.backAction = { str, str1 in
             print( str, str1,"data Recieved")
             if str1 == "Clear" {
-                let devLat = UserDetail.shared.getDeviceLatitude()
-                let devLng = UserDetail.shared.getDeviceLongitude()
-                if !devLat.isEmpty && !devLng.isEmpty {
-                    UserDetail.shared.setAppLatitude(devLat)
-                    UserDetail.shared.setAppLongitude(devLng)
-                    self.lat = devLat
-                    self.lng = devLng
-                    if let latD = Double(devLat), let lngD = Double(devLng) {
-                        self.latitude = latD
-                        self.longitude = lngD
-                    }
-                } else {
-                    UserDetail.shared.setAppLatitude(self.lat)
-                    UserDetail.shared.setAppLongitude(self.lng)
-                }
-                self.viewModel.apiforGetHomeData()
+                self.handleClearLocation()
             } else if str1 == "" {
                 self.viewModel.apiforGetHomeData()
             } else {
@@ -466,22 +455,7 @@ class HomeVCWithoutLoginVC: UIViewController,LocationPickerDelegate {
         vc.backAction = { str, str1 in
             print( str, str1,"data Recieved")
             if str1 == "Clear" {
-                let devLat = UserDetail.shared.getDeviceLatitude()
-                let devLng = UserDetail.shared.getDeviceLongitude()
-                if !devLat.isEmpty && !devLng.isEmpty {
-                    UserDetail.shared.setAppLatitude(devLat)
-                    UserDetail.shared.setAppLongitude(devLng)
-                    self.lat = devLat
-                    self.lng = devLng
-                    if let latD = Double(devLat), let lngD = Double(devLng) {
-                        self.latitude = latD
-                        self.longitude = lngD
-                    }
-                } else {
-                    UserDetail.shared.setAppLatitude(self.lat)
-                    UserDetail.shared.setAppLongitude(self.lng)
-                }
-                 self.viewModel.apiforGetHomeData()
+                self.handleClearLocation()
             } else if str1 == "" {
                 self.viewModel.apiforGetHomeData()
             } else {
@@ -598,7 +572,10 @@ extension HomeVCWithoutLoginVC :UICollectionViewDelegate,UICollectionViewDataSou
             vc.comingFrom = "WithoutLogin"
             shouldFetchHomeData = true
             vc.backAction = { [weak self] str in
-                self?.viewModel.apiforGetHomeData()
+                if let sharedData = HomeDataStore.shared.homeDataArr {
+                    self?.getHomeDataArr = sharedData
+                    self?.collecV.reloadData()
+                }
             }
             self.navigationController?.pushViewController(vc, animated: true)
          

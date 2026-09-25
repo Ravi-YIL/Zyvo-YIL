@@ -238,6 +238,7 @@ extension HostBookingsVC : UITableViewDelegate,UITableViewDataSource {
                     let vc = self.storyboard?.instantiateViewController(withIdentifier: "HostApproveRequestVC") as! HostApproveRequestVC
                     vc.bookingId = "\(bookingsDataArr[sender.tag].bookingID ?? 0)"
                     vc.extId = bookingsDataArr[sender.tag].extensionId
+                    
                     vc.backAction = {
                         self.viewModel.apiforGetBookingsList()
                     }

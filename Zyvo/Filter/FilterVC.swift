@@ -1218,12 +1218,24 @@ class FilterVC: UIViewController, UITextFieldDelegate, GMSAutocompleteFetcherDel
     @IBAction func btnClearAll_Tap(_ sender: UIButton) {
         
         // restore original/current device location
-        UserDetail.shared.setAppLatitude("")
-        UserDetail.shared.setAppLongitude("")
+        let devLat = UserDetail.shared.getDeviceLatitude()
+        let devLng = UserDetail.shared.getDeviceLongitude()
+        if !devLat.isEmpty && devLat != "0.0" && devLat != "0" {
+            UserDetail.shared.setAppLatitude(devLat)
+            UserDetail.shared.setAppLongitude(devLng)
+        } else {
+            UserDetail.shared.setAppLatitude("")
+            UserDetail.shared.setAppLongitude("")
+        }
         
         isappliedField = false
         self.FilterStatus = "Clear"
         FilterSavedData.shared.clearData()
+        WhereSaveData.shared.clearData()
+        self.latitude = ""
+        self.longitude = ""
+        self.viewModel.latitude = ""
+        self.viewModel.longitude = ""
         let timeValue = FilterSavedData.shared.timess
         print("Timess Value: \(timeValue)")
         self.txt_NumberofPeople.text = ""

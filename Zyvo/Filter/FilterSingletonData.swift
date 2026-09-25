@@ -113,3 +113,16 @@ extension WhereSaveData {
     }
 }
 
+class HomeDataStore {
+    static let shared = HomeDataStore()
+    var homeDataArr: [HomeDataModel]? = nil
+    var hasFetchedData: Bool = false
+    
+    private init() {}
+    
+    func clearData() {
+        homeDataArr = nil
+        hasFetchedData = false
+    }
+}
+
