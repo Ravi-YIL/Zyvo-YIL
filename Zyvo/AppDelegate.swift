@@ -19,6 +19,9 @@ import FBSDKCoreKit
 import FBSDKLoginKit
 import FirebaseCrashlytics
 import FirebaseAnalytics
+#if DEBUG
+import ObjectiveC.runtime
+#endif
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate,AppsFlyerLibDelegate {
@@ -42,6 +45,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate,AppsFlyerLibDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
        // Thread.sleep(forTimeInterval: 3)
+#if DEBUG
+        UIViewController.enableScreenClassLogging()
+#endif
         getTimeZone()
         
       
@@ -201,6 +207,35 @@ class AppDelegate: UIResponder, UIApplicationDelegate,AppsFlyerLibDelegate {
     }
 
 }
+
+#if DEBUG
+private extension UIViewController {
+    static func enableScreenClassLogging() {
+        _ = screenClassLoggingSwizzle
+    }
+
+    static let screenClassLoggingSwizzle: Void = {
+        let originalSelector = #selector(UIViewController.viewDidAppear(_:))
+        let loggedSelector = #selector(UIViewController.zyvo_loggedViewDidAppear(_:))
+
+        guard let originalMethod = class_getInstanceMethod(UIViewController.self, originalSelector),
+              let loggedMethod = class_getInstanceMethod(UIViewController.self, loggedSelector) else {
+            return
+        }
+
+        method_exchangeImplementations(originalMethod, loggedMethod)
+    }()
+
+    @objc func zyvo_loggedViewDidAppear(_ animated: Bool) {
+        // Calls the original viewDidAppear implementation after method exchange.
+        zyvo_loggedViewDidAppear(animated)
+
+        // Ignore UIKit-owned containers and alerts; log application screens only.
+        guard Bundle(for: type(of: self)) == Bundle.main else { return }
+        print("📱 [SCREEN] \(String(describing: type(of: self)))")
+    }
+}
+#endif
 
 public extension UIApplication {
     public class func topViewController(_ base: UIViewController? = UIApplication.shared.keyWindow?.rootViewController) -> UIViewController? {

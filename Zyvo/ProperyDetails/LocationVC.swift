@@ -2037,7 +2037,7 @@ extension LocationVC {
                         self.taxPercentage = taxPercent// 5% tax
                         print(self.bookingHours ?? 0)
                         print(minBookhours ?? 0)
-                        if (self.bookingHours ?? 0) > (minBookhours ?? 0)   {
+                        if (self.bookingHours ?? 0) >= (minBookhours ?? 0)   {
                             
                             let result = self.calculateFinalPriceWithDiscount(totalPrice: totalPrice, discountPercent: discountPercent ?? 0.0, taxPercent: taxPercent)
                             print("================================WithDiscount====================================")

@@ -60,8 +60,14 @@ extension HomeDataViewModel {
         para[APIKeys.userID] = UserDetail.shared.getUserId()
         
         let (appLatitude, appLongitude) = getResolvedLocation()
+        let (currentLatitude, currentLongitude) = getCurrentDeviceLocation()
         para[APIKeys.latitude] = appLatitude
         para[APIKeys.longitude] = appLongitude
+        addCurrentLocation(
+            latitude: currentLatitude,
+            longitude: currentLongitude,
+            to: &para
+        )
         
         APIServices<[HomeDataModel]>().post(endpoint: .gethomedata, parameters: para, loader: true)
             .receive(on: DispatchQueue.main)
@@ -131,12 +137,38 @@ extension HomeDataViewModel {
         
         return (finalLat, finalLng)
     }
+
+    private func getCurrentDeviceLocation() -> (lat: String, lng: String) {
+        let deviceLatitude = UserDetail.shared.getDeviceLatitude()
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        let deviceLongitude = UserDetail.shared.getDeviceLongitude()
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+
+        return (deviceLatitude, deviceLongitude)
+    }
+
+    private func addCurrentLocation(
+        latitude: String,
+        longitude: String,
+        to parameters: inout [String: Any]
+    ) {
+        guard isValidCoordinate(latitude), isValidCoordinate(longitude) else { return }
+        parameters[APIKeys.currentLatitude] = latitude
+        parameters[APIKeys.currentLongitude] = longitude
+        print("📍 current_latitude: \(latitude), current_longitude: \(longitude)")
+    }
+
+    private func isValidCoordinate(_ value: String) -> Bool {
+        guard let coordinate = Double(value) else { return false }
+        return coordinate.isFinite
+    }
     
     func apiforGetHomeData() {
         self.getHomeDataResult = nil
         var para = [String: Any]()
         
         let (appLatitude, appLongitude) = getResolvedLocation()
+        let (currentLatitude, currentLongitude) = getCurrentDeviceLocation()
         
         UserDetail.shared.setAppLatitude(appLatitude)
         UserDetail.shared.setAppLongitude(appLongitude)
@@ -146,6 +178,11 @@ extension HomeDataViewModel {
         para[APIKeys.userID] = UserDetail.shared.getUserId()
         para[APIKeys.latitude] = appLatitude
         para[APIKeys.longitude] = appLongitude
+        addCurrentLocation(
+            latitude: currentLatitude,
+            longitude: currentLongitude,
+            to: &para
+        )
         para[APIKeys.date] = self.datss
         para[APIKeys.hourss] = self.hourss
         para[APIKeys.starttime] = self.start_time
@@ -209,6 +246,4 @@ extension HomeDataViewModel {
     }
     
 }
-
-
 

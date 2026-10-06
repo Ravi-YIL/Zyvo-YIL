@@ -1057,7 +1057,7 @@ extension ReviewVC {
                         let minBookingHours = Int(Double(charges.minBookingHours ?? "0") ?? 0)
                         let bookedHours = charges.bookingHours ?? 0
 
-                        if discountPrice != 0 && bookedHours > minBookingHours {
+                        if discountPrice != 0 && bookedHours >= minBookingHours {
                             self.view_Discount.isHidden = false
                             self.lbl_Discount.text = "-$\(discountPrice.formattedPrice())"
                         } else {
@@ -1139,8 +1139,6 @@ extension ReviewVC {
                     let rating = self.getBookingDetails?.rating ?? 0
                     self.lbl_ratings.text = String(format: "%.1f", rating)
                     self.lbl_RatingBelow.text = String(format: "%.1f", rating)
-                    
-                    
                     
                     if( self.getBookingDetails?.reviews?.count ?? 0) != 0 {
                         self.lbl_BelowNumberOfReview.text = "Reviews (\(self.getBookingDetails?.reviews?.count ?? 0))"

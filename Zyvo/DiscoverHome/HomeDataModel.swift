@@ -33,7 +33,37 @@ struct HomeDataModel: Codable {
         case hostName = "host_name"
         case hostAddress = "host_address"
         case hostProfileImageUrl = "host_profile_image"
-        
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        if let value = try? container.decode(String.self, forKey: .distanceMiles) {
+            distanceMiles = value
+        } else if let value = try? container.decode(Int.self, forKey: .distanceMiles) {
+            distanceMiles = String(value)
+        } else if let value = try? container.decode(Double.self, forKey: .distanceMiles) {
+            distanceMiles = value.truncatingRemainder(dividingBy: 1) == 0
+                ? String(Int(value))
+                : String(value)
+        } else {
+            distanceMiles = nil
+        }
+
+        hourlyRate = try container.decodeIfPresent(String.self, forKey: .hourlyRate)
+        reviewCount = try container.decodeIfPresent(String.self, forKey: .reviewCount)
+        isInWishlist = try container.decodeIfPresent(Int.self, forKey: .isInWishlist)
+        title = try container.decodeIfPresent(String.self, forKey: .title)
+        rating = try container.decodeIfPresent(String.self, forKey: .rating)
+        propertyID = try container.decodeIfPresent(Int.self, forKey: .propertyID)
+        longitude = try container.decodeIfPresent(String.self, forKey: .longitude)
+        latitude = try container.decodeIfPresent(String.self, forKey: .latitude)
+        isInstantBook = try container.decodeIfPresent(Int.self, forKey: .isInstantBook)
+        images = try container.decodeIfPresent([String].self, forKey: .images)
+        isStarHost = try container.decodeIfPresent(Bool.self, forKey: .isStarHost)
+        hostName = try container.decodeIfPresent(String.self, forKey: .hostName)
+        hostAddress = try container.decodeIfPresent(String.self, forKey: .hostAddress)
+        hostProfileImageUrl = try container.decodeIfPresent(String.self, forKey: .hostProfileImageUrl)
     }
 }
 
@@ -41,5 +71,4 @@ struct HomeDataModel: Codable {
 struct chatTokenModel: Codable {
     let token, identity: String?
 }
-
 

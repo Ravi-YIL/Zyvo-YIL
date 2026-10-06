@@ -160,6 +160,8 @@ class APIKeys {
     
     static let latitude                   = "latitude"
     static let longitude                  = "longitude"
+    static let currentLatitude            = "current_latitude"
+    static let currentLongitude           = "current_longitude"
     static let role                  = "role"
     
     

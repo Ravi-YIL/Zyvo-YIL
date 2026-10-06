@@ -138,6 +138,17 @@ extension HomeDataFilterViewModel {
         addIfNotEmpty(APIKeys.latitude, latitude)
         addIfNotEmpty(APIKeys.longitude, longitude)
 
+        let deviceLatitude = UserDetail.shared.getDeviceLatitude()
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        let deviceLongitude = UserDetail.shared.getDeviceLongitude()
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        if Double(deviceLatitude)?.isFinite == true,
+           Double(deviceLongitude)?.isFinite == true {
+            para[APIKeys.currentLatitude] = deviceLatitude
+            para[APIKeys.currentLongitude] = deviceLongitude
+            print("📍 Filter current_latitude: \(deviceLatitude), current_longitude: \(deviceLongitude)")
+        }
+
         addIfNotEmpty(APIKeys.amenitiesss, amenities)
         addIfNotEmpty(APIKeys.activitiesss, activities)
         addIfNotEmpty(APIKeys.languagesss, language)
@@ -193,4 +204,3 @@ extension HomeDataFilterViewModel {
     }
     
 }
-

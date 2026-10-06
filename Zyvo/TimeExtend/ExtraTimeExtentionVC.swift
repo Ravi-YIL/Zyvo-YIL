@@ -15,6 +15,7 @@ class ExtraTimeExtentionVC: UIViewController,UITextViewDelegate {
     var isParkingRulesOpen = "no"
     var isHostTingRulesOpen = "no"
     var showRefundPolicy = "no"
+    
     @IBOutlet weak var view_ParkingDesc: UIView!
     @IBOutlet weak var viewHold_MessageHost: UIView!
     @IBOutlet weak var view_MessageHost: UIView!
@@ -539,7 +540,7 @@ Where a listing has a host-specific cancellation policy, that policy controls un
         self.imgProperty.loadImage(from:propertyIMGURL,placeholder: UIImage(named: "no_image (1)"))
         self.imgProperty.layer.cornerRadius = 20
         self.imgProperty.contentMode = .scaleAspectFill
-        self.lbl_DistanceInMiles.text = self.propertyDistanceInMiles  + " sqft"
+        self.lbl_DistanceInMiles.text = self.propertyDistanceInMiles  + " miles away"
         self.lbl_PropertyTitle.text = self.propertyName
         self.lbl_rating.text  = self.propertyRating
         self.lbl_numberOfReview.text  = "(\(self.propertyNumberofReview))"
