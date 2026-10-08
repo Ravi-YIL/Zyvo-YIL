@@ -931,7 +931,10 @@ extension WhereVC : UITableViewDelegate,UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tblV_Location.dequeueReusableCell(withIdentifier: "NewLocationCell", for: indexPath) as! NewLocationCell
         
-        cell.locationLbl.text = predictions[indexPath.row].attributedPrimaryText.string
+        // Use Google's complete place description so locations with the same
+        // primary name (for example, multiple "Georgia" results) remain
+        // distinguishable by state/country.
+        cell.locationLbl.text = predictions[indexPath.row].attributedFullText.string
         
         return cell
     }
@@ -959,7 +962,7 @@ extension WhereVC : UITableViewDelegate,UITableViewDataSource {
                     self.viewModel.latitude = self.latitude
                     self.viewModel.longitude = self.longitude
                     
-                    self.whereLocationTF.text = prediction.attributedPrimaryText.string
+                    self.whereLocationTF.text = prediction.attributedFullText.string
                     self.view_Location.isHidden = true
                     WhereSaveData.shared.WhereLocation = self.whereLocationTF.text ?? ""
                     WhereSaveData.shared.lat = self.latitude

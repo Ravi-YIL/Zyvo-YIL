@@ -1204,8 +1204,9 @@ class FilterVC: UIViewController, UITextFieldDelegate, GMSAutocompleteFetcherDel
     func didAutocomplete(with predictions: [GMSAutocompletePrediction]) {
         self.predictions = predictions
         
-        // Convert predictions to string array for DropDown
-        let predictionTexts = predictions.map { $0.attributedPrimaryText.string }
+        // Show the complete Google place description so duplicate city/state
+        // names can be identified by their state and country.
+        let predictionTexts = predictions.map { $0.attributedFullText.string }
         dropDownLocation.dataSource = predictionTexts
         dropDownLocation.show()
     }
@@ -1899,7 +1900,7 @@ extension FilterVC : UITableViewDelegate,UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tblV_Location.dequeueReusableCell(withIdentifier: "NewLocationCell", for: indexPath) as! NewLocationCell
-        cell.locationLbl.text = predictions[indexPath.row].attributedPrimaryText.string
+        cell.locationLbl.text = predictions[indexPath.row].attributedFullText.string
         return cell
     }
 
@@ -1908,8 +1909,12 @@ extension FilterVC : UITableViewDelegate,UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 
         let selectedPlace = predictions[indexPath.row]
+        let selectedLocation = selectedPlace.attributedFullText.string
         DispatchQueue.main.async {
-            self.txt_location.text = selectedPlace.attributedPrimaryText.string
+            self.txt_location.text = selectedLocation
+            self.locationss = selectedLocation
+            self.viewModel.locationss = selectedLocation
+            FilterSavedData.shared.locationss = selectedLocation
             self.viewLocation.isHidden = true
         }
         let placeID = selectedPlace.placeID
@@ -1918,7 +1923,7 @@ extension FilterVC : UITableViewDelegate,UITableViewDataSource {
 
         placesClient.fetchPlace(
             fromPlaceID: placeID,
-            placeFields: [.coordinate, .name],
+            placeFields: [.coordinate],
             sessionToken: nil
         ) { [weak self] place, error in
 
@@ -1935,13 +1940,8 @@ extension FilterVC : UITableViewDelegate,UITableViewDataSource {
             print("Latitude: \(latitude)")
             print("Longitude: \(longitude)")
 
-            // Save wherever needed
-            self?.locationss = place.name ?? ""
-            self?.viewModel.locationss = self?.locationss ?? ""
-            FilterSavedData.shared.locationss = self?.locationss ?? ""
-            // Example
-             FilterSavedData.shared.latitude = "\(latitude)"
-             FilterSavedData.shared.longitude = "\(longitude)"
+            FilterSavedData.shared.latitude = "\(latitude)"
+            FilterSavedData.shared.longitude = "\(longitude)"
             self?.viewModel.latitude = "\(latitude)"
             self?.viewModel.longitude = "\(longitude)"
         }

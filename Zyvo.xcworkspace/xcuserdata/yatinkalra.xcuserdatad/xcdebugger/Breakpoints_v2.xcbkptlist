@@ -2082,7 +2082,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "2198"
             endingLineNumber = "2198"
-            landmarkName = "bindVC()"
+            landmarkName = "rangeSeekSlider(_:didChange:maxValue:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
